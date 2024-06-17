@@ -64,6 +64,15 @@ type SortableHeaderProps = {
   column: any;
 };
 
+// This should probably be somewhere else.
+export function getFormattedDate(date: Date) {
+  let year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, '0');
+  let day = date.getDate().toString().padStart(2, '0');
+
+  return month + '/' + day + '/' + year;
+}
+
 const DataTable = ({
   className,
   clickableIdColumn,
