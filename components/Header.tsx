@@ -4,7 +4,7 @@ import Profile from './Profile';
 
 const Header = () => {
   return (
-    <header className="p-3.5 flex gap-4 items-center justify-between bg-background border-b-2">
+    <header className="flex items-center justify-between gap-4 border-b-2 bg-background p-3.5">
       <Logo />
       <Navbar className="max-w-none justify-start" />
 
