@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input';
 import { CirclePlus, SlidersHorizontal } from 'lucide-react';
 import EventsTable from '@/components/EventsTable';
 import EditEventDialog from '@/components/EditEventDialog';
+import EventJumpPointDialog from '@/components/EventJumpPointDialog';
 
 const EventsPage = () => {
   const [nameFilter, setNameFilter] = useState('');
 
   const [showCreateEventDialog, setShowCreateEventDialog] = useState(false);
+  const [showEventJumpPtDialog, setShowEventJumpPtDialog] = useState(false);
 
   return (
     <>
@@ -38,7 +40,10 @@ const EventsPage = () => {
           </div>
         </div>
 
-        <EventsTable nameFilter={nameFilter} />
+        <EventsTable
+          nameFilter={nameFilter}
+          onSelect={() => setShowEventJumpPtDialog(true)}
+        />
       </main>
 
       <EditEventDialog
@@ -46,6 +51,11 @@ const EventsPage = () => {
         open={showCreateEventDialog}
         onCancel={() => setShowCreateEventDialog(false)}
         onConfirm={() => {}}
+      />
+
+      <EventJumpPointDialog
+        open={showEventJumpPtDialog}
+        onExit={() => setShowEventJumpPtDialog(false)}
       />
     </>
   );

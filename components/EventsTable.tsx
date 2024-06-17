@@ -55,9 +55,15 @@ type EventsTableProps = {
   nameFilter: string;
   onDelete?: () => void;
   onEdit?: () => void;
+  onSelect?: () => void;
 };
 
-const EventsTable = ({ nameFilter, onDelete, onEdit }: EventsTableProps) => {
+const EventsTable = ({
+  nameFilter,
+  onDelete,
+  onEdit,
+  onSelect,
+}: EventsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
 
@@ -65,12 +71,14 @@ const EventsTable = ({ nameFilter, onDelete, onEdit }: EventsTableProps) => {
     <>
       <DataTable
         className="border-2"
+        clickableIdColumn={true}
         columns={TEMP_COLUMNS}
         data={TEMP_DATA}
         idFilter={nameFilter}
         idColumn="name"
         onRowEdit={() => setToEditId('123')}
         onRowDelete={() => setToDeleteId('123')}
+        onRowSelect={onSelect ?? (() => {})}
       />
 
       <DeletePopup

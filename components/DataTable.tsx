@@ -38,7 +38,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  SquareArrowOutUpRight,
+} from 'lucide-react';
 
 type DataTableProps = {
   className?: string;
@@ -144,7 +149,7 @@ const DataTable = ({
                   const body =
                     cell.column.id === idColumn && clickableIdColumn ? (
                       <Button
-                        className="p-0"
+                        className="p-0 text-muted-foreground"
                         variant="ghost"
                         onClick={onRowSelect}
                       >
@@ -152,6 +157,8 @@ const DataTable = ({
                           cell.column.columnDef.cell,
                           cell.getContext(),
                         )}
+
+                        <SquareArrowOutUpRight className="ml-2 h-4 w-4" />
                       </Button>
                     ) : (
                       flexRender(cell.column.columnDef.cell, cell.getContext())
