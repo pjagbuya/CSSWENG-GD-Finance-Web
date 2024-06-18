@@ -1,16 +1,10 @@
-'use client'
-
-import { useState } from 'react';
-
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { SlidersHorizontal } from 'lucide-react';
 import FormsTable from './formsTable';
 import CreateFormDialogButton from './CreateFormDialogButton';
+import FormsSearchInput from './FormsSearchInput';
 
-const EventsPage = () => {
-  const [nameFilter, setNameFilter] = useState('');
-
+const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
   return (
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -23,10 +17,7 @@ const EventsPage = () => {
 
           <CreateFormDialogButton />
           <div className="flex max-w-96 flex-1 gap-4">
-            <Input
-              placeholder="Search events by name..."
-              onChange={e => setNameFilter(e.target.value)}
-            />
+            <FormsSearchInput />
 
             <Button>
               <SlidersHorizontal className="mr-2 w-4" /> Filter
@@ -35,7 +26,7 @@ const EventsPage = () => {
         </div>
 
         <FormsTable
-          nameFilter={nameFilter}
+          nameFilter={searchParams?.query || ''}
         // onSelect={() => setShowEventJumpPtDialog(true)}
         />
       </main>
@@ -43,5 +34,5 @@ const EventsPage = () => {
   );
 };
 
-export default EventsPage;
+export default FormsPage;
 
