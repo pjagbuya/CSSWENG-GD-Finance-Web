@@ -33,11 +33,11 @@ const LoginPage = () => {
           <div className="flex justify-center w-full">
             <div className="max-w-96 flex-1 flex flex-col gap-7">
               <div className="flex flex-col gap-2">
-                <div className='gap-2'>
+                <div className='flex flex-col gap-2'>
                   <Label htmlFor="email">Email</Label>
                   <Input type="email" placeholder="Email" />
                 </div>
-                <div className='gap-2'>
+                <div className='flex flex-col gap-2'>
                   <Label htmlFor="email">Password</Label>
                   <Input type="password" placeholder="Password" />
                 </div>

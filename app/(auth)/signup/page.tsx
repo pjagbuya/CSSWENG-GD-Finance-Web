@@ -37,7 +37,7 @@ const SignUpPage = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input type="email" placeholder="Email" />
                 </div>
-                <div className='gap-2'>
+                <div className='flex flex-col gap-2'>
                   <Label htmlFor="email">Password</Label>
                   <Input type="password" placeholder="Password" />
                 </div>
