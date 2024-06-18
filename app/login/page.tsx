@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 
 const page = () => {
   return (
-    <div><Button>Hello Login</Button></div>
-  )
-}
+    <div>
+      <Button>Hello Login</Button>
+    </div>
+  );
+};
 
-export default page
+export default page;
