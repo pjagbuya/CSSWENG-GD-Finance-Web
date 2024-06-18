@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 const SignUpPage = () => {
   return (
     <div className="min-h-screen flex bg-background">
-      <div className="p-8 hidden flex-1 bg-slate-900 md:block">
+      <div className="p-8 hidden flex-1 bg-zinc-900 md:block">
         <div className="flex justify-between">
         </div>
       </div>
