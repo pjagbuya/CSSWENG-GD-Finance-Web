@@ -4,16 +4,12 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CirclePlus, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import FormsTable from './[formId]/formsTable';
-import EditEventDialog from '@/components/EditEventDialog';
-import EventJumpPointDialog from '@/components/EventJumpPointDialog';
+import CreateFormDialogButton from './CreateFormDialogButton';
 
 const EventsPage = () => {
   const [nameFilter, setNameFilter] = useState('');
-
-  const [showCreateEventDialog, setShowCreateEventDialog] = useState(false);
-  const [showEventJumpPtDialog, setShowEventJumpPtDialog] = useState(false);
 
   return (
     <>
@@ -24,10 +20,8 @@ const EventsPage = () => {
         </div>
 
         <div className="flex justify-between">
-          <Button onClick={() => setShowCreateEventDialog(true)}>
-            <CirclePlus className="mr-2 w-4" /> Create Event
-          </Button>
 
+          <CreateFormDialogButton />
           <div className="flex max-w-96 flex-1 gap-4">
             <Input
               placeholder="Search events by name..."
@@ -42,21 +36,9 @@ const EventsPage = () => {
 
         <FormsTable
           nameFilter={nameFilter}
-          onSelect={() => setShowEventJumpPtDialog(true)}
+        // onSelect={() => setShowEventJumpPtDialog(true)}
         />
       </main>
-
-      <EditEventDialog
-        isEditing={false}
-        open={showCreateEventDialog}
-        onCancel={() => setShowCreateEventDialog(false)}
-        onConfirm={() => { }}
-      />
-
-      <EventJumpPointDialog
-        open={showEventJumpPtDialog}
-        onExit={() => setShowEventJumpPtDialog(false)}
-      />
     </>
   );
 };
