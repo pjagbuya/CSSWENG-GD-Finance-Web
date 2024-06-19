@@ -9,12 +9,13 @@ const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
         <div>
-          <h2 className="text-2xl font-bold">Forms for: Borther Richie’s secret finance forms and transactions</h2>
+          <h2 className="text-2xl font-bold">
+            Forms for: Borther Richie’s secret finance forms and transactions
+          </h2>
           <p>Created: July 5, 2003 | Last Modified: July 5, 2003</p>
         </div>
 
         <div className="flex justify-between">
-
           <CreateFormDialogButton />
           <div className="flex max-w-96 flex-1 gap-4">
             <FormsSearchInput />
@@ -27,7 +28,7 @@ const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
 
         <FormsTable
           nameFilter={searchParams?.query || ''}
-        // onSelect={() => setShowEventJumpPtDialog(true)}
+          // onSelect={() => setShowEventJumpPtDialog(true)}
         />
       </main>
     </>
@@ -35,4 +36,3 @@ const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
 };
 
 export default FormsPage;
-

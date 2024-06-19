@@ -1,5 +1,5 @@
-'use client'
-import React from 'react'
+'use client';
+import React from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
@@ -17,11 +17,10 @@ const CreateFormDialogButton = () => {
         isEditing={false}
         open={showCreateEventDialog}
         onCancel={() => setShowCreateEventDialog(false)}
-        onConfirm={() => { }}
+        onConfirm={() => {}}
       />
-
     </>
-  )
-}
+  );
+};
 
-export default CreateFormDialogButton
+export default CreateFormDialogButton;
