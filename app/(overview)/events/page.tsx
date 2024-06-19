@@ -4,7 +4,11 @@ import EventsTable from './_components/EventsTable';
 import FilterEventButton from './_components/FilterEventButton';
 
 type EventsPageProps = {
-  searchParams?: { query?: string };
+  searchParams?: {
+    endDate?: Date;
+    query?: string;
+    startDate?: Date;
+  };
 };
 
 const EventsPage = ({ searchParams }: EventsPageProps) => {
