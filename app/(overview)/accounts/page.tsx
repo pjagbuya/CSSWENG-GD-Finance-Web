@@ -1,48 +1,30 @@
-'use client';
-
-import { useState } from 'react';
-
 import AccountsTable from '@/components/AccountsTable';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { CirclePlus } from 'lucide-react';
-import EditAccountDialog from '@/components/EditAccountDialog';
+import SearchInput from '@/components/SearchInput';
 
-const AccountsPage = () => {
-  const [nameFilter, setNameFilter] = useState('');
+import CreateAccountButton from './_components/CreateAccountButton';
 
-  const [showCreateAccountDialog, setShowCreateAccountDialog] = useState(false);
+type AccountsPageProps = {
+  searchParams?: { query?: string };
+};
 
+const AccountsPage = ({ searchParams }: AccountsPageProps) => {
   return (
-    <>
-      <main className="flex flex-col gap-4 px-6 py-4 text-left">
-        <div>
-          <h2 className="text-2xl font-bold">Accounts Dashboard</h2>
-          <p>Create, edit, and update officer accounts.</p>
-        </div>
+    <main className="flex flex-col gap-4 px-6 py-4 text-left">
+      <div>
+        <h2 className="text-2xl font-bold">Accounts Dashboard</h2>
+        <p>Create, edit, and update officer accounts.</p>
+      </div>
 
-        <div className="flex justify-between">
-          <Button onClick={() => setShowCreateAccountDialog(true)}>
-            <CirclePlus className="mr-2 w-4" /> Create Account
-          </Button>
+      <div className="flex justify-between">
+        <CreateAccountButton />
+        <SearchInput
+          className="max-w-96"
+          placeholder="Search accounts by name..."
+        />
+      </div>
 
-          <Input
-            className="max-w-96"
-            placeholder="Search accounts by name..."
-            onChange={e => setNameFilter(e.target.value)}
-          />
-        </div>
-
-        <AccountsTable nameFilter={nameFilter} />
-      </main>
-
-      <EditAccountDialog
-        isEditing={false}
-        open={showCreateAccountDialog}
-        onCancel={() => setShowCreateAccountDialog(false)}
-        onConfirm={() => {}}
-      />
-    </>
+      <AccountsTable nameFilter={searchParams?.query || ''} />
+    </main>
   );
 };
 
