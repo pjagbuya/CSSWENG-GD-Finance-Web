@@ -4,7 +4,12 @@ import { Input } from '@/components/ui/input';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 
-const FormsSearchInput = () => {
+type SearchInputProps = {
+  className?: string;
+  placeholder?: string;
+};
+
+const SearchInput = ({ className, placeholder }: SearchInputProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
@@ -23,11 +28,12 @@ const FormsSearchInput = () => {
 
   return (
     <Input
-      placeholder="Search events by name..."
+      className={className}
+      placeholder={placeholder}
       onChange={e => handleSearch(e.target.value)}
       defaultValue={searchParams.get('query')?.toString()}
     />
   );
 };
 
-export default FormsSearchInput;
+export default SearchInput;

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { SlidersHorizontal } from 'lucide-react';
 import FormsTable from './formsTable';
 import CreateFormDialogButton from './CreateFormDialogButton';
-import FormsSearchInput from './FormsSearchInput';
+import SearchInput from '../../../../../components/SearchInput';
 
 const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
   return (
@@ -18,7 +18,7 @@ const FormsPage = ({ searchParams }: { searchParams?: { query?: string } }) => {
         <div className="flex justify-between">
           <CreateFormDialogButton />
           <div className="flex max-w-96 flex-1 gap-4">
-            <FormsSearchInput />
+            <SearchInput placeholder="Search forms by name..." />
 
             <Button>
               <SlidersHorizontal className="mr-2 w-4" /> Filter
