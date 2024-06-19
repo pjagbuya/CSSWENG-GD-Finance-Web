@@ -1,4 +1,4 @@
-import AccountsTable from '@/components/AccountsTable';
+import AccountsTable from './_components/AccountsTable';
 import SearchInput from '@/components/SearchInput';
 
 import CreateAccountButton from './_components/CreateAccountButton';

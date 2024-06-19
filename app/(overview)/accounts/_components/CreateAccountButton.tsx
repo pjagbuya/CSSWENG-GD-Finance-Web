@@ -4,7 +4,7 @@ import { CirclePlus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import EditAccountDialog from '@/components/EditAccountDialog';
+import EditAccountDialog from './EditAccountDialog';
 
 const CreateAccountButton = () => {
   const [showCreateAccountDialog, setShowCreateAccountDialog] = useState(false);
