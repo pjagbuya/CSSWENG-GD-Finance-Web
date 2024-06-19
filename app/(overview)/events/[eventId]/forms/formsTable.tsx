@@ -8,7 +8,7 @@ import DataTable, {
   SortableHeader,
   getFormattedDate,
 } from '@/components/DataTable';
-import EditEventDialog from '@/components/EditEventDialog';
+import EditEventDialog from '../../_components/EditEventDialog';
 import { Badge } from '@/components/ui/badge';
 import { badgeVariants } from '@/components/ui/badge';
 import { VariantProps } from 'class-variance-authority';
