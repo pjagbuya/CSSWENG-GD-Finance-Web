@@ -3,7 +3,10 @@
 import { useState } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
-import DataTable, { DeletePopup, SortableHeader } from './DataTable';
+import DataTable, {
+  DeletePopup,
+  SortableHeader,
+} from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [

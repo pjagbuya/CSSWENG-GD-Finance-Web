@@ -29,7 +29,7 @@ const EventJumpPointDialog = ({ open, onExit }: EventJumpPointDialogProps) => {
 
         <DialogFooter className="grid auto-cols-fr grid-flow-col gap-4">
           <Button asChild>
-            <Link href="/events/0/forms/0">
+            <Link href="/events/0/forms">
               <Folder className="mr-2 w-4" /> View Forms
             </Link>
           </Button>
