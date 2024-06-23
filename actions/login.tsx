@@ -11,14 +11,14 @@ export type State = {
   message?: string | null;
 }
 
-export async function createEvent(prevState: State, formData: FormData) {
+export async function login(prevState: State, formData: FormData) {
   const validatedFields = LoginForm.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create event."
+      message: "Missing fields. Unable to log in."
     }
   }
 
