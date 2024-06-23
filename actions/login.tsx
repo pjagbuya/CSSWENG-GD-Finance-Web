@@ -2,6 +2,7 @@
 
 import { LoginForm } from "@/lib/definitions";
 import { redirect } from "next/navigation"
+import { createClient } from "@/utils/supabase/server";
 
 export type State = {
   errors?: {
@@ -12,6 +13,8 @@ export type State = {
 }
 
 export async function login(prevState: State, formData: FormData) {
+  const supabase = createClient()
+
   const validatedFields = LoginForm.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -22,7 +25,25 @@ export async function login(prevState: State, formData: FormData) {
     }
   }
 
-  // TODO: provide logic
+  const { error } = await supabase.auth.signInWithPassword(validatedFields.data)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+
+  redirect("/events")
+}
+
+export async function logout(prevState: State, formData: FormData) {
+  const supabase = createClient()
+
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
 
   redirect("/")
 }
