@@ -1,7 +1,6 @@
 'use server'
 
 import { UserSchema } from "@/lib/definitions";
-import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
@@ -60,7 +59,7 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
 export async function deleteAccount(id: string) {
   const supabase = createClient()
 
-  const { error } = await supabase.auth.admin.deleteUser(id)
+  const { error } = await supabase.auth.admin.deleteUser(id, true)
   if (error) {
     throw new Error(error.message)
   }
