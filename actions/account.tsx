@@ -28,7 +28,11 @@ export async function createAccount(prevState: AccountState, formData: FormData)
     }
   }
 
-  const { error } = await supabase.auth.admin.createUser({ email: validatedFields.data.email, password: validatedFields.data.password })
+  const { error } = await supabase.auth.admin.createUser({
+    email: validatedFields.data.email,
+    password: validatedFields.data.password,
+    email_confirm: true
+  })
   if (error) {
     throw new Error(error.message)
   }
