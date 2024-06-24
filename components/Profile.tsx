@@ -12,7 +12,7 @@ type LogoProps = {
 };
 
 const Profile = ({ className }: LogoProps) => {
-  const [email, setEmail] = useState<string>('')
+  const [email, setEmail] = useState<string | undefined>()
   useEffect(() => {
     async function getUser() {
       const supabase = createClient()
@@ -21,7 +21,7 @@ const Profile = ({ className }: LogoProps) => {
       if (error || !data?.user) {
         redirect('/login')
       }
-      setEmail(data.user.email || 'anonymous')
+      setEmail(data.user.email)
     }
 
     getUser()
