@@ -3,6 +3,7 @@
 import { UserSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache";
+import { createClient } from "@/utils/supabase/server";
 
 export type AccountState = {
   errors?: {
@@ -16,6 +17,7 @@ export type AccountState = {
 }
 
 export async function createAccount(prevState: AccountState, formData: FormData) {
+  const supabase = createClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -26,13 +28,16 @@ export async function createAccount(prevState: AccountState, formData: FormData)
     }
   }
 
-  // TODO: provide logic
+  const { error } = await supabase.auth.signUp({ email: validatedFields.data.email, password: validatedFields.data.password })
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  revalidatePath("/account")
 }
 
 export async function editAccount(prevState: AccountState, formData: FormData) {
+  const supabase = createClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -44,14 +49,21 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
   }
 
   // TODO: provide logic
+  const { error } = await supabase.auth.updateUser({ email: validatedFields.data.email, password: validatedFields.data.password })
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  revalidatePath("/account")
 }
 
 export async function deleteAccount(id: string) {
+  const supabase = createClient()
 
-  // TODO: provide logic
+  const { error } = await supabase.auth.admin.deleteUser(id)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
+  revalidatePath("/account")
 }
