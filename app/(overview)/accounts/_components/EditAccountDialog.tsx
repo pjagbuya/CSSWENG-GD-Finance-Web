@@ -45,6 +45,11 @@ const EditAccountDialog = ({
           </div>
 
           <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="Email" />
+          </div>
+
+          <div className="flex flex-col gap-2">
             <Label htmlFor="position">Position</Label>
             <Select>
               <SelectTrigger>

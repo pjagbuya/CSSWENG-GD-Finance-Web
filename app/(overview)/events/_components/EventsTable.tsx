@@ -7,8 +7,9 @@ import DataTable, {
   DeletePopup,
   SortableHeader,
   getFormattedDate,
-} from './DataTable';
+} from '../../../../components/DataTable';
 import EditEventDialog from './EditEventDialog';
+import EventJumpPointDialog from './EventJumpPointDialog';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -64,6 +65,8 @@ const EventsTable = ({
   onEdit,
   onSelect,
 }: EventsTableProps) => {
+  const [showEventJumpPtDialog, setShowEventJumpPtDialog] = useState(false);
+
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
 
@@ -78,7 +81,12 @@ const EventsTable = ({
         idColumn="name"
         onRowEdit={() => setToEditId('123')}
         onRowDelete={() => setToDeleteId('123')}
-        onRowSelect={onSelect ?? (() => {})}
+        onRowSelect={onSelect ?? (() => setShowEventJumpPtDialog(true))}
+      />
+
+      <EventJumpPointDialog
+        open={showEventJumpPtDialog}
+        onExit={() => setShowEventJumpPtDialog(false)}
       />
 
       <DeletePopup
