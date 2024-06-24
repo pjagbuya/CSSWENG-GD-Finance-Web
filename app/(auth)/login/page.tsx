@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import Logo from '@/components/Logo'
 import Link from 'next/link'
+import LoginForm from "./loginForm"
 
 const LoginPage = () => {
   return (
@@ -26,6 +27,7 @@ const LoginPage = () => {
           </div>
 
           {/* Form */}
+          <LoginForm />
         </div>
       </div>
     </div>

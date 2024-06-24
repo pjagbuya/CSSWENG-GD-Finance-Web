@@ -28,7 +28,7 @@ export async function login(prevState: LoginState, formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(validatedFields.data)
 
   if (error) {
-    throw new Error(error.message)
+    return { message: "Wrong username and password", errors: {} }
   }
 
 
