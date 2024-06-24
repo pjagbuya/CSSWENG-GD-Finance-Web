@@ -1,3 +1,4 @@
+import { AccountState, createAccount, editAccount } from '@/actions/account';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFormState } from 'react-dom';
 
 type EditAccountDialogProps = {
   isEditing: boolean;
@@ -30,6 +32,9 @@ const EditAccountDialog = ({
   onConfirm,
 }: EditAccountDialogProps) => {
   const label = isEditing ? 'Edit' : 'Create';
+  const initialState: AccountState = { message: null, errors: {} }
+  const accountAction = isEditing ? editAccount : createAccount
+  const [state, formAction] = useFormState(accountAction, initialState)
 
   return (
     <Dialog open={open} onOpenChange={v => (v ? onConfirm() : onCancel())}>
@@ -37,48 +42,47 @@ const EditAccountDialog = ({
         <DialogHeader>
           <DialogTitle>{label} Account</DialogTitle>
         </DialogHeader>
+        <form action={formAction} onSubmit={() => { console.log("Yo mama") }}>
 
-        <div className="flex flex-col gap-6 py-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input id="firstName" placeholder="First Name" />
+          <div className="flex flex-col gap-6 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input id="firstName" name="first_name" placeholder="First Name" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input id="lastName" name="last_name" placeholder="Last Name" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" name="email" placeholder="Email" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="position">Position</Label>
+              <Select name='role'>
+                <SelectTrigger>
+                  <SelectValue placeholder="Position" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="member">member</SelectItem>
+                  <SelectItem value="admin">admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" name="password" type="password" placeholder="Password" />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input id="lastName" placeholder="Last Name" />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Email" />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="position">Position</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Position" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Password" />
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button type="submit" onClick={onConfirm}>
+          <Button type='submit' onClick={() => onConfirm()}>
             {label}
           </Button>
-        </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
