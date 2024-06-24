@@ -40,8 +40,13 @@ const EditAccountDialog = ({
 
         <div className="flex flex-col gap-6 py-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Name" />
+            <Label htmlFor="firstName">First Name</Label>
+            <Input id="firstName" placeholder="First Name" />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input id="lastName" placeholder="Last Name" />
           </div>
 
           <div className="flex flex-col gap-2">
