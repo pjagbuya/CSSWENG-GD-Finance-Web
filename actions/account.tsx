@@ -3,14 +3,15 @@
 import { UserSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation"
 
 export type AccountState = {
   errors?: {
-    email: string[],
-    password: string[],
-    first_name: string[],
-    last_name: string[],
-    role: string[]
+    email?: string[],
+    password?: string[],
+    first_name?: string[],
+    last_name?: string[],
+    role?: string[]
   };
   message?: string | null;
 }
@@ -33,6 +34,7 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   }
 
   revalidatePath("/account")
+  redirect("/account")
 }
 
 export async function editAccount(prevState: AccountState, formData: FormData) {
@@ -54,6 +56,7 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
   }
 
   revalidatePath("/account")
+  redirect("/account")
 }
 
 export async function deleteAccount(id: string) {
