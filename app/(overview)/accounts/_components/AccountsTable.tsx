@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable, {
@@ -8,12 +8,25 @@ import DataTable, {
   SortableHeader,
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
+import { createAdminClient } from '@/utils/supabase/client';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'email',
     header: ({ column }) => (
-      <SortableHeader column={column}>Name</SortableHeader>
+      <SortableHeader column={column}>Email</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'first_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>First name</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'last_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Last Name</SortableHeader>
     ),
   },
   {
@@ -52,15 +65,29 @@ const AccountsTable = ({
   onDelete,
   onEdit,
 }: AccountsTableProps) => {
+  const supabase = createAdminClient()
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
+  const [userInfos, setUserInfos] = useState<any>([])
+  useEffect(() => {
+    async function getUsers() {
+      const { data: { users }, error } = await supabase.auth.admin.listUsers()
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      setUserInfos(users)
+    }
+    getUsers()
+  })
 
   return (
     <>
       <DataTable
         className="border-2"
         columns={TEMP_COLUMNS}
-        data={TEMP_DATA}
+        data={userInfos}
         idFilter={nameFilter}
         idColumn="name"
         onRowEdit={() => setToEditId('123')}
@@ -71,14 +98,14 @@ const AccountsTable = ({
         type="Account"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? (() => {})}
+        onConfirm={onDelete ?? (() => { })}
       />
 
       <EditAccountDialog
         isEditing={true}
         open={!!toEditId}
         onCancel={() => setToEditId('')}
-        onConfirm={onEdit ?? (() => {})}
+        onConfirm={onEdit ?? (() => { })}
       />
     </>
   );
