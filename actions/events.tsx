@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export type State = {
   errors?: {
-    name?: string;
+    name?: string[];
   };
   message?: string | null;
 }

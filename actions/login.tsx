@@ -4,15 +4,15 @@ import { LoginForm } from "@/lib/definitions";
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server";
 
-export type State = {
+export type LoginState = {
   errors?: {
-    email?: string;
-    password?: string;
+    email?: string[];
+    password?: string[];
   };
   message?: string | null;
 }
 
-export async function login(prevState: State, formData: FormData) {
+export async function login(prevState: LoginState, formData: FormData) {
   const supabase = createClient()
 
   const validatedFields = LoginForm.safeParse(Object.fromEntries(formData.entries()))
@@ -35,7 +35,7 @@ export async function login(prevState: State, formData: FormData) {
   redirect("/events")
 }
 
-export async function logout(prevState: State, formData: FormData) {
+export async function logout(prevState: LoginState, formData: FormData) {
   const supabase = createClient()
 
   const { error } = await supabase.auth.signOut()
