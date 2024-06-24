@@ -4,18 +4,18 @@ import { UserSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache";
 
-export type State = {
+export type AccountState = {
   errors?: {
-    email: string,
-    password: string,
-    first_name: string,
-    last_name: string,
-    role: string
+    email: string[],
+    password: string[],
+    first_name: string[],
+    last_name: string[],
+    role: string[]
   };
   message?: string | null;
 }
 
-export async function createAccount(prevState: State, formData: FormData) {
+export async function createAccount(prevState: AccountState, formData: FormData) {
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -32,7 +32,7 @@ export async function createAccount(prevState: State, formData: FormData) {
   redirect("/")
 }
 
-export async function editAccount(prevState: State, formData: FormData) {
+export async function editAccount(prevState: AccountState, formData: FormData) {
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
