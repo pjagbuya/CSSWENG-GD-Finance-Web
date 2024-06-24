@@ -35,7 +35,7 @@ export async function login(prevState: LoginState, formData: FormData) {
   redirect("/events")
 }
 
-export async function logout(prevState: LoginState, formData: FormData) {
+export async function logout() {
   const supabase = createClient()
 
   const { error } = await supabase.auth.signOut()
