@@ -4,14 +4,14 @@ import { EventSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache";
 
-export type State = {
+export type EventState = {
   errors?: {
     name?: string[];
   };
   message?: string | null;
 }
 
-export async function createEvent(prevState: State, formData: FormData) {
+export async function createEvent(prevState: EventState, formData: FormData) {
   const validatedFields = EventSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -28,7 +28,7 @@ export async function createEvent(prevState: State, formData: FormData) {
   redirect("/")
 }
 
-export async function editEvent(prevState: State, formData: FormData) {
+export async function editEvent(prevState: EventState, formData: FormData) {
   const validatedFields = EventSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
