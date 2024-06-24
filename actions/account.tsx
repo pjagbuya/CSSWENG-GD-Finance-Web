@@ -2,7 +2,7 @@
 
 import { UserSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation"
 
 export type AccountState = {
@@ -17,7 +17,7 @@ export type AccountState = {
 }
 
 export async function createAccount(prevState: AccountState, formData: FormData) {
-  const supabase = createClient()
+  const supabase = createAdminClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -28,17 +28,17 @@ export async function createAccount(prevState: AccountState, formData: FormData)
     }
   }
 
-  const { error } = await supabase.auth.signUp({ email: validatedFields.data.email, password: validatedFields.data.password })
+  const { error } = await supabase.auth.admin.createUser({ email: validatedFields.data.email, password: validatedFields.data.password })
   if (error) {
     throw new Error(error.message)
   }
 
-  revalidatePath("/account")
-  redirect("/account")
+  revalidatePath("/accounts")
+  redirect("/accounts")
 }
-
+// TODO: change to admin version of updating the user
 export async function editAccount(prevState: AccountState, formData: FormData) {
-  const supabase = createClient()
+  const supabase = createAdminClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
@@ -49,23 +49,22 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
     }
   }
 
-  // TODO: provide logic
   const { error } = await supabase.auth.updateUser({ email: validatedFields.data.email, password: validatedFields.data.password })
   if (error) {
     throw new Error(error.message)
   }
 
-  revalidatePath("/account")
-  redirect("/account")
+  revalidatePath("/accounts")
+  redirect("/accounts")
 }
 
 export async function deleteAccount(id: string) {
-  const supabase = createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase.auth.admin.deleteUser(id, true)
   if (error) {
     throw new Error(error.message)
   }
 
-  revalidatePath("/account")
+  revalidatePath("/accounts")
 }
