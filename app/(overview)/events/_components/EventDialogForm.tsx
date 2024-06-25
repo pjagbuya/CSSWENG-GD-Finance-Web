@@ -29,11 +29,11 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
-        <form action={action}>
-          <DialogHeader>
-            <DialogTitle>{label} Event</DialogTitle>
-          </DialogHeader>
+        <DialogHeader>
+          <DialogTitle>{label} Event</DialogTitle>
+        </DialogHeader>
 
+        <form action={action}>
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Name</Label>
