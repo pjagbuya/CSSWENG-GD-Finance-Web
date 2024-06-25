@@ -8,6 +8,7 @@ import DataTable, {
   SortableHeader,
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
+import { deleteAccount } from '@/actions/account';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -55,6 +56,15 @@ const AccountsTable = ({
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
 
+  function handleAccountDelete() {
+    if (!toDeleteId) {
+      return;
+    }
+
+    deleteAccount(toDeleteId);
+    setToDeleteId('');
+  }
+
   return (
     <>
       <DataTable
@@ -71,14 +81,12 @@ const AccountsTable = ({
         type="Account"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? (() => {})}
+        onConfirm={onDelete ?? handleAccountDelete}
       />
 
       <EditAccountDialog
-        isEditing={true}
-        open={!!toEditId}
-        onCancel={() => setToEditId('')}
-        onConfirm={onEdit ?? (() => {})}
+        accountId={toEditId}
+        onFinish={() => setToEditId('')}
       />
     </>
   );
