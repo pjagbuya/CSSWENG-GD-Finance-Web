@@ -1,5 +1,4 @@
-import { EventState, editEvent } from '@/actions/events';
-import { useEffect } from 'react';
+import { EventState, createEvent } from '@/actions/events';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
 
@@ -10,7 +9,7 @@ type EditEventDialogProps = {
 
 const EditEventDialog = ({ open, onFinish }: EditEventDialogProps) => {
   const initialState: EventState = { message: null, errors: {} };
-  const [state, formAction] = useFormState(editEvent, initialState);
+  const [state, formAction] = useFormState(createEvent, initialState);
 
   return (
     <EventDialogForm
