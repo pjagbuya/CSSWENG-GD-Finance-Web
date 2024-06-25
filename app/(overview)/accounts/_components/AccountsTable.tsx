@@ -8,7 +8,7 @@ import DataTable, {
   SortableHeader,
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
-import { createAdminClient } from '@/utils/supabase/client';
+import { getUsers } from '@/actions/account';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -65,21 +65,20 @@ const AccountsTable = ({
   onDelete,
   onEdit,
 }: AccountsTableProps) => {
-  const supabase = createAdminClient()
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
   const [userInfos, setUserInfos] = useState<any>([])
   useEffect(() => {
-    async function getUsers() {
-      const { data: { users }, error } = await supabase.auth.admin.listUsers()
-
-      if (error) {
-        throw new Error(error.message)
-      }
-
-      setUserInfos(users)
+    async function getUserInfos() {
+      const users = await getUsers()
+      setUserInfos(users.map(user => {
+        return {
+          email: user.email
+        }
+      }))
     }
-    getUsers()
+
+    getUserInfos()
   })
 
   return (

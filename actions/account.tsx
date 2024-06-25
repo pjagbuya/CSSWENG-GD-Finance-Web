@@ -72,3 +72,14 @@ export async function deleteAccount(id: string) {
 
   revalidatePath("/accounts")
 }
+
+export async function getUsers() {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.auth.admin.listUsers()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data.users
+}
