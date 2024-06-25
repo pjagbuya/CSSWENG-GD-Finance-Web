@@ -52,8 +52,8 @@ type DataTableProps = {
   data: any;
   idFilter: string;
   idColumn: string;
-  onRowDelete?: () => void;
-  onRowEdit?: () => void;
+  onRowDelete?: (id: string) => void;
+  onRowEdit?: (id: string) => void;
   onRowSelect?: () => void;
 };
 
@@ -125,9 +125,9 @@ const DataTable = ({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 );
               })}
@@ -172,11 +172,11 @@ const DataTable = ({
                     <DropdownMenuTrigger>...</DropdownMenuTrigger>
                     <DropdownMenuContent>
                       {/* TODO: Pass relevant parameters */}
-                      <DropdownMenuItem onClick={onRowEdit}>
+                      <DropdownMenuItem onClick={() => { if (onRowEdit) onRowEdit(row.id) }}>
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem onClick={onRowDelete}>
+                      <DropdownMenuItem onClick={() => { if (onRowDelete) onRowDelete(row.id) }}>
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>

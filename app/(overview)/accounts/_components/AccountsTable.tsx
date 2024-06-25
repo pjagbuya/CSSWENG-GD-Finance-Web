@@ -8,7 +8,7 @@ import DataTable, {
   SortableHeader,
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
-import { getUsers } from '@/actions/account';
+import { deleteAccount, getUsers } from '@/actions/account';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -56,9 +56,14 @@ const TEMP_DATA = [
 
 type AccountsTableProps = {
   nameFilter: string;
-  onDelete?: () => void;
-  onEdit?: () => void;
+  onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void;
 };
+
+type UserInfoType = {
+  email: string;
+  uuid: string;
+}
 
 const AccountsTable = ({
   nameFilter,
@@ -67,13 +72,14 @@ const AccountsTable = ({
 }: AccountsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
-  const [userInfos, setUserInfos] = useState<any>([])
+  const [userInfos, setUserInfos] = useState<UserInfoType[]>([])
   useEffect(() => {
     async function getUserInfos() {
       const users = await getUsers()
       setUserInfos(users.map(user => {
         return {
-          email: user.email
+          email: user.email || '',
+          uuid: user.id
         }
       }))
     }
@@ -89,22 +95,28 @@ const AccountsTable = ({
         data={userInfos}
         idFilter={nameFilter}
         idColumn="name"
-        onRowEdit={() => setToEditId('123')}
-        onRowDelete={() => setToDeleteId('123')}
+        onRowEdit={(id) => {
+          setToEditId(userInfos[Number(id)].uuid)
+        }}
+        onRowDelete={(id) => {
+          setToDeleteId(userInfos[Number(id)].uuid)
+        }}
       />
 
       <DeletePopup
         type="Account"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? (() => { })}
+        // Temporary comment
+        onConfirm={/* onDelete ?? */ (() => { deleteAccount(toDeleteId) })}
       />
 
       <EditAccountDialog
         isEditing={true}
         open={!!toEditId}
         onCancel={() => setToEditId('')}
-        onConfirm={onEdit ?? (() => { })}
+        // Temporary comment
+        onConfirm={/* onEdit ?? */ (() => { })}
       />
     </>
   );
