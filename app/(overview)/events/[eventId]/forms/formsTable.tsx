@@ -8,10 +8,6 @@ import DataTable, {
   SortableHeader,
   getFormattedDate,
 } from '@/components/DataTable';
-import EditEventDialog from '../../_components/EditEventDialog';
-import { Badge } from '@/components/ui/badge';
-import { badgeVariants } from '@/components/ui/badge';
-import { VariantProps } from 'class-variance-authority';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -21,29 +17,10 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    accessorKey: 'type',
-    header: ({ column }) => {
-      return <SortableHeader column={column}>Name</SortableHeader>;
-    },
-    cell: ({ row }) => {
-      type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
-      let badgeVariant: BadgeVariant = 'blue';
-      switch (row.getValue('type')) {
-        case 'Expense':
-          badgeVariant = 'blue';
-          break;
-        case 'Revenue':
-          badgeVariant = 'yellow';
-          break;
-        case 'Fund Transfer':
-          badgeVariant = 'destructive';
-          break;
-        case 'Activity Transfer':
-          badgeVariant = 'green';
-          break;
-      }
-      return <Badge variant={badgeVariant}>{row.getValue('type')}</Badge>;
-    },
+    accessorKey: 'code',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Code</SortableHeader>
+    ),
   },
   {
     accessorKey: 'dateCreated',
@@ -52,43 +29,17 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     ),
     cell: ({ row }) => getFormattedDate(new Date(row.getValue('dateCreated'))),
   },
-  {
-    accessorKey: 'dateModified',
-    header: ({ column }) => (
-      <SortableHeader column={column}>Date Modified</SortableHeader>
-    ),
-    cell: ({ row }) => getFormattedDate(new Date(row.getValue('dateModified'))),
-  },
 ];
 
 const TEMP_DATA = [
   {
     name: 'Form 1',
-    type: 'Expense',
+    code: 'ES-001',
     dateCreated: Date.now(),
-    dateModified: Date.now(),
-  },
-  {
-    name: 'Form 2',
-    type: 'Revenue',
-    dateCreated: Date.now(),
-    dateModified: Date.now(),
-  },
-  {
-    name: 'Form 3',
-    type: 'Fund Transfer',
-    dateCreated: Date.now(),
-    dateModified: Date.now(),
-  },
-  {
-    name: 'Form 4',
-    type: 'Activity Transfer',
-    dateCreated: Date.now(),
-    dateModified: Date.now(),
   },
 ];
 
-type EventsTableProps = {
+type FormsTableProps = {
   nameFilter: string;
   onDelete?: () => void;
   onEdit?: () => void;
@@ -100,9 +51,8 @@ const FormsTable = ({
   onDelete,
   onEdit,
   onSelect,
-}: EventsTableProps) => {
+}: FormsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
-  const [toEditId, setToEditId] = useState('');
 
   return (
     <>
@@ -113,23 +63,16 @@ const FormsTable = ({
         data={TEMP_DATA}
         idFilter={nameFilter}
         idColumn="name"
-        onRowEdit={() => setToEditId('123')}
+        onRowEdit={() => onEdit?.()}
         onRowDelete={() => setToDeleteId('123')}
         onRowSelect={onSelect ?? (() => {})}
       />
 
       <DeletePopup
-        type="Event"
+        type="Form"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={onDelete ?? (() => {})}
-      />
-
-      <EditEventDialog
-        isEditing={true}
-        open={!!toEditId}
-        onCancel={() => setToEditId('')}
-        onConfirm={onEdit ?? (() => {})}
       />
     </>
   );
