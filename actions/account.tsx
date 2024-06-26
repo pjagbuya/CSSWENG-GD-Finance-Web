@@ -38,7 +38,9 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   }
 
   revalidatePath("/accounts")
-  redirect("/accounts")
+  return {
+    message: null
+  }
 }
 // TODO: change to admin version of updating the user
 export async function editAccount(prevState: AccountState, formData: FormData) {
@@ -59,7 +61,9 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
   }
 
   revalidatePath("/accounts")
-  redirect("/accounts")
+  return {
+    message: null
+  }
 }
 
 export async function deleteAccount(id: string) {
