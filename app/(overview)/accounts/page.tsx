@@ -1,7 +1,4 @@
-import AccountsTable from './_components/AccountsTable';
-import SearchInput from '@/components/SearchInput';
-
-import CreateAccountButton from './_components/CreateAccountButton';
+import AccountForm from "./_components/AccountForm";
 
 type AccountsPageProps = {
   searchParams?: { query?: string };
@@ -15,15 +12,8 @@ const AccountsPage = ({ searchParams }: AccountsPageProps) => {
         <p>Create, edit, and update officer accounts.</p>
       </div>
 
-      <div className="flex justify-between">
-        <CreateAccountButton />
-        <SearchInput
-          className="max-w-96"
-          placeholder="Search accounts by name..."
-        />
-      </div>
+      <AccountForm searchParams={searchParams} />
 
-      <AccountsTable nameFilter={searchParams?.query || ''} />
     </main>
   );
 };
