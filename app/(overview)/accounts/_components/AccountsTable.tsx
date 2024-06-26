@@ -74,20 +74,6 @@ const AccountsTable = ({
 }: AccountsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
-  // const [userInfos, setUserInfos] = useState<UserInfoType[]>([])
-  // useEffect(() => {
-  //   async function getUserInfos() {
-  //     const users = await getUsers()
-  //     setUserInfos(users.map(user => {
-  //       return {
-  //         email: user.email || '',
-  //         uuid: user.id
-  //       }
-  //     }))
-  //   }
-
-  //   getUserInfos()
-  // }, [])
 
   return (
     <>
@@ -121,7 +107,8 @@ const AccountsTable = ({
         open={!!toEditId}
         onCancel={() => setToEditId('')}
         // Temporary comment
-        onConfirm={/* onEdit ?? */ (() => { })}
+        onConfirm={/* onEdit ?? */ (() => { setToEditId('') })}
+        accountId={toEditId}
       />
     </>
   );

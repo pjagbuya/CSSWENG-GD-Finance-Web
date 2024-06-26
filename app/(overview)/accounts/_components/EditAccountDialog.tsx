@@ -1,5 +1,5 @@
 
-import { AccountState, createAccount, editAccount } from '@/actions/account';
+import { AccountState, createAccount, editAccount, getUser } from '@/actions/account';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 
 type EditAccountDialogProps = {
@@ -24,6 +24,7 @@ type EditAccountDialogProps = {
   open: boolean;
   onCancel: () => void;
   onConfirm: () => void;
+  accountId?: string;
 };
 
 const EditAccountDialog = ({
@@ -31,17 +32,34 @@ const EditAccountDialog = ({
   open,
   onCancel,
   onConfirm,
+  accountId
 }: EditAccountDialogProps) => {
   const label = isEditing ? 'Edit' : 'Create';
   const initialState: AccountState = { message: null, errors: {} }
-  const accountAction = isEditing ? editAccount : createAccount
+  const accountAction = isEditing ? editAccount.bind(null, accountId || '') : createAccount
   const [state, formAction] = useFormState(accountAction, initialState)
+  const [email, setEmail] = useState<string>('')
 
   useEffect(() => {
     if (!state.errors) {
       onConfirm()
     }
   }, [state])
+
+  useEffect(() => {
+    async function getUserInfo() {
+      if (accountId) {
+        const user = await getUser(accountId)
+        setEmail(user.email || '')
+      }
+    }
+
+    if (open && isEditing) {
+      getUserInfo()
+    } else {
+      setEmail('')
+    }
+  }, [open])
 
 
   return (
@@ -81,7 +99,8 @@ const EditAccountDialog = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" name="email" placeholder="Email" />
+              <Input id="email" type="email" name="email" placeholder="Email"
+                value={email} onChange={(e) => setEmail(e.target.value)} />
               <div id="email-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.email &&
                   state.errors.email.map((error: string) => (

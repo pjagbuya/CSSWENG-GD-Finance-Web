@@ -42,7 +42,7 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   }
 }
 // TODO: change to admin version of updating the user
-export async function editAccount(prevState: AccountState, formData: FormData) {
+export async function editAccount(id: string, prevState: AccountState, formData: FormData) {
   const supabase = createAdminClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
@@ -54,7 +54,7 @@ export async function editAccount(prevState: AccountState, formData: FormData) {
     }
   }
 
-  const { error } = await supabase.auth.updateUser({ email: validatedFields.data.email, password: validatedFields.data.password })
+  const { error } = await supabase.auth.admin.updateUserById(id, { email: validatedFields.data.email, password: validatedFields.data.password })
   if (error) {
     throw new Error(error.message)
   }
