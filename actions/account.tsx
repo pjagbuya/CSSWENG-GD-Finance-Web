@@ -3,7 +3,6 @@
 import { UserSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation"
 
 export type AccountState = {
   errors?: {
@@ -19,7 +18,6 @@ export type AccountState = {
 export async function createAccount(prevState: AccountState, formData: FormData) {
   const supabase = createAdminClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
-
   if (!validatedFields.success) {
     console.log(validatedFields.error)
     return {
