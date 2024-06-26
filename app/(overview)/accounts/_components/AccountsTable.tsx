@@ -58,10 +58,11 @@ type AccountsTableProps = {
   nameFilter: string;
   onDelete?: (id: string) => void;
   onEdit?: (id: string) => void;
+  userInfos: UserInfoType[];
 };
 
 type UserInfoType = {
-  email: string;
+  email?: string;
   uuid: string;
 }
 
@@ -69,23 +70,24 @@ const AccountsTable = ({
   nameFilter,
   onDelete,
   onEdit,
+  userInfos
 }: AccountsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
-  const [userInfos, setUserInfos] = useState<UserInfoType[]>([])
-  useEffect(() => {
-    async function getUserInfos() {
-      const users = await getUsers()
-      setUserInfos(users.map(user => {
-        return {
-          email: user.email || '',
-          uuid: user.id
-        }
-      }))
-    }
+  // const [userInfos, setUserInfos] = useState<UserInfoType[]>([])
+  // useEffect(() => {
+  //   async function getUserInfos() {
+  //     const users = await getUsers()
+  //     setUserInfos(users.map(user => {
+  //       return {
+  //         email: user.email || '',
+  //         uuid: user.id
+  //       }
+  //     }))
+  //   }
 
-    getUserInfos()
-  }, [])
+  //   getUserInfos()
+  // }, [])
 
   return (
     <>

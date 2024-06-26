@@ -1,12 +1,16 @@
-'use client'
-
 import AccountsTable from './AccountsTable';
 import SearchInput from '@/components/SearchInput';
 
 import CreateAccountButton from './CreateAccountButton';
-import React from 'react'
+import { getUsers } from '@/actions/account';
 
-const AccountForm = ({ searchParams }: { searchParams?: { query?: string } }) => {
+const AccountForm = async ({ searchParams }: { searchParams?: { query?: string } }) => {
+  const users = (await getUsers()).map((user) => {
+    return {
+      email: user.email,
+      uuid: user.id
+    }
+  })
   return (
     <>
       <div className="flex justify-between">
@@ -17,7 +21,7 @@ const AccountForm = ({ searchParams }: { searchParams?: { query?: string } }) =>
         />
       </div>
 
-      <AccountsTable nameFilter={searchParams?.query || ''} />
+      <AccountsTable nameFilter={searchParams?.query || ''} userInfos={users} />
     </>
   )
 }

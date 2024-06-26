@@ -3,6 +3,7 @@
 import { UserSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
+import { unstable_noStore as noStore } from "next/cache";
 
 export type AccountState = {
   errors?: {
@@ -76,6 +77,7 @@ export async function deleteAccount(id: string) {
 }
 
 export async function getUsers() {
+  noStore()
   const supabase = createAdminClient()
   const { data, error } = await supabase.auth.admin.listUsers()
 
