@@ -17,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
@@ -45,6 +47,12 @@ const EditAccountDialog = ({
   useEffect(() => {
     if (!state.errors) {
       onConfirm()
+      toast({
+        variant: "success",
+        title: "Hooray",
+        description: `Account successfully ${isEditing ? "edited" : "created"}.`,
+        action: <ToastAction altText="Try again">Exit</ToastAction>,
+      })
     }
   }, [state])
 
