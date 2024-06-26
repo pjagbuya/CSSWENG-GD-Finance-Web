@@ -108,8 +108,8 @@ const AccountsTable = ({
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         // Temporary comment
-        onConfirm={/* onDelete ?? */ (() => {
-          deleteAccount(toDeleteId)
+        onConfirm={/* onDelete ?? */ (async () => {
+          await deleteAccount(toDeleteId)
           setToDeleteId('')
         })}
       />
