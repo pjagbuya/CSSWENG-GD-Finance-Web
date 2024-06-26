@@ -1,5 +1,6 @@
 
 import { AccountState, createAccount, editAccount, getUser } from '@/actions/account';
+import { ButtonLoading } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 type EditAccountDialogProps = {
   isEditing: boolean;
@@ -39,6 +40,7 @@ const EditAccountDialog = ({
   const accountAction = isEditing ? editAccount.bind(null, accountId || '') : createAccount
   const [state, formAction] = useFormState(accountAction, initialState)
   const [email, setEmail] = useState<string>('')
+
 
   useEffect(() => {
     if (!state.errors) {
@@ -150,13 +152,29 @@ const EditAccountDialog = ({
               {state.message}
             </p>
           </div>
-          <Button type='submit'>
-            {label}
-          </Button>
+          <SubmitButton label={label} />
         </form>
       </DialogContent>
     </Dialog>
   );
 };
+
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus()
+  return (
+    <>
+      {
+        pending ? (
+          <ButtonLoading />
+        ) : (
+          <Button type='submit'>
+            {label}
+          </Button>
+        )
+      }
+
+    </>
+  )
+}
 
 export default EditAccountDialog;
