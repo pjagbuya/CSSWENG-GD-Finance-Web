@@ -87,3 +87,15 @@ export async function getUsers() {
 
   return data.users
 }
+
+export async function getUser(uid: string) {
+  noStore()
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.auth.admin.getUserById(uid)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data.user
+}
