@@ -19,7 +19,7 @@ const CreateAccountButton = () => {
         isEditing={false}
         open={showCreateAccountDialog}
         onCancel={() => setShowCreateAccountDialog(false)}
-        onConfirm={() => setShowCreateAccountDialog(false)}
+        onConfirm={() => { setShowCreateAccountDialog(false) }}
       />
     </>
   );

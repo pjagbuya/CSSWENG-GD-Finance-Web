@@ -1,9 +1,9 @@
+
 import { AccountState, createAccount, editAccount } from '@/actions/account';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
 type EditAccountDialogProps = {
@@ -36,28 +37,59 @@ const EditAccountDialog = ({
   const accountAction = isEditing ? editAccount : createAccount
   const [state, formAction] = useFormState(accountAction, initialState)
 
+  useEffect(() => {
+    if (!state.errors) {
+      onConfirm()
+    }
+  }, [state])
+
+
   return (
     <Dialog open={open} onOpenChange={v => (v ? onConfirm() : onCancel())}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{label} Account</DialogTitle>
         </DialogHeader>
-        <form action={formAction} onSubmit={() => { console.log("Yo mama") }}>
+        <form action={formAction}>
 
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="firstName">First Name</Label>
               <Input id="firstName" name="first_name" placeholder="First Name" />
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.first_name &&
+                  state.errors.first_name.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="lastName">Last Name</Label>
               <Input id="lastName" name="last_name" placeholder="Last Name" />
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.last_name &&
+                  state.errors.last_name.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" name="email" placeholder="Email" />
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.email &&
+                  state.errors.email.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -71,15 +103,35 @@ const EditAccountDialog = ({
                   <SelectItem value="admin">admin</SelectItem>
                 </SelectContent>
               </Select>
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.role &&
+                  state.errors.role.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" placeholder="Password" />
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.password &&
+                  state.errors.password.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
           </div>
-
-          <Button type='submit' onClick={() => onConfirm()}>
+          <div>
+            <p className="my-4 text-sm text-red-500">
+              {state.message}
+            </p>
+          </div>
+          <Button type='submit'>
             {label}
           </Button>
         </form>
