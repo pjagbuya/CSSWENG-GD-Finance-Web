@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable, {
@@ -8,13 +8,25 @@ import DataTable, {
   SortableHeader,
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
-import { deleteAccount } from '@/actions/account';
+import { deleteAccount, getUsers } from '@/actions/account';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'email',
     header: ({ column }) => (
-      <SortableHeader column={column}>Name</SortableHeader>
+      <SortableHeader column={column}>Email</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'first_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>First name</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'last_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Last Name</SortableHeader>
     ),
   },
   {
@@ -44,14 +56,21 @@ const TEMP_DATA = [
 
 type AccountsTableProps = {
   nameFilter: string;
-  onDelete?: () => void;
-  onEdit?: () => void;
+  onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  userInfos: UserInfoType[];
 };
+
+type UserInfoType = {
+  email?: string;
+  uuid: string;
+}
 
 const AccountsTable = ({
   nameFilter,
   onDelete,
   onEdit,
+  userInfos
 }: AccountsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
@@ -70,23 +89,35 @@ const AccountsTable = ({
       <DataTable
         className="border-2"
         columns={TEMP_COLUMNS}
-        data={TEMP_DATA}
+        data={userInfos}
         idFilter={nameFilter}
         idColumn="name"
-        onRowEdit={() => setToEditId('123')}
-        onRowDelete={() => setToDeleteId('123')}
+        onRowEdit={(id) => {
+          setToEditId(userInfos[Number(id)].uuid)
+        }}
+        onRowDelete={(id) => {
+          setToDeleteId(userInfos[Number(id)].uuid)
+        }}
       />
 
       <DeletePopup
         type="Account"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? handleAccountDelete}
+        // Temporary comment
+        onConfirm={/* onDelete ?? */ (async () => {
+          await deleteAccount(toDeleteId)
+          setToDeleteId('')
+        })}
       />
 
       <EditAccountDialog
+        isEditing={true}
+        open={!!toEditId}
+        onCancel={() => setToEditId('')}
+        // Temporary comment
+        onConfirm={/* onEdit ?? */ (() => { setToEditId('') })}
         accountId={toEditId}
-        onFinish={() => setToEditId('')}
       />
     </>
   );
