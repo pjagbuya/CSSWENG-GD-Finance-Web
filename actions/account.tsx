@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { UserSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
@@ -14,17 +14,18 @@ export type AccountState = {
     role?: string[]
   };
   message?: string | null;
-}
+};
+
 
 export async function createAccount(prevState: AccountState, formData: FormData) {
   const supabase = createAdminClient()
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create event."
-    }
+      message: 'Missing fields. Unable to create event.',
+    };
   }
 
   const { error } = await supabase.auth.admin.createUser({
@@ -35,6 +36,7 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   if (error) {
     throw new Error(error.message)
   }
+
 
   revalidatePath("/accounts")
   return {
@@ -47,11 +49,11 @@ export async function editAccount(id: string, prevState: AccountState, formData:
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit event."
-    }
+      message: 'Missing fields. Unable to edit event.',
+    };
   }
 
   const { error } = await supabase.auth.admin.updateUserById(id, { email: validatedFields.data.email, password: validatedFields.data.password })

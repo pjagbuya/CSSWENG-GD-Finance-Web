@@ -75,6 +75,15 @@ const AccountsTable = ({
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
 
+  function handleAccountDelete() {
+    if (!toDeleteId) {
+      return;
+    }
+
+    deleteAccount(toDeleteId);
+    setToDeleteId('');
+  }
+
   return (
     <>
       <DataTable
