@@ -14,7 +14,7 @@ type EventsPageProps = {
 const EventsPage = ({ searchParams }: EventsPageProps) => {
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
-      <div>
+      <div className="mb-1">
         <h2 className="text-2xl font-bold">Events Dashboard</h2>
         <p>Create, edit, and update GDSC events.</p>
       </div>
