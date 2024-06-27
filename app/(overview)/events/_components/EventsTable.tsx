@@ -10,6 +10,7 @@ import DataTable, {
 } from '../../../../components/DataTable';
 import EditEventDialog from './EditEventDialog';
 import EventJumpPointDialog from './EventJumpPointDialog';
+import { deleteEvent, editEvent } from '@/actions/events';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -55,20 +56,23 @@ const TEMP_DATA = [
 type EventsTableProps = {
   nameFilter: string;
   onDelete?: () => void;
-  onEdit?: () => void;
   onSelect?: () => void;
 };
 
-const EventsTable = ({
-  nameFilter,
-  onDelete,
-  onEdit,
-  onSelect,
-}: EventsTableProps) => {
+const EventsTable = ({ nameFilter, onDelete, onSelect }: EventsTableProps) => {
   const [showEventJumpPtDialog, setShowEventJumpPtDialog] = useState(false);
 
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
+
+  function handleEventDelete() {
+    if (!toDeleteId) {
+      return;
+    }
+
+    deleteEvent(toDeleteId);
+    setToDeleteId('');
+  }
 
   return (
     <>
@@ -93,15 +97,10 @@ const EventsTable = ({
         type="Event"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? (() => {})}
+        onConfirm={onDelete ?? handleEventDelete}
       />
 
-      <EditEventDialog
-        isEditing={true}
-        open={!!toEditId}
-        onCancel={() => setToEditId('')}
-        onConfirm={onEdit ?? (() => {})}
-      />
+      <EditEventDialog eventId={toEditId} onFinish={() => setToEditId('')} />
     </>
   );
 };

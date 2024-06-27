@@ -1,27 +1,22 @@
-import { EventState, editEvent } from '@/actions/events';
-import { useEffect } from 'react';
+import { EventState, createEvent } from '@/actions/events';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
 
 type EditEventDialogProps = {
-  eventId: string;
+  open: boolean;
   onFinish: () => void;
 };
 
-const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
+const EditEventDialog = ({ open, onFinish }: EditEventDialogProps) => {
   const initialState: EventState = { message: null, errors: {} };
-  const [state, formAction] = useFormState(editEvent, initialState);
-
-  useEffect(() => {
-    // fetch initial info
-  }, [eventId]);
+  const [state, formAction] = useFormState(createEvent, initialState);
 
   return (
     <EventDialogForm
       action={formAction}
-      label={'Edit'}
+      label={'Create'}
       state={state}
-      open={!!eventId}
+      open={open}
       onOpenChange={onFinish}
     />
   );

@@ -4,7 +4,7 @@ import { CirclePlus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import EditEventDialog from './EditEventDialog';
+import CreateEventDialog from './CreateEventDialog';
 
 const CreateEventButton = () => {
   const [showCreateEventDialog, setShowCreateEventDialog] = useState(false);
@@ -15,11 +15,9 @@ const CreateEventButton = () => {
         <CirclePlus className="mr-2 w-4" /> Create Event
       </Button>
 
-      <EditEventDialog
-        isEditing={false}
+      <CreateEventDialog
         open={showCreateEventDialog}
-        onCancel={() => setShowCreateEventDialog(false)}
-        onConfirm={() => {}}
+        onFinish={() => setShowCreateEventDialog(false)}
       />
     </>
   );
