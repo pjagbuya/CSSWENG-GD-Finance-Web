@@ -17,8 +17,7 @@ const CreateAccountButton = () => {
 
       <CreateAccountDialog
         open={showCreateAccountDialog}
-        onCancel={() => setShowCreateAccountDialog(false)}
-        onConfirm={() => { setShowCreateAccountDialog(false) }}
+        onFinish={() => setShowCreateAccountDialog(false)}
       />
     </>
   );

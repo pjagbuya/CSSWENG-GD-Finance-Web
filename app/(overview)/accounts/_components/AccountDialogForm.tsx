@@ -21,17 +21,21 @@ import {
 
 interface AccountDialogFormProps {
   action: any; // TODO
+  fields?: any; // TODO
   label: string;
   state: AccountState;
   open: boolean;
-  onOpenChange: () => void;
+  onFieldsChange?: (v: any) => void; // TODO
+  onOpenChange: (v: boolean) => void;
 }
 
 const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
   action,
+  fields,
   label,
   state,
   open,
+  onFieldsChange,
   onOpenChange,
 }) => {
   return (
@@ -73,7 +77,15 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="Email" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={fields?.email}
+                onChange={e =>
+                  onFieldsChange?.({ ...fields, email: e.target.value })
+                }
+              />
 
               <div id="email-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.email &&
@@ -124,7 +136,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit" onClick={onOpenChange}>
+            <Button type="submit" onClick={() => onOpenChange(false)}>
               {label}
             </Button>
           </DialogFooter>
