@@ -13,17 +13,21 @@ import React from 'react';
 
 interface EventDialogFormProps {
   action: any; // TODO
+  fields?: any; // TODO
   label: string;
   state: EventState;
   open: boolean;
-  onOpenChange: () => void;
+  onFieldsChange?: (v: any) => void; // TODO
+  onOpenChange: (v: boolean) => void;
 }
 
 const EventDialogForm: React.FC<EventDialogFormProps> = ({
   action,
+  fields,
   label,
   state,
   open,
+  onFieldsChange,
   onOpenChange,
 }) => {
   return (
@@ -51,7 +55,7 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit" onClick={onOpenChange}>
+            <Button type="submit" onClick={() => onOpenChange(false)}>
               {label}
             </Button>
           </DialogFooter>

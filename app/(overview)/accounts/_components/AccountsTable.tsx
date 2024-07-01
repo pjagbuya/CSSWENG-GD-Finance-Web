@@ -64,13 +64,13 @@ type AccountsTableProps = {
 type UserInfoType = {
   email?: string;
   uuid: string;
-}
+};
 
 const AccountsTable = ({
   nameFilter,
   onDelete,
   onEdit,
-  userInfos
+  userInfos,
 }: AccountsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
@@ -92,11 +92,11 @@ const AccountsTable = ({
         data={userInfos}
         idFilter={nameFilter}
         idColumn="name"
-        onRowEdit={(id) => {
-          setToEditId(userInfos[Number(id)].uuid)
+        onRowEdit={id => {
+          setToEditId(userInfos[Number(id)].uuid);
         }}
-        onRowDelete={(id) => {
-          setToDeleteId(userInfos[Number(id)].uuid)
+        onRowDelete={id => {
+          setToDeleteId(userInfos[Number(id)].uuid);
         }}
       />
 
@@ -105,19 +105,24 @@ const AccountsTable = ({
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         // Temporary comment
-        onConfirm={/* onDelete ?? */ (async () => {
-          await deleteAccount(toDeleteId)
-          setToDeleteId('')
-        })}
+        onConfirm={
+          /* onDelete ?? */ async () => {
+            await deleteAccount(toDeleteId);
+            setToDeleteId('');
+          }
+        }
       />
 
       <EditAccountDialog
+        accountId={toEditId}
         isEditing={true}
-        open={!!toEditId}
         onCancel={() => setToEditId('')}
         // Temporary comment
-        onConfirm={/* onEdit ?? */ (() => { setToEditId('') })}
-        accountId={toEditId}
+        onConfirm={
+          /* onEdit ?? */ () => {
+            setToEditId('');
+          }
+        }
       />
     </>
   );
