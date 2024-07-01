@@ -7,8 +7,8 @@ import { query } from "@/lib/supabase";
 
 export type varState = {
   errors?: {
-    var?: string[];
-  };
+    var?: string[];    
+  }; 
   message?: string | null;
 }
 
