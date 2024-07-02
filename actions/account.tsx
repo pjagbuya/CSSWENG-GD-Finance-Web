@@ -37,7 +37,6 @@ export async function createAccount(prevState: AccountState, formData: FormData)
     throw new Error(error.message)
   }
 
-
   revalidatePath("/accounts")
   return {
     message: null

@@ -1,10 +1,14 @@
 import AccountForm from "./_components/AccountForm";
+import { varQuery } from "@/actions/format";
 
 type AccountsPageProps = {
   searchParams?: { query?: string };
 };
 
-const AccountsPage = ({ searchParams }: AccountsPageProps) => {
+const AccountsPage = async ({ searchParams }: AccountsPageProps) => {
+
+  await varQuery.editVar({name : "hello"}, '20');
+
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">

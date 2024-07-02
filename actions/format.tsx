@@ -1,4 +1,3 @@
-'use server'
 
 import { varSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
@@ -40,10 +39,17 @@ async function editVarValidation(prevState: varState, formData: FormData) {
     }
   }
 
-  // TODO: provide logic
+  const { error } = await createVar({
+    
+  })
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  revalidatePath("/accounts")
+  return {
+    message: null
+  }
 }
 
 async function selectOneVarValidation(id: string) {

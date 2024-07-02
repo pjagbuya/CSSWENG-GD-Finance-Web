@@ -9,6 +9,7 @@ async function insert(schema : any, data : any){
 
 async function edit(schema : any, data : any, column : any, value : any){
     const { error } = await supabase.from(schema).update(data).eq(column, value)
+    console.log(error)
     return error
 }
 

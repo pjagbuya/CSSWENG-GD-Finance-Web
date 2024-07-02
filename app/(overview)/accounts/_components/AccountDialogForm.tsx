@@ -104,9 +104,8 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="member">Member</SelectItem>
                 </SelectContent>
               </Select>
 
