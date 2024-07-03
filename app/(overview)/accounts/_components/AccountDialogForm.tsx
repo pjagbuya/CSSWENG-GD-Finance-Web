@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ButtonLoading } from '@/components/LoadingButton';
+import { useFormStatus } from 'react-dom';
 
 interface AccountDialogFormProps {
   action: any; // TODO
@@ -49,7 +51,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" placeholder="First Name" />
+              <Input id="firstName" name='first_name' placeholder="First Name" />
 
               <div id="first-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.first_name &&
@@ -63,7 +65,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" placeholder="Last Name" />
+              <Input id="lastName" name='last_name' placeholder="Last Name" />
 
               <div id="last-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.last_name &&
@@ -80,6 +82,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
               <Input
                 id="email"
                 type="email"
+                name='email'
                 placeholder="Email"
                 value={fields?.email}
                 onChange={e =>
@@ -99,7 +102,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select>
+              <Select name='role'>
                 <SelectTrigger>
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
@@ -121,7 +124,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Password" />
+              <Input id="password" name='password' type="password" placeholder="Password" />
 
               <div id="password-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.password &&
@@ -135,7 +138,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit" onClick={() => onOpenChange(false)}>
+            <Button type="submit">
               {label}
             </Button>
           </DialogFooter>
@@ -145,4 +148,10 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
   );
 };
 
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <>{pending ? <ButtonLoading /> : <Button type="submit">{label}</Button>}</>
+  );
+}
 export default AccountDialogForm;
