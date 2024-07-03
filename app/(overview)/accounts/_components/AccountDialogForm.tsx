@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect } from 'react';
 
 import { AccountState } from '@/actions/account';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,8 @@ import {
 } from '@/components/ui/select';
 import { ButtonLoading } from '@/components/LoadingButton';
 import { useFormStatus } from 'react-dom';
+import { toast } from '@/components/ui/use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 
 interface AccountDialogFormProps {
   action: any; // TODO
@@ -40,6 +43,18 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
   onFieldsChange,
   onOpenChange,
 }) => {
+  useEffect(() => {
+    if (!state.errors) {
+      onOpenChange(true)
+      toast({
+        variant: 'success',
+        title: 'Hooray',
+        description: `Account successfully ${true ? 'edited' : 'created'}.`,
+        action: <ToastAction altText="Try again">Exit</ToastAction>,
+      });
+    }
+  }, [state]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -138,9 +153,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit">
-              {label}
-            </Button>
+            <SubmitButton label={label} />
           </DialogFooter>
         </form>
       </DialogContent>

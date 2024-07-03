@@ -1,10 +1,11 @@
+'use client'
+
 import {
   AccountState,
   createAccount,
   editAccount,
   getUser,
 } from '@/actions/account';
-import { ButtonLoading } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -52,17 +53,6 @@ const EditAccountDialog = ({
     email: '',
   });
 
-  useEffect(() => {
-    if (!state.errors) {
-      onConfirm();
-      toast({
-        variant: 'success',
-        title: 'Hooray',
-        description: `Account successfully ${isEditing ? 'edited' : 'created'}.`,
-        action: <ToastAction altText="Try again">Exit</ToastAction>,
-      });
-    }
-  }, [state]);
 
   useEffect(() => {
     async function getUserInfo() {
@@ -104,11 +94,5 @@ const EditAccountDialog = ({
   );
 };
 
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <>{pending ? <ButtonLoading /> : <Button type="submit">{label}</Button>}</>
-  );
-}
 
 export default EditAccountDialog;
