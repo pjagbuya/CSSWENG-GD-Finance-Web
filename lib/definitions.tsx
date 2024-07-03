@@ -1,9 +1,6 @@
 import { z } from "zod"
 
 export const UserSchema = z.object({
-  user_id: z.string({
-    required_error: 'Please enter User ID.'
-  }),
   email: z.string({
     required_error: 'Please enter your email.'
   }).email(),
@@ -17,10 +14,9 @@ export const UserSchema = z.object({
     required_error: 'Please enter your last name.'
   }),
   role: z.enum(['admin', 'member']),
-  staff_id: z.string({
-    required_error: 'Please enter Staff ID.'
-  }),
 })
+
+export type userType = z.infer<typeof UserSchema>
 
 export const PaymentSchema = z.object({
   payment_id: z.string({
