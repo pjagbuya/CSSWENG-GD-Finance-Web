@@ -9,10 +9,10 @@ export const UserSchema = z.object({
   }).min(6, `Password must be at least 6 characters`),
   first_name: z.string({
     required_error: 'Please enter your first name.'
-  }),
+  }).min(1, `Please enter your first name.`),
   last_name: z.string({
     required_error: 'Please enter your last name.'
-  }),
+  }).min(1, `Please enter your last name.`),
   role: z.enum(['admin', 'member']),
 })
 
