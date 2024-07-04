@@ -2,6 +2,7 @@ import SearchInput from '@/components/SearchInput';
 import CreateEventButton from './_components/CreateEventButton';
 import EventsTable from './_components/EventsTable';
 import FilterEventButton from './_components/FilterEventButton';
+import { getEvents } from '@/actions/events';
 
 type EventsPageProps = {
   searchParams?: {
@@ -11,7 +12,9 @@ type EventsPageProps = {
   };
 };
 
-const EventsPage = ({ searchParams }: EventsPageProps) => {
+const EventsPage = async ({ searchParams }: EventsPageProps) => {
+  const events = await getEvents();
+
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">
@@ -29,7 +32,7 @@ const EventsPage = ({ searchParams }: EventsPageProps) => {
         </div>
       </div>
 
-      <EventsTable nameFilter={searchParams?.query || ''} />
+      <EventsTable events={events} nameFilter={searchParams?.query || ''} />
     </main>
   );
 };
