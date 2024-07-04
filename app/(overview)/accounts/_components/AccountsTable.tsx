@@ -58,12 +58,16 @@ type AccountsTableProps = {
   nameFilter: string;
   onDelete?: (id: string) => void;
   onEdit?: (id: string) => void;
-  userInfos: UserInfoType[];
+  userInfos?: UserInfoType[];
 };
 
 type UserInfoType = {
-  email?: string;
+  email: string;
   uuid: string;
+  first_name: string;
+  last_name: string;
+  id: string;
+  position: string;
 };
 
 const AccountsTable = ({
@@ -93,10 +97,10 @@ const AccountsTable = ({
         idFilter={nameFilter}
         idColumn="name"
         onRowEdit={id => {
-          setToEditId(userInfos[Number(id)].uuid);
+          userInfos && setToEditId(userInfos[Number(id)].uuid);
         }}
         onRowDelete={id => {
-          setToDeleteId(userInfos[Number(id)].uuid);
+          userInfos && setToDeleteId(userInfos[Number(id)].uuid);
         }}
       />
 
