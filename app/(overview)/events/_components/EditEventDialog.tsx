@@ -19,6 +19,10 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
   });
 
   useEffect(() => {
+    if (!eventId) {
+      return;
+    }
+
     // TODO: fetch initial info
 
     setOpen(true);
