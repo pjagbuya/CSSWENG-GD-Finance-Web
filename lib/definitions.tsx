@@ -13,7 +13,7 @@ export const UserSchema = z.object({
   last_name: z.string({
     required_error: 'Please enter your last name.'
   }).min(1, `Please enter your last name.`),
-  role: z.enum(['admin', 'member']),
+  role: z.enum(['chief', 'member']),
 })
 
 export type userType = z.infer<typeof UserSchema>
