@@ -59,8 +59,15 @@ export async function editAccount(id: string, prevState: AccountState, formData:
   }
 
   const { error } = await supabase.auth.admin.updateUserById(id, { email: validatedFields.data.email, password: validatedFields.data.password })
+
   if (error) {
     throw new Error(error.message)
+  }
+
+  const userError = await editAccountDb(validatedFields.data, id)
+
+  if (userError) {
+    throw new Error(userError.message)
   }
 
   revalidatePath("/accounts")
@@ -144,8 +151,33 @@ async function createAccountDb(data: userType, userId: string) {
 
 }
 
-async function editAccountDb(data: userType, id: string) {
-  return query.edit('varSchema', data, 'var_id', id);
+async function editAccountDb(data: userType, uuid: string) {
+  const supabase = createAdminClient()
+  const { data: userData, error } = await supabase
+    .from('users')
+    .update({
+      'first_name': data.first_name,
+      'last_name': data.last_name,
+    })
+    .eq('user_id', uuid)
+    .select()
+
+  if (!userData) {
+    return
+  }
+
+  if (error) {
+    return error
+  }
+
+  const { error: staffError } = await supabase
+    .from('staffs')
+    .update({
+      'staff_position': data.role
+    })
+    .eq('staff_id', userData[0].staff_id)
+
+  return staffError
 }
 
 async function deleteAccountDb(data: userType, id: string) {
