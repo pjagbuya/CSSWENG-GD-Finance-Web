@@ -123,7 +123,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select name='role' value={fields?.position}>
+              <Select name='role' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
