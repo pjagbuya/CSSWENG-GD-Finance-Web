@@ -33,6 +33,9 @@ const EditAccountDialog = ({
 
   const [fields, setFields] = useState({
     email: '',
+    first_name: '',
+    last_name: '',
+    position: '',
   });
 
 
@@ -40,7 +43,7 @@ const EditAccountDialog = ({
     async function getUserInfo() {
       if (accountId) {
         const user = await getUser(accountId);
-        setFields({ ...fields, email: user.email || '' });
+        setFields({ ...fields, ...user });
 
         setOpen(true);
       }
@@ -49,7 +52,12 @@ const EditAccountDialog = ({
     if (isEditing) {
       getUserInfo();
     } else {
-      setFields({ email: '' });
+      setFields({
+        email: '',
+        first_name: '',
+        last_name: '',
+        position: '',
+      });
     }
   }, [accountId]);
 

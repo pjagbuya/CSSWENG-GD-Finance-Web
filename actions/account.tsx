@@ -100,16 +100,22 @@ export async function getUsers() {
   })
 }
 
-export async function getUser(uid: string) {
+export async function getUser(uuid: string) {
   noStore()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase.auth.admin.getUserById(uid)
+  const { data, error } = await selectOneAccountDb(uuid)
 
   if (error) {
     throw new Error(error.message)
   }
 
-  return data.user
+  return data?.map((user) => {
+    return {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      position: user.staff_position && user.staff_position.toLowerCase()
+    }
+  })[0]
 }
 
 async function createAccountDb(data: userType, userId: string) {
@@ -125,7 +131,7 @@ async function createAccountDb(data: userType, userId: string) {
     console.log(staffError)
   }
 
-  const { data: userData, error: userError } = await query.insert('users', {
+  const { error: userError } = await query.insert('users', {
     first_name: data.first_name,
     last_name: data.last_name,
     user_id: userId,
@@ -146,17 +152,14 @@ async function deleteAccountDb(data: userType, id: string) {
   return query.remove('varSchema', 'var_id', id);
 }
 
-async function selectOneAccountDb(id: string) {
+async function selectOneAccountDb(uuid: string) {
   const supabase = createAdminClient()
   let { data, error } = await supabase
-    .from('users')
-    .select(`
-    *,
-    auth.users (
-      auth.users.id
-    )
-  `)
-  console.log(data, error)
+    .from('users_view')
+    .select('*')
+    .eq('uuid', uuid)
+
+  return { data: data, error: error }
 }
 
 async function selectAllAccountDb() {

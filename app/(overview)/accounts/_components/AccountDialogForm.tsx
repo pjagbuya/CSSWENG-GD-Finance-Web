@@ -26,12 +26,19 @@ import { ToastAction } from '@radix-ui/react-toast';
 
 interface AccountDialogFormProps {
   action: any; // TODO
-  fields?: any; // TODO
+  fields?: fieldsProp;
   label: string;
   state: AccountState;
   open: boolean;
   onFieldsChange?: (v: any) => void; // TODO
   onOpenChange: (v: boolean) => void;
+}
+
+type fieldsProp = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  position: string;
 }
 
 const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
@@ -66,8 +73,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" name='first_name' placeholder="First Name" />
-
+              <Input id="firstName" value={fields?.first_name} name='first_name' placeholder="First Name" />
               <div id="first-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.first_name &&
                   state.errors.first_name.map((error: string) => (
@@ -80,7 +86,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" name='last_name' placeholder="Last Name" />
+              <Input id="lastName" value={fields?.last_name} name='last_name' placeholder="Last Name" />
 
               <div id="last-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.last_name &&
@@ -117,7 +123,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select name='role'>
+              <Select name='role' value={fields?.position}>
                 <SelectTrigger>
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
