@@ -1,6 +1,6 @@
 'use server';
 
-import { UserSchema, userType } from "@/lib/definitions";
+import { UserSchema, UserSchemaEdit, userType } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
@@ -48,7 +48,7 @@ export async function createAccount(prevState: AccountState, formData: FormData)
 }
 export async function editAccount(id: string, prevState: AccountState, formData: FormData) {
   const supabase = createAdminClient()
-  const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
+  const validatedFields = UserSchemaEdit.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -64,7 +64,7 @@ export async function editAccount(id: string, prevState: AccountState, formData:
     throw new Error(error.message)
   }
 
-  const userError = await editAccountDb(validatedFields.data, id)
+  const userError = await editAccountDb({ ...validatedFields.data, password: validatedFields.data.password || '' }, id)
 
   if (userError) {
     throw new Error(userError.message)
