@@ -16,6 +16,10 @@ export const UserSchema = z.object({
   role: z.enum(['chief', 'member']),
 })
 
+export const UserSchemaEdit = UserSchema.omit({ password: true }).extend({
+  password: z.string().min(6, 'Password must be at least 6 characters').optional()
+})
+
 export type userType = z.infer<typeof UserSchema>
 
 export const PaymentSchema = z.object({
