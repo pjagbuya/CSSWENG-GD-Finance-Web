@@ -1,3 +1,5 @@
+'use client';
+
 import { EventState } from '@/actions/events';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,7 +11,9 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React from 'react';
+import { ToastAction } from '@/components/ui/toast';
+import { toast } from '@/components/ui/use-toast';
+import React, { useEffect, useState } from 'react';
 
 interface EventDialogFormProps {
   action: any; // TODO
@@ -30,6 +34,19 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
   onFieldsChange,
   onOpenChange,
 }) => {
+  useEffect(() => {
+    if (!state.errors) {
+      onOpenChange(true);
+
+      toast({
+        variant: 'success',
+        title: 'Hooray',
+        description: `Event successfully ${true ? 'edited' : 'created'}.`,
+        action: <ToastAction altText="Try again">Exit</ToastAction>,
+      });
+    }
+  }, [state]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -40,12 +57,20 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
         <form action={action}>
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name" />
+              <Label htmlFor="event_name">Name</Label>
+              <Input
+                id="event_name"
+                name="event_name"
+                placeholder="Name"
+                value={fields?.event_name}
+                onChange={e =>
+                  onFieldsChange?.({ ...fields, event_name: e.target.value })
+                }
+              />
 
               <div id="name-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.name &&
-                  state.errors.name.map((error: string) => (
+                {state.errors?.event_name &&
+                  state.errors.event_name.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
                     </p>
@@ -55,9 +80,7 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit" onClick={() => onOpenChange(false)}>
-              {label}
-            </Button>
+            <Button type="submit">{label}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

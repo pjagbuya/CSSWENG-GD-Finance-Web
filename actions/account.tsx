@@ -1,25 +1,29 @@
 'use server';
 
-import { UserSchema } from "@/lib/definitions";
-import { revalidatePath } from "next/cache";
-import { createAdminClient } from "@/utils/supabase/server";
-import { unstable_noStore as noStore } from "next/cache";
+import { UserSchema } from '@/lib/definitions';
+import { revalidatePath } from 'next/cache';
+import { createAdminClient } from '@/utils/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export type AccountState = {
   errors?: {
-    email?: string[],
-    password?: string[],
-    first_name?: string[],
-    last_name?: string[],
-    role?: string[]
+    email?: string[];
+    password?: string[];
+    first_name?: string[];
+    last_name?: string[];
+    role?: string[];
   };
   message?: string | null;
 };
 
-
-export async function createAccount(prevState: AccountState, formData: FormData) {
-  const supabase = createAdminClient()
-  const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
+export async function createAccount(
+  prevState: AccountState,
+  formData: FormData,
+) {
+  const supabase = createAdminClient();
+  const validatedFields = UserSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -31,21 +35,27 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   const { error } = await supabase.auth.admin.createUser({
     email: validatedFields.data.email,
     password: validatedFields.data.password,
-    email_confirm: true
-  })
+    email_confirm: true,
+  });
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  revalidatePath("/accounts")
+  revalidatePath('/accounts');
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 // TODO: change to admin version of updating the user
-export async function editAccount(id: string, prevState: AccountState, formData: FormData) {
-  const supabase = createAdminClient()
-  const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
+export async function editAccount(
+  id: string,
+  prevState: AccountState,
+  formData: FormData,
+) {
+  const supabase = createAdminClient();
+  const validatedFields = UserSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -55,48 +65,51 @@ export async function editAccount(id: string, prevState: AccountState, formData:
     };
   }
 
-  const { error } = await supabase.auth.admin.updateUserById(id, { email: validatedFields.data.email, password: validatedFields.data.password })
+  const { error } = await supabase.auth.admin.updateUserById(id, {
+    email: validatedFields.data.email,
+    password: validatedFields.data.password,
+  });
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  revalidatePath("/accounts")
+  revalidatePath('/accounts');
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
 export async function deleteAccount(id: string) {
-  const supabase = createAdminClient()
+  const supabase = createAdminClient();
 
-  const { error } = await supabase.auth.admin.deleteUser(id, true)
+  const { error } = await supabase.auth.admin.deleteUser(id, true);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  revalidatePath("/accounts")
+  revalidatePath('/accounts');
 }
 
 export async function getUsers() {
-  noStore()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase.auth.admin.listUsers()
+  noStore();
+  const supabase = createAdminClient();
+  const { data, error } = await supabase.auth.admin.listUsers();
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  return data.users
+  return data.users;
 }
 
 export async function getUser(uid: string) {
-  noStore()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase.auth.admin.getUserById(uid)
+  noStore();
+  const supabase = createAdminClient();
+  const { data, error } = await supabase.auth.admin.getUserById(uid);
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  return data.user
+  return data.user;
 }

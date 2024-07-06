@@ -72,11 +72,13 @@ const EventsTable = ({
         data={events}
         idFilter={nameFilter}
         idColumn="event_name"
-        onRowEdit={() => setToEditId('123')}
-        onRowDelete={() => setToDeleteId('123')}
+        pkColumn="event_id"
+        onRowEdit={id => setToEditId(id)}
+        onRowDelete={id => setToDeleteId(id)}
         onRowSelect={onSelect ?? (() => setShowEventJumpPtDialog(true))}
       />
 
+      {/* TODO: ret index from datatable, use index to get data obj, pass data here */}
       <EventJumpPointDialog
         open={showEventJumpPtDialog}
         onExit={() => setShowEventJumpPtDialog(false)}
