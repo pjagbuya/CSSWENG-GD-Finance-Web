@@ -10,7 +10,7 @@ import DataTable, {
 } from '../../../../components/DataTable';
 import EditEventDialog from './EditEventDialog';
 import EventJumpPointDialog from './EventJumpPointDialog';
-import { deleteEvent, editEvent } from '@/actions/events';
+import { deleteEvent } from '@/actions/events';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -40,19 +40,12 @@ type EventsTableProps = {
   events: any[];
   nameFilter: string;
   onDelete?: () => void;
-  onSelect?: () => void;
 };
 
-const EventsTable = ({
-  events,
-  nameFilter,
-  onDelete,
-  onSelect,
-}: EventsTableProps) => {
-  const [showEventJumpPtDialog, setShowEventJumpPtDialog] = useState(false);
-
+const EventsTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
+  const [toJumpId, setToJumpId] = useState('');
 
   function handleEventDelete() {
     if (!toDeleteId) {
@@ -75,14 +68,10 @@ const EventsTable = ({
         pkColumn="event_id"
         onRowEdit={id => setToEditId(id)}
         onRowDelete={id => setToDeleteId(id)}
-        onRowSelect={onSelect ?? (() => setShowEventJumpPtDialog(true))}
+        onRowSelect={id => setToJumpId(id)}
       />
 
-      {/* TODO: ret index from datatable, use index to get data obj, pass data here */}
-      <EventJumpPointDialog
-        open={showEventJumpPtDialog}
-        onExit={() => setShowEventJumpPtDialog(false)}
-      />
+      <EventJumpPointDialog eventId={toJumpId} onExit={() => setToJumpId('')} />
 
       <DeletePopup
         type="Event"

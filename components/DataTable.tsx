@@ -55,7 +55,7 @@ type DataTableProps = {
   pkColumn: string;
   onRowDelete?: (id: string) => void;
   onRowEdit?: (id: string) => void;
-  onRowSelect?: () => void;
+  onRowSelect?: (id: string) => void;
 };
 
 type DeletePopupProps = {
@@ -153,7 +153,7 @@ const DataTable = ({
                       <Button
                         className="p-0 text-muted-foreground"
                         variant="ghost"
-                        onClick={onRowSelect}
+                        onClick={() => onRowSelect?.(data[row.id][pkColumn])}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
