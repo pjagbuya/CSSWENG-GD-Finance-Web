@@ -9,19 +9,23 @@ import { use } from "react";
 
 export type AccountState = {
   errors?: {
-    email?: string[],
-    password?: string[],
-    first_name?: string[],
-    last_name?: string[],
-    role?: string[]
+    email?: string[];
+    password?: string[];
+    first_name?: string[];
+    last_name?: string[];
+    role?: string[];
   };
   message?: string | null;
 };
 
-
-export async function createAccount(prevState: AccountState, formData: FormData) {
-  const supabase = createAdminClient()
-  const validatedFields = UserSchema.safeParse(Object.fromEntries(formData.entries()))
+export async function createAccount(
+  prevState: AccountState,
+  formData: FormData,
+) {
+  const supabase = createAdminClient();
+  const validatedFields = UserSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -33,19 +37,20 @@ export async function createAccount(prevState: AccountState, formData: FormData)
   const { data, error } = await supabase.auth.admin.createUser({
     email: validatedFields.data.email,
     password: validatedFields.data.password,
-    email_confirm: true
-  })
+    email_confirm: true,
+  });
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   await createAccountDb(validatedFields.data, data.user.id)
 
   revalidatePath("/accounts")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
+
 export async function editAccount(id: string, prevState: AccountState, formData: FormData) {
   const supabase = createAdminClient()
   const validatedFields = UserSchemaEdit.safeParse(Object.fromEntries(formData.entries()))
@@ -58,11 +63,13 @@ export async function editAccount(id: string, prevState: AccountState, formData:
     };
   }
 
+
   const { error } = await supabase.auth.admin.updateUserById(id, { email: validatedFields.data.email, password: validatedFields.data.password })
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
+
 
   const userError = await editAccountDb({ ...validatedFields.data, password: validatedFields.data.password || '' }, id)
 
@@ -72,19 +79,19 @@ export async function editAccount(id: string, prevState: AccountState, formData:
 
   revalidatePath("/accounts")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
 export async function deleteAccount(id: string) {
-  const supabase = createAdminClient()
+  const supabase = createAdminClient();
 
-  const { error } = await supabase.auth.admin.deleteUser(id, true)
+  const { error } = await supabase.auth.admin.deleteUser(id, true);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
-  revalidatePath("/accounts")
+  revalidatePath('/accounts');
 }
 
 export async function getUsers() {
@@ -92,7 +99,7 @@ export async function getUsers() {
   const { data, error } = await selectAllAccountDb()
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   return data?.map((user) => {
@@ -112,7 +119,7 @@ export async function getUser(uuid: string) {
   const { data, error } = await selectOneAccountDb(uuid)
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   return data?.map((user) => {

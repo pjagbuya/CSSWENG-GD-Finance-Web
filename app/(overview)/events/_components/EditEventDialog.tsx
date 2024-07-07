@@ -1,7 +1,8 @@
-import { EventState, editEvent } from '@/actions/events';
+import { EventState, editEvent, getEvent } from '@/actions/events';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
+import { set } from 'zod';
 
 type EditEventDialogProps = {
   eventId: string;
@@ -12,16 +13,28 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const initialState: EventState = { message: null, errors: {} };
-  const [state, formAction] = useFormState(editEvent, initialState);
+  const [state, formAction] = useFormState(
+    editEvent.bind(null, eventId),
+    initialState,
+  );
 
   const [fields, setFields] = useState({
-    email: '',
+    event_name: '',
   });
 
   useEffect(() => {
-    // TODO: fetch initial info
+    if (!eventId) {
+      return;
+    }
 
-    setOpen(true);
+    async function getEventInfo() {
+      const event = await getEvent(eventId);
+      setFields({ ...event });
+
+      setOpen(true);
+    }
+
+    getEventInfo();
   }, [eventId]);
 
   function handleOpenChange(v: boolean) {
