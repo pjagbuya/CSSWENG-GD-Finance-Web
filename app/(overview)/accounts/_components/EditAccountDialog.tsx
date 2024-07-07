@@ -1,30 +1,13 @@
+'use client'
+
 import {
   AccountState,
   createAccount,
   editAccount,
   getUser,
 } from '@/actions/account';
-import { ButtonLoading } from '@/components/LoadingButton';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { toast } from '@/components/ui/use-toast';
-import { ToastAction } from '@radix-ui/react-toast';
 import { useEffect, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormState } from 'react-dom';
 import AccountDialogForm from './AccountDialogForm';
 
 type EditAccountDialogProps = {
@@ -50,25 +33,17 @@ const EditAccountDialog = ({
 
   const [fields, setFields] = useState({
     email: '',
+    first_name: '',
+    last_name: '',
+    position: '',
   });
 
-  useEffect(() => {
-    if (!state.errors) {
-      onConfirm();
-      toast({
-        variant: 'success',
-        title: 'Hooray',
-        description: `Account successfully ${isEditing ? 'edited' : 'created'}.`,
-        action: <ToastAction altText="Try again">Exit</ToastAction>,
-      });
-    }
-  }, [state]);
 
   useEffect(() => {
     async function getUserInfo() {
       if (accountId) {
         const user = await getUser(accountId);
-        setFields({ ...fields, email: user.email || '' });
+        setFields({ ...fields, ...user });
 
         setOpen(true);
       }
@@ -77,7 +52,12 @@ const EditAccountDialog = ({
     if (isEditing) {
       getUserInfo();
     } else {
-      setFields({ email: '' });
+      setFields({
+        email: '',
+        first_name: '',
+        last_name: '',
+        position: '',
+      });
     }
   }, [accountId]);
 
@@ -104,11 +84,5 @@ const EditAccountDialog = ({
   );
 };
 
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <>{pending ? <ButtonLoading /> : <Button type="submit">{label}</Button>}</>
-  );
-}
 
 export default EditAccountDialog;
