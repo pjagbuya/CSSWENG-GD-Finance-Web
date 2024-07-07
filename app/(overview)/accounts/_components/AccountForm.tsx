@@ -5,12 +5,7 @@ import CreateAccountButton from './CreateAccountButton';
 import { getUsers } from '@/actions/account';
 
 const AccountForm = async ({ searchParams }: { searchParams?: { query?: string } }) => {
-  const users = (await getUsers()).map((user) => {
-    return {
-      email: user.email,
-      uuid: user.id
-    }
-  })
+  const users = (await getUsers())
   return (
     <>
       <div className="flex justify-between">

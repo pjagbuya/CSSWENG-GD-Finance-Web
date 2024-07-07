@@ -1,9 +1,6 @@
 import { z } from "zod"
 
 export const UserSchema = z.object({
-  user_id: z.string({
-    required_error: 'Please enter User ID.'
-  }),
   email: z.string({
     required_error: 'Please enter your email.'
   }).email(),
@@ -12,15 +9,18 @@ export const UserSchema = z.object({
   }).min(6, `Password must be at least 6 characters`),
   first_name: z.string({
     required_error: 'Please enter your first name.'
-  }),
+  }).min(1, `Please enter your first name.`),
   last_name: z.string({
     required_error: 'Please enter your last name.'
-  }),
-  role: z.enum(['admin', 'member']),
-  staff_id: z.string({
-    required_error: 'Please enter Staff ID.'
-  }),
+  }).min(1, `Please enter your last name.`),
+  role: z.enum(['chief', 'member']),
 })
+
+export const UserSchemaEdit = UserSchema.omit({ password: true }).extend({
+  password: z.string().min(6, 'Password must be at least 6 characters').optional()
+})
+
+export type userType = z.infer<typeof UserSchema>
 
 export const PaymentSchema = z.object({
   payment_id: z.string({

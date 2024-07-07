@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect } from 'react';
 
 import { AccountState } from '@/actions/account';
 import { Button } from '@/components/ui/button';
@@ -18,15 +19,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ButtonLoading } from '@/components/LoadingButton';
+import { useFormStatus } from 'react-dom';
+import { toast } from '@/components/ui/use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 
 interface AccountDialogFormProps {
   action: any; // TODO
-  fields?: any; // TODO
+  fields?: fieldsProp;
   label: string;
   state: AccountState;
   open: boolean;
   onFieldsChange?: (v: any) => void; // TODO
   onOpenChange: (v: boolean) => void;
+}
+
+type fieldsProp = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  position: string;
 }
 
 const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
@@ -38,6 +50,18 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
   onFieldsChange,
   onOpenChange,
 }) => {
+  useEffect(() => {
+    if (!state.errors) {
+      onOpenChange(true)
+      toast({
+        variant: 'success',
+        title: 'Hooray',
+        description: `Account successfully ${true ? 'edited' : 'created'}.`,
+        action: <ToastAction altText="Try again">Exit</ToastAction>,
+      });
+    }
+  }, [state]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -49,8 +73,10 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" placeholder="First Name" />
-
+              <Input id="firstName" value={fields?.first_name} name='first_name' placeholder="First Name"
+                onChange={e =>
+                  onFieldsChange?.({ ...fields, first_name: e.target.value })
+                } />
               <div id="first-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.first_name &&
                   state.errors.first_name.map((error: string) => (
@@ -63,7 +89,9 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" placeholder="Last Name" />
+              <Input id="lastName" value={fields?.last_name} name='last_name' placeholder="Last Name" onChange={e =>
+                onFieldsChange?.({ ...fields, last_name: e.target.value })
+              } />
 
               <div id="last-name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.last_name &&
@@ -80,6 +108,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
               <Input
                 id="email"
                 type="email"
+                name='email'
                 placeholder="Email"
                 value={fields?.email}
                 onChange={e =>
@@ -99,12 +128,12 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select>
+              <Select name='role' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="chief">Chief</SelectItem>
                   <SelectItem value="member">Member</SelectItem>
                 </SelectContent>
               </Select>
@@ -121,7 +150,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Password" />
+              <Input id="password" name='password' type="password" placeholder="Password" />
 
               <div id="password-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.password &&
@@ -135,9 +164,7 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
           </div>
 
           <DialogFooter>
-            <Button type="submit" onClick={() => onOpenChange(false)}>
-              {label}
-            </Button>
+            <SubmitButton label={label} />
           </DialogFooter>
         </form>
       </DialogContent>
@@ -145,4 +172,10 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
   );
 };
 
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <>{pending ? <ButtonLoading /> : <Button type="submit">{label}</Button>}</>
+  );
+}
 export default AccountDialogForm;
