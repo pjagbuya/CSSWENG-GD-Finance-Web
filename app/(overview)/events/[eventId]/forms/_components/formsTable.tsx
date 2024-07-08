@@ -1,7 +1,5 @@
 'use client';
 
-// import { useState } from 'react';
-
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable, {
   DeletePopup,
@@ -9,7 +7,9 @@ import DataTable, {
   getFormattedDate,
 } from '@/components/DataTable';
 import { useEffect, useState } from 'react';
-import { getFormList } from '@/actions/forms';
+import { deleteForm, getFormList } from '@/actions/forms';
+import { toast } from '@/components/ui/use-toast';
+import { usePathname, useRouter } from 'next/navigation';
 
 const COLUMN_DEFINITIONS: ColumnDef<unknown, any>[] = [
   {
@@ -20,7 +20,7 @@ const COLUMN_DEFINITIONS: ColumnDef<unknown, any>[] = [
   },
   {
     // TODO: How do we auto-generate this
-    accessorKey: 'es_id',
+    accessorKey: 'id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
     ),
@@ -48,9 +48,14 @@ type FormsTableProps = {
 };
 
 const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
-  // const [toDeleteId, setToDeleteId] = useState('');
+  const pathname = usePathname();
+  const router = useRouter();
 
   const [tableData, setTableData] = useState<any[]>([]);
+
+  const [toDeleteId, setToDeleteId] = useState('');
+  const [toEditId, setToEditId] = useState('');
+  const [toViewId, setToViewId] = useState('');
 
   useEffect(() => {
     fetchTableData();
@@ -61,6 +66,35 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     }
   }, [eventId, variant]);
 
+  useEffect(() => {
+    if (toEditId) {
+      router.push(`${pathname}/${toEditId}/edit`);
+    }
+  }, [toEditId]);
+
+  useEffect(() => {
+    if (toViewId) {
+      router.push(`${pathname}/${toViewId}`);
+    }
+  }, [toViewId]);
+
+  async function handleFormDelete() {
+    if (!toDeleteId) {
+      return;
+    }
+
+    const data = await deleteForm(eventId, variant, toDeleteId, pathname);
+    setToDeleteId('');
+
+    setTableData(data);
+
+    toast({
+      variant: 'destructive',
+      title: 'Form Deleted',
+      description: `Form successfully deleted.`,
+    });
+  }
+
   return (
     <>
       <DataTable
@@ -70,18 +104,18 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         data={tableData}
         idFilter={nameFilter}
         idColumn="es_name"
-        pkColumn="es_id"
-        // onRowEdit={() => onEdit?.()}
-        // onRowDelete={() => setToDeleteId('123')}
-        // onRowSelect={onSelect ?? (() => {})}
+        pkColumn="id"
+        onRowEdit={(formId: string) => setToEditId(formId)}
+        onRowDelete={(formId: string) => setToDeleteId(formId)}
+        onRowSelect={(formId: string) => setToViewId(formId)}
       />
 
-      {/* <DeletePopup
+      <DeletePopup
         type="Form"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={onDelete ?? (() => {})}
-      /> */}
+        onConfirm={handleFormDelete}
+      />
     </>
   );
 };

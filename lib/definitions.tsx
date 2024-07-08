@@ -183,7 +183,7 @@ export const ActivityIncomeSchema = z.object({
 });
 
 export const ExpenseStatementSchema = z.object({
-  es_id: z.string({
+  id: z.string({
     required_error: 'Please enter Expense statement ID.',
   }),
   es_name: z.string({

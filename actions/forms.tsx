@@ -48,7 +48,43 @@ export async function createExpenseForm(
 
   // TODO: Associate created form with the event it's under
 
-  return { formId: data[0].es_id, message: null };
+  return { formId: data[0].id, message: null };
+}
+
+// TODO: Filter forms for a specific event. This cannot be done without the
+// FK relationships being finalized in the DB.
+export async function deleteForm(
+  eventId: string,
+  variant: 'expense' | 'revenue' | 'fund_transfer',
+  formId: string,
+  pathname: string,
+) {
+  const supabase = createClient();
+
+  const table_name = (() => {
+    switch (variant) {
+      case 'expense':
+        return 'expense_statements';
+
+      case 'revenue':
+        return 'revenue_statements';
+
+      case 'fund_transfer':
+        return 'fund_transfers';
+
+      default:
+        throw new Error('Invalid form variant provided.');
+    }
+  })();
+
+  const { error } = await supabase.from(table_name).delete().eq('id', formId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // TODO: Revalidation just does not work here for some reason
+  return getFormList(eventId, variant);
 }
 
 // TODO: Filter forms for a specific event. This cannot be done without the
