@@ -1,20 +1,8 @@
 import FormsTable from './_components/formsTable';
-import CreateFormDialogButton from './_components/CreateFormDialogButton';
+import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 
-type FormsPageProps = {
-  path: string;
-  searchParams?: {
-    createExpenseForm?: string;
-    createRevenueForm?: string;
-    createAISF?: string;
-    createFundTransferForm?: string;
-    // expenseFormFilter?: string;
-    // revenueFormFilter?: string;
-  };
-};
-
-const FormsPage = ({ searchParams }: FormsPageProps) => {
+const FormsPage = () => {
   return (
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -31,7 +19,7 @@ const FormsPage = ({ searchParams }: FormsPageProps) => {
           </h3>
 
           <div>
-            <CreateFormDialogButton />
+            <CreateFormButton variant="expense" />
           </div>
 
           <FormsTable nameFilter="" />
@@ -43,7 +31,7 @@ const FormsPage = ({ searchParams }: FormsPageProps) => {
           </h3>
 
           <div>
-            <CreateFormDialogButton />
+            <CreateFormButton variant="revenue" />
           </div>
 
           <FormsTable nameFilter="" />
@@ -68,7 +56,7 @@ const FormsPage = ({ searchParams }: FormsPageProps) => {
           </h3>
 
           <div>
-            <CreateFormDialogButton />
+            <CreateFormButton variant="fund_transfer" />
           </div>
 
           <FormsTable nameFilter="" />
