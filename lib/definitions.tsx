@@ -1,26 +1,37 @@
 import { z } from 'zod';
 
 export const UserSchema = z.object({
-  email: z.string({
-    required_error: 'Please enter your email.'
-  }).email(),
-  password: z.string({
-    required_error: 'Please enter your password.'
-  }).min(6, `Password must be at least 6 characters`),
-  first_name: z.string({
-    required_error: 'Please enter your first name.'
-  }).min(1, `Please enter your first name.`),
-  last_name: z.string({
-    required_error: 'Please enter your last name.'
-  }).min(1, `Please enter your last name.`),
+  email: z
+    .string({
+      required_error: 'Please enter your email.',
+    })
+    .email(),
+  password: z
+    .string({
+      required_error: 'Please enter your password.',
+    })
+    .min(6, `Password must be at least 6 characters`),
+  first_name: z
+    .string({
+      required_error: 'Please enter your first name.',
+    })
+    .min(1, `Please enter your first name.`),
+  last_name: z
+    .string({
+      required_error: 'Please enter your last name.',
+    })
+    .min(1, `Please enter your last name.`),
   role: z.enum(['chief', 'member']),
-})
+});
 
 export const UserSchemaEdit = UserSchema.omit({ password: true }).extend({
-  password: z.string().min(6, 'Password must be at least 6 characters').optional()
-})
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .optional(),
+});
 
-export type userType = z.infer<typeof UserSchema>
+export type userType = z.infer<typeof UserSchema>;
 
 export const PaymentSchema = z.object({
   payment_id: z.string({
@@ -202,6 +213,19 @@ export const ExpenseStatementSchema = z.object({
   noted_staff_id: z.string({
     required_error: 'Please enter Noted staff ID.',
   }),
+});
+
+export const CreateExpenseFormSchema = z.object({
+  es_name: z
+    .string({
+      required_error: 'Please enter expense statement name.',
+    })
+    .min(1),
+  es_category: z
+    .string({
+      required_error: 'Please enter expense statement category.',
+    })
+    .min(1),
 });
 
 export const RevenueStatementSchema = z.object({

@@ -4,6 +4,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
+import CreateExpenseForm from './dialogs/CreateExpenseForm';
 
 type CreateFormButtonProps = {
   variant: 'expense' | 'revenue' | 'fund_transfer';
@@ -15,8 +16,7 @@ const CreateFormButton = ({ variant }: CreateFormButtonProps) => {
   function getFormComponent() {
     switch (variant) {
       case 'expense':
-        // TODO
-        return null;
+        return <CreateExpenseForm onFinish={() => setShowDialog(false)} />;
 
       case 'revenue':
         // TODO
