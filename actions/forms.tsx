@@ -51,6 +51,40 @@ export async function createExpenseForm(
   return { formId: data[0].es_id, message: null };
 }
 
+// TODO: Filter forms for a specific event. This cannot be done without the
+// FK relationships being finalized in the DB.
+export async function getFormList(
+  eventId: string,
+  variant: 'expense' | 'revenue' | 'fund_transfer',
+) {
+  noStore();
+
+  const table_name = (() => {
+    switch (variant) {
+      case 'expense':
+        return 'expense_statements';
+
+      case 'revenue':
+        return 'revenue_statements';
+
+      case 'fund_transfer':
+        return 'fund_transfers';
+
+      default:
+        throw new Error('Invalid form variant provided.');
+    }
+  })();
+
+  const supabase = createClient();
+  const { data, error } = await supabase.from(table_name).select('*');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 export async function getItemCategories() {
   // noStore();
 

@@ -2,7 +2,13 @@ import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 
-const FormsPage = () => {
+type FormsPageProps = {
+  params: {
+    eventId: string;
+  };
+};
+
+const FormsPage = ({ params }: FormsPageProps) => {
   return (
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -22,7 +28,11 @@ const FormsPage = () => {
             <CreateFormButton variant="expense" />
           </div>
 
-          <FormsTable nameFilter="" />
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter=""
+            variant="expense"
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -34,7 +44,7 @@ const FormsPage = () => {
             <CreateFormButton variant="revenue" />
           </div>
 
-          <FormsTable nameFilter="" />
+          {/* <FormsTable nameFilter="" /> */}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -59,7 +69,7 @@ const FormsPage = () => {
             <CreateFormButton variant="fund_transfer" />
           </div>
 
-          <FormsTable nameFilter="" />
+          {/* <FormsTable nameFilter="" /> */}
         </div>
       </main>
     </>
