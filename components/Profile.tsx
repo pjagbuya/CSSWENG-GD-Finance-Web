@@ -9,9 +9,10 @@ import React from 'react'
 
 type LogoProps = {
   className?: string;
+  setChiefProps: (t: boolean) => void;
 };
 
-const Profile = ({ className }: LogoProps) => {
+const Profile = ({ className, setChiefProps }: LogoProps) => {
   const [email, setEmail] = useState<string | undefined>()
   const [position, setPosition] = useState<string | undefined>()
   const [isLogin, setLogin] = useState<boolean>(false)
@@ -26,10 +27,19 @@ const Profile = ({ className }: LogoProps) => {
       setEmail(user?.email);
       setPosition(user ? 'Certified Caveman' : undefined);
       setLogin(!!user);
+      if (user) {
+        const { data: userData, error: userError } = await supabase
+          .from('users_view')
+          .select('*')
+          .eq('uuid', user?.id)
+
+        setPosition(userData && userData[0]?.staff_position || undefined)
+        setChiefProps(!userError && userData[0]?.staff_position === 'chief')
+      }
     }
 
     getUser()
-  })
+  }, [email])
   return (
     <div className={`${className} flex items-center gap-5`}>
       <div>
@@ -38,7 +48,10 @@ const Profile = ({ className }: LogoProps) => {
       </div>
 
       {isLogin ? (
-        <form action={logout}>
+        <form action={async () => {
+          await logout()
+          setEmail('')
+        }}>
           <Button>
             Sign Out
           </Button>
