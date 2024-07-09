@@ -136,6 +136,24 @@ export async function deleteForm(
   return getFormList(eventId, variant);
 }
 
+// TODO: Until event-form relationships are finalized, can't finalize this
+export async function getForm(eventId: string, formId: string) {
+  noStore();
+
+  const supabase = createClient();
+  // const { data, error } = await supabase.from('gdsc_events').select('*');
+  const { data, error } = await supabase
+    .from('expense_statements')
+    .select('*')
+    .eq('id', formId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { type: 'expense', data: data[0] };
+}
+
 // TODO: Filter forms for a specific event. This cannot be done without the
 // FK relationships being finalized in the DB.
 export async function getFormList(
