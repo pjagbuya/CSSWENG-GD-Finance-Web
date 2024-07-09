@@ -44,7 +44,11 @@ const FormsPage = ({ params }: FormsPageProps) => {
             <CreateFormButton variant="revenue" />
           </div>
 
-          {/* <FormsTable nameFilter="" /> */}
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter=""
+            variant="revenue"
+          />
         </div>
 
         <div className="flex flex-col gap-3">

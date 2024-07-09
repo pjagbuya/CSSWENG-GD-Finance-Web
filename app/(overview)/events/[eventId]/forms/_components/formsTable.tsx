@@ -11,7 +11,7 @@ import { deleteForm, getFormList } from '@/actions/forms';
 import { toast } from '@/components/ui/use-toast';
 import { usePathname, useRouter } from 'next/navigation';
 
-const COLUMN_DEFINITIONS: ColumnDef<unknown, any>[] = [
+const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'es_name',
     header: ({ column }) => (
@@ -38,6 +38,36 @@ const COLUMN_DEFINITIONS: ColumnDef<unknown, any>[] = [
     ),
     cell: ({ row }) =>
       getFormattedDate(new Date(row.getValue('es_date_created'))),
+  },
+];
+
+const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
+  {
+    accessorKey: 'rs_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Name</SortableHeader>
+    ),
+  },
+  {
+    // TODO: How do we auto-generate this
+    accessorKey: 'id',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Code</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'rs_category',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Name</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'rs_date_created',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date Created</SortableHeader>
+    ),
+    cell: ({ row }) =>
+      getFormattedDate(new Date(row.getValue('rs_date_created'))),
   },
 ];
 
@@ -78,6 +108,19 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     }
   }, [toViewId]);
 
+  function getColumnDefinition() {
+    switch (variant) {
+      case 'expense':
+        return EXPENSE_COL_DEF;
+
+      case 'revenue':
+        return REVENUE_COL_DEF;
+
+      default:
+        throw new Error('Invalid form variant provided.');
+    }
+  }
+
   async function handleFormDelete() {
     if (!toDeleteId) {
       return;
@@ -100,7 +143,7 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
       <DataTable
         className="border-2"
         clickableIdColumn={true}
-        columns={COLUMN_DEFINITIONS}
+        columns={getColumnDefinition()}
         data={tableData}
         idFilter={nameFilter}
         idColumn="es_name"

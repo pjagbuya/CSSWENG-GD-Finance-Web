@@ -261,6 +261,19 @@ export const RevenueStatementSchema = z.object({
   }),
 });
 
+export const CreateRevenueFormSchema = z.object({
+  rs_name: z
+    .string({
+      required_error: 'Please enter expense statement name.',
+    })
+    .min(1),
+  rs_category: z
+    .string({
+      required_error: 'Please enter expense statement category.',
+    })
+    .min(1),
+});
+
 export const FundTransferSchema = z.object({
   ft_id: z.string({
     required_error: 'Please enter Fund transfer ID.',

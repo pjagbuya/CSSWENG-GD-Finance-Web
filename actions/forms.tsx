@@ -1,6 +1,9 @@
 'use server';
 
-import { CreateExpenseFormSchema } from '@/lib/definitions';
+import {
+  CreateExpenseFormSchema,
+  CreateRevenueFormSchema,
+} from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
@@ -10,6 +13,15 @@ export type CreateExpenseFormState = {
   errors?: {
     es_name?: string[];
     es_category?: string[];
+  };
+  message?: string | null;
+};
+
+export type CreateRevenueFormState = {
+  formId?: string;
+  errors?: {
+    rs_name?: string[];
+    rs_category?: string[];
   };
   message?: string | null;
 };
@@ -28,7 +40,7 @@ export async function createExpenseForm(
 
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Unable to create expense form.',
+      message: 'Missing fields. Unable to create revenue form.',
     };
   }
 
@@ -38,6 +50,43 @@ export async function createExpenseForm(
       {
         es_name: formData.get('es_name'),
         es_category: formData.get('es_category'),
+      },
+    ])
+    .select('*');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // TODO: Associate created form with the event it's under
+
+  return { formId: data[0].id, message: null };
+}
+
+export async function createRevenueForm(
+  prevState: CreateExpenseFormState,
+  formData: FormData,
+) {
+  const supabase = createClient();
+  const validatedFields = CreateRevenueFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Unable to create expense form.',
+    };
+  }
+
+  const { data, error } = await supabase
+    .from('revenue_statements')
+    .insert([
+      {
+        rs_name: formData.get('rs_name'),
+        rs_category: formData.get('rs_category'),
       },
     ])
     .select('*');
