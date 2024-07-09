@@ -1,6 +1,7 @@
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
+import { getEvent } from '@/actions/events';
 
 type FormsPageProps = {
   params: {
@@ -8,14 +9,14 @@ type FormsPageProps = {
   };
 };
 
-const FormsPage = ({ params }: FormsPageProps) => {
+const FormsPage = async ({ params }: FormsPageProps) => {
+  const event = await getEvent(params.eventId);
+
   return (
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
         <div className="mb-1">
-          <h2 className="text-2xl font-bold">
-            Forms for: Brother Richie's Secret Event
-          </h2>
+          <h2 className="text-2xl font-bold">Forms for: {event.event_name}</h2>
           <p>Create, edit, and update GDSC event forms.</p>
         </div>
 
