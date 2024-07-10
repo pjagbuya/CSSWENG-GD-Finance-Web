@@ -15,9 +15,10 @@ import Link from 'next/link';
 
 type NavbarProps = {
   className?: string;
+  isChief: boolean;
 };
 
-const Navbar = ({ className }: NavbarProps) => {
+const Navbar = ({ className, isChief }: NavbarProps) => {
   return (
     <NavigationMenu className={className}>
       <NavigationMenuList>
@@ -35,13 +36,16 @@ const Navbar = ({ className }: NavbarProps) => {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/accounts" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Accounts
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
+        {isChief ? (
+          <NavigationMenuItem>
+            <Link href="/accounts" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Accounts
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>) :
+          ''
+        }
       </NavigationMenuList>
     </NavigationMenu>
   );
