@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import CreateForm from './CreateForm';
+import CreateForm from '../../../_components/CreateForm';
 import { useFormState } from 'react-dom';
 import {
   CreateExpenseFormState,
@@ -18,7 +18,7 @@ import {
   CreateRevenueFormState,
   getItemCategories,
 } from '@/actions/forms';
-import ErrorDisplay from './ErrorDisplay';
+import ErrorDisplay from '../../../_components/ErrorDisplay';
 import { redirect, usePathname } from 'next/navigation';
 
 type CreateRevenueFormProps = {

@@ -1,5 +1,97 @@
-const page = () => {
-  return <div>page</div>;
+import { getEvent } from '@/actions/events';
+
+import CreateTransactionButton from './_components/CreateTransactionButton';
+import ExpenseTable from './_components/ExpenseTable';
+import RevenueTable from './_components/RevenueTable';
+
+type TransactionsPageProps = {
+  params: {
+    eventId: string;
+  };
 };
 
-export default page;
+const TransactionsPage = async ({ params }: TransactionsPageProps) => {
+  const event = await getEvent(params.eventId);
+
+  return (
+    <main className="flex flex-col gap-4 px-6 py-4 text-left">
+      <div className="mb-1">
+        <h2 className="text-2xl font-bold">
+          Transactions for: {event.event_name}
+        </h2>
+        <p>Create and update GDSC event transactions.</p>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="border-b-2 border-muted pb-1 text-xl font-bold">
+          Expenses
+        </h3>
+
+        <div>
+          <CreateTransactionButton variant="expense" title="Add Expense" />
+
+          {/* 
+            Add Expense Form
+            - date (default to today's date)
+            - item name
+            - unit count
+            - unit price
+            - account transferred to
+            - receipt image link
+          */}
+        </div>
+
+        <ExpenseTable />
+
+        {/* 
+          Table 
+          - date
+          - item name
+          - unit count
+          - unit price
+          - total price
+          - account transferred to
+          - receipt image link
+
+          > allow delete
+          > no edit (at least for now)
+        */}
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h3 className="border-b-2 border-muted pb-1 text-xl font-bold">
+          Revenue
+        </h3>
+
+        <div>
+          <CreateTransactionButton variant="revenue" title="Add Revenue" />
+
+          {/* 
+            Add Revenue Form
+            - date (default to today's date)
+            - account received from
+            - account transferred to
+            - amount
+            - receipt image link
+          */}
+        </div>
+
+        <RevenueTable />
+
+        {/* 
+          Table 
+          - date
+          - account received from
+          - account transferred to
+          - amount
+          - receipt image link
+
+          > allow delete
+          > no edit (at least for now)
+        */}
+      </div>
+    </main>
+  );
+};
+
+export default TransactionsPage;
