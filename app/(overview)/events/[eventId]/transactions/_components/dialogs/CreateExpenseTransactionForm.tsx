@@ -1,6 +1,6 @@
 import { useFormState } from 'react-dom';
 
-import { createExpense } from '@/actions/transactions';
+import { addExpense } from '@/actions/transactions';
 
 import CreateForm from '../../../_components/CreateForm';
 
@@ -11,7 +11,7 @@ type CreateExpenseTransactionFormProps = {
 const CreateExpenseTransactionForm = ({
   onFinish,
 }: CreateExpenseTransactionFormProps) => {
-  const [state, action] = useFormState(createExpense, {
+  const [state, action] = useFormState(addExpense, {
     errors: {},
     message: null,
   });

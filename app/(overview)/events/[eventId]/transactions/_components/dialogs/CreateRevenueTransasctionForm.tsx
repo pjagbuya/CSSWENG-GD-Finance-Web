@@ -1,6 +1,6 @@
 import { useFormState } from 'react-dom';
 
-import { createRevenue } from '@/actions/transactions';
+import { addRevenue } from '@/actions/transactions';
 
 import CreateForm from '../../../_components/CreateForm';
 
@@ -11,7 +11,7 @@ type CreateRevenueTransactionFormProps = {
 const CreateRevenueTransactionForm = ({
   onFinish,
 }: CreateRevenueTransactionFormProps) => {
-  const [state, action] = useFormState(createRevenue, {
+  const [state, action] = useFormState(addRevenue, {
     errors: {},
     message: null,
   });
