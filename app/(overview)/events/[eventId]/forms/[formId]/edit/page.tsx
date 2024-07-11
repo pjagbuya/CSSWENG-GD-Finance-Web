@@ -1,23 +1,25 @@
 import { getForm } from '@/actions/forms';
-import EditExpenseFormPage from './_components/EditExpenseFormPage';
 
-export type EditFormPageParams = {
+import EditExpenseFormPage from './_components/EditExpenseFormPage';
+import EditRevenueFormPage from './_components/EditRevenueFormPage';
+
+type EditFormPageParams = {
   params: {
-    eventId: number;
-    formId: number;
+    eventId: string;
+    formId: string;
   };
 };
 
 const EditFormPage = async ({ params }: EditFormPageParams) => {
-  const { type, data } = await getForm(params.eventId, params.formId);
+  const { type, data } = await getForm(params.formId);
 
   function getFormPage() {
     switch (type) {
       case 'expense':
-        return <EditExpenseFormPage data={data} />;
+        return <EditExpenseFormPage formInfo={data} />;
 
       case 'revenue':
-        return null;
+        return <EditRevenueFormPage formInfo={data} />;
 
       case 'fund_transfer':
         return null;

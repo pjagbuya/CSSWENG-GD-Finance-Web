@@ -21,10 +21,11 @@ import ErrorDisplay from '../../../_components/ErrorDisplay';
 import { redirect, usePathname } from 'next/navigation';
 
 type CreateExpenseFormProps = {
+  eventId: string;
   onFinish?: () => void;
 };
 
-const CreateExpenseForm = ({ onFinish }: CreateExpenseFormProps) => {
+const CreateExpenseForm = ({ eventId, onFinish }: CreateExpenseFormProps) => {
   const pathname = usePathname();
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -39,7 +40,7 @@ const CreateExpenseForm = ({ onFinish }: CreateExpenseFormProps) => {
     fetchCategories();
 
     async function fetchCategories() {
-      const categories = await getItemCategories();
+      const categories = await getItemCategories(eventId);
       setCategories(categories);
     }
   }, []);

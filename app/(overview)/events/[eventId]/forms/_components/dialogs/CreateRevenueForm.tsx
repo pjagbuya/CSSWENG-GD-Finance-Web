@@ -13,7 +13,6 @@ import {
 import CreateForm from '../../../_components/CreateForm';
 import { useFormState } from 'react-dom';
 import {
-  CreateExpenseFormState,
   createRevenueForm,
   CreateRevenueFormState,
   getItemCategories,
@@ -22,10 +21,11 @@ import ErrorDisplay from '../../../_components/ErrorDisplay';
 import { redirect, usePathname } from 'next/navigation';
 
 type CreateRevenueFormProps = {
+  eventId: string;
   onFinish?: () => void;
 };
 
-const CreateRevenueForm = ({ onFinish }: CreateRevenueFormProps) => {
+const CreateRevenueForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
   const pathname = usePathname();
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -40,13 +40,13 @@ const CreateRevenueForm = ({ onFinish }: CreateRevenueFormProps) => {
     fetchCategories();
 
     async function fetchCategories() {
-      const categories = await getItemCategories();
+      const categories = await getItemCategories(eventId);
       setCategories(categories);
     }
   }, []);
 
   async function handleCreateRevenueForm(
-    prevState: CreateExpenseFormState,
+    prevState: CreateRevenueFormState,
     formData: FormData,
   ) {
     const res = await createRevenueForm(prevState, formData);

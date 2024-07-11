@@ -8,19 +8,30 @@ import CreateExpenseForm from './dialogs/CreateExpenseForm';
 import CreateRevenueForm from './dialogs/CreateRevenueForm';
 
 type CreateFormButtonProps = {
+  eventId: string;
   variant: 'expense' | 'revenue' | 'fund_transfer';
 };
 
-const CreateFormButton = ({ variant }: CreateFormButtonProps) => {
+const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   function getFormComponent() {
     switch (variant) {
       case 'expense':
-        return <CreateExpenseForm onFinish={() => setShowDialog(false)} />;
+        return (
+          <CreateExpenseForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
 
       case 'revenue':
-        return <CreateRevenueForm onFinish={() => setShowDialog(false)} />;
+        return (
+          <CreateRevenueForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
 
       case 'fund_transfer':
         // TODO

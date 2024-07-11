@@ -25,13 +25,9 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             Expense Statement Forms
           </h3>
 
-          <div>
-            <CreateFormButton variant="expense" />
-          </div>
-
           <FormsTable
             eventId={params.eventId}
-            nameFilter=""
+            nameFilter="" 
             variant="expense"
           />
         </div>
@@ -40,10 +36,6 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           <h3 className="border-b-2 border-muted pb-1 text-xl font-bold">
             Revenue Statement Forms
           </h3>
-
-          <div>
-            <CreateFormButton variant="revenue" />
-          </div>
 
           <FormsTable
             eventId={params.eventId}
@@ -71,7 +63,10 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           </h3>
 
           <div>
-            <CreateFormButton variant="fund_transfer" />
+            <CreateFormButton
+              eventId={params.eventId}
+              variant="fund_transfer"
+            />
           </div>
 
           {/* <FormsTable nameFilter="" /> */}

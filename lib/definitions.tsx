@@ -228,6 +228,22 @@ export const CreateExpenseFormSchema = z.object({
     .min(1),
 });
 
+export const EditExpenseFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  transferred_to: z
+    .string({ required_error: 'Transferred To is required.' })
+    .min(1),
+  transferred_on: z
+    .string({
+      required_error: 'Transferred On is required and must be a valid date.',
+    })
+    .date(),
+  notes: z.string(),
+  prepared_by: z.string({ required_error: 'Prepared By is required.' }).min(1),
+});
+
 export const RevenueStatementSchema = z.object({
   rs_id: z.string({
     required_error: 'Please enter Revenue statement ID.',

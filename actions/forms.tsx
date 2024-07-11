@@ -26,6 +26,21 @@ export type CreateRevenueFormState = {
   message?: string | null;
 };
 
+export type EditExpenseFormState = {
+  errors?: {
+    receipts_link?: string[];
+    notes?: string[];
+  };
+};
+
+export type EditRevenueFormState = {
+  errors?: {
+    receipts_link?: string[];
+    notes?: string[];
+  };
+};
+
+// TODO: @Enzo
 export async function createExpenseForm(
   prevState: CreateExpenseFormState,
   formData: FormData,
@@ -58,13 +73,11 @@ export async function createExpenseForm(
     throw new Error(error.message);
   }
 
-  // TODO: Associate created form with the event it's under
-
   return { formId: data[0].id, message: null };
 }
 
 export async function createRevenueForm(
-  prevState: CreateExpenseFormState,
+  prevState: CreateRevenueFormState,
   formData: FormData,
 ) {
   const supabase = createClient();
@@ -136,8 +149,8 @@ export async function deleteForm(
   return getFormList(eventId, variant);
 }
 
-// TODO: Until event-form relationships are finalized, can't finalize this
-export async function getForm(eventId: string, formId: string) {
+// TODO: @Enzo
+export async function getForm(formId: string) {
   noStore();
 
   const supabase = createClient();
@@ -154,8 +167,8 @@ export async function getForm(eventId: string, formId: string) {
   return { type: 'expense', data: data[0] };
 }
 
-// TODO: Filter forms for a specific event. This cannot be done without the
-// FK relationships being finalized in the DB.
+// TODO: @Enzo
+// Filter forms for a specific event.
 export async function getFormList(
   eventId: string,
   variant: 'expense' | 'revenue' | 'fund_transfer',
@@ -188,7 +201,8 @@ export async function getFormList(
   return data;
 }
 
-export async function getItemCategories() {
+// TODO: @Enzo
+export async function getItemCategories(eventId: string) {
   // noStore();
 
   // const supabase = createClient();
@@ -202,7 +216,15 @@ export async function getItemCategories() {
 
   // TODO: Fetch enums from DB or provide another alternative
   // TODO: Validate enums in form input
-  return ['TEST_CAT_1', 'TEST_CAT_2', 'TEST_CAT_3'];
+  return [];
+}
+
+// TODO: @Enzo
+export async function updateExpenseForm(
+  prevState: EditExpenseFormState,
+  formData: FormData,
+) {
+  return {} as EditExpenseFormState;
 }
 
 export type State = {
@@ -229,6 +251,13 @@ export async function createFundTransfer(prevState: State, formData: FormData) {
 
   revalidatePath('');
   redirect('/');
+}
+
+export async function updateRevenueForm(
+  prevState: EditRevenueFormState,
+  formData: FormData,
+) {
+  return {} as EditRevenueFormState;
 }
 
 export async function editForm(prevState: State, formData: FormData) {

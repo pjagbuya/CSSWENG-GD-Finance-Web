@@ -19,7 +19,7 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: How do we auto-generate this
+    // TODO: @Enzo please change to the correct accessor key
     accessorKey: 'id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
@@ -28,7 +28,7 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'es_category',
     header: ({ column }) => (
-      <SortableHeader column={column}>Name</SortableHeader>
+      <SortableHeader column={column}>Category</SortableHeader>
     ),
   },
   {
@@ -49,7 +49,7 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: How do we auto-generate this
+    // TODO: @Enzo please change to the correct accessor key
     accessorKey: 'id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
@@ -58,7 +58,7 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'rs_category',
     header: ({ column }) => (
-      <SortableHeader column={column}>Name</SortableHeader>
+      <SortableHeader column={column}>Category</SortableHeader>
     ),
   },
   {
