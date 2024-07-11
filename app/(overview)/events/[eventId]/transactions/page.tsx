@@ -45,33 +45,9 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
 
         <div>
           <CreateTransactionButton variant="expense" title="Add Expense" />
-
-          {/* 
-            Add Expense Form
-            - date (default to today's date)
-            - item name
-            - unit count
-            - unit price
-            - account transferred to
-            - receipt image link
-          */}
         </div>
 
-        <ExpenseTable />
-
-        {/* 
-          Table 
-          - date
-          - item name
-          - unit count
-          - unit price
-          - total price
-          - account transferred to
-          - receipt image link
-
-          > allow delete
-          > no edit (at least for now)
-        */}
+        <ExpenseTable eventId={params.eventId} />
       </div>
 
       <div className="flex flex-col gap-3">

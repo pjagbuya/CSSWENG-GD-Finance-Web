@@ -1,31 +1,94 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import DataTable, { DeletePopup } from '@/components/DataTable';
+import { deleteExpense, getExpenses } from '@/actions/transactions';
+import DataTable, {
+  DeletePopup,
+  getFormattedDate,
+  SortableHeader,
+} from '@/components/DataTable';
+import { toast } from '@/components/ui/use-toast';
+import { ColumnDef } from '@tanstack/react-table';
 
-const COL_DEFN = [];
+type ExpenseTableProps = {
+  eventId: string;
+};
 
-const ExpenseTable = () => {
+const COL_DEFN: ColumnDef<unknown, any>[] = [
+  {
+    accessorKey: 'date',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date</SortableHeader>
+    ),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('date'))),
+  },
+  {
+    accessorKey: 'item_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Item Name</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'unit_count',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Unit Count</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'unit_price',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Unit Price</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'total_price',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Total Price</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'acc_to',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Account Transferred To</SortableHeader>
+    ),
+  },
+];
+
+const ExpenseTable = ({ eventId }: ExpenseTableProps) => {
   const [tableData, setTableData] = useState<any[]>([]);
 
   const [toDeleteId, setToDeleteId] = useState('');
 
-  // TODO
-  async function deleteExpense() {
+  useEffect(() => {
+    fetchExpenses();
+
+    async function fetchExpenses() {
+      const expenses = await getExpenses(eventId);
+      setTableData(expenses);
+    }
+  }, [eventId]);
+
+  async function handleExpenseDelete() {
+    await deleteExpense(toDeleteId);
     setToDeleteId('');
+
+    toast({
+      variant: 'success',
+      title: 'Deleted Expense',
+      description: `Expense successfully deleted.`,
+    });
   }
 
   return (
     <>
       <DataTable
         className="border-2"
-        clickableIdColumn={true}
         columns={COL_DEFN}
         data={tableData}
         idFilter=""
-        idColumn="" // TODO
-        pkColumn="" // TODO
+        idColumn=""
+        pkColumn=""
         onRowDelete={(formId: string) => setToDeleteId(formId)}
       />
 
@@ -33,7 +96,7 @@ const ExpenseTable = () => {
         type="Form"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={deleteExpense}
+        onConfirm={handleExpenseDelete}
       />
     </>
   );
