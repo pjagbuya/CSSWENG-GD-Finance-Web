@@ -30,7 +30,15 @@ export async function deleteCategory(eventId: string, category: string) {}
 export async function deleteExpense(expenseId: string) {}
 
 // TODO @Enzo
+export async function deleteRevenue(expenseId: string) {}
+
+// TODO @Enzo
 export async function getExpenses(expenseId: string) {
+  return [];
+}
+
+// TODO @Enzo
+export async function getRevenue(expenseId: string) {
   return [];
 }
 

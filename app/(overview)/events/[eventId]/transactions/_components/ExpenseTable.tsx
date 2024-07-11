@@ -93,7 +93,7 @@ const ExpenseTable = ({ eventId }: ExpenseTableProps) => {
       />
 
       <DeletePopup
-        type="Form"
+        type="Expense"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={handleExpenseDelete}

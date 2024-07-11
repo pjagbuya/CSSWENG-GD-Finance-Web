@@ -57,30 +57,9 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
 
         <div>
           <CreateTransactionButton variant="revenue" title="Add Revenue" />
-
-          {/* 
-            Add Revenue Form
-            - date (default to today's date)
-            - account received from
-            - account transferred to
-            - amount
-            - receipt image link
-          */}
         </div>
 
-        <RevenueTable />
-
-        {/* 
-          Table 
-          - date
-          - account received from
-          - account transferred to
-          - amount
-          - receipt image link
-
-          > allow delete
-          > no edit (at least for now)
-        */}
+        <RevenueTable eventId={params.eventId} />
       </div>
     </main>
   );

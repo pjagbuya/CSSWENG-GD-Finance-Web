@@ -1,19 +1,71 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import DataTable, { DeletePopup } from '@/components/DataTable';
+import { deleteRevenue, getRevenue } from '@/actions/transactions';
+import DataTable, {
+  DeletePopup,
+  getFormattedDate,
+  SortableHeader,
+} from '@/components/DataTable';
+import { toast } from '@/components/ui/use-toast';
+import { ColumnDef } from '@tanstack/react-table';
 
-const COL_DEFN = [];
+type RevenueTableProps = {
+  eventId: string;
+};
 
-const RevenueTable = () => {
+const COL_DEFN: ColumnDef<unknown, any>[] = [
+  {
+    accessorKey: 'date',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date</SortableHeader>
+    ),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('date'))),
+  },
+  {
+    accessorKey: 'acc_from',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Account Received From</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'acc_to',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Account Received To</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'amount',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Amount</SortableHeader>
+    ),
+  },
+];
+
+const RevenueTable = ({ eventId }: RevenueTableProps) => {
   const [tableData, setTableData] = useState<any[]>([]);
 
   const [toDeleteId, setToDeleteId] = useState('');
 
-  // TODO
-  async function deleteExpense() {
+  useEffect(() => {
+    fetchExpenses();
+
+    async function fetchExpenses() {
+      const expenses = await getRevenue(eventId);
+      setTableData(expenses);
+    }
+  }, [eventId]);
+
+  async function handleRevenueDelete() {
+    await deleteRevenue(toDeleteId);
     setToDeleteId('');
+
+    toast({
+      variant: 'success',
+      title: 'Deleted Revenue',
+      description: `Revenue successfully deleted.`,
+    });
   }
 
   return (
@@ -24,16 +76,16 @@ const RevenueTable = () => {
         columns={COL_DEFN}
         data={tableData}
         idFilter=""
-        idColumn="" // TODO
-        pkColumn="" // TODO
+        idColumn=""
+        pkColumn=""
         onRowDelete={(formId: string) => setToDeleteId(formId)}
       />
 
       <DeletePopup
-        type="Form"
+        type="Revenue"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
-        onConfirm={deleteExpense}
+        onConfirm={handleRevenueDelete}
       />
     </>
   );
