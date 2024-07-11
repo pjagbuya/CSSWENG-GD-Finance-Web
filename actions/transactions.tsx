@@ -5,6 +5,25 @@ export type AddCategoryFormState = {
   hasDuplicateCategory?: boolean;
 };
 
+export type AddExpenseFormState = {
+  errors?: {
+    date?: string[];
+    item_name?: string[];
+    unit_count?: string[];
+    unit_price?: string[];
+    acc_to?: string[];
+  };
+};
+
+export type AddRevenueFormState = {
+  errors?: {
+    date?: string[];
+    acc_from?: string[];
+    acc_to?: string[];
+    amount?: string[];
+  };
+};
+
 // TODO @Enzo
 export async function addCategory(
   prevState: AddCategoryFormState,
@@ -14,13 +33,19 @@ export async function addCategory(
 }
 
 // TODO @Enzo
-export async function addExpense(prevState: any, formData: FormData) {
-  return {};
+export async function addExpense(
+  prevState: AddExpenseFormState,
+  formData: FormData,
+) {
+  return {} as AddExpenseFormState;
 }
 
 // TODO @Enzo
-export async function addRevenue(prevState: any, formData: FormData) {
-  return {};
+export async function addRevenue(
+  prevState: AddRevenueFormState,
+  formData: FormData,
+) {
+  return {} as AddRevenueFormState;
 }
 
 // TODO @Enzo
