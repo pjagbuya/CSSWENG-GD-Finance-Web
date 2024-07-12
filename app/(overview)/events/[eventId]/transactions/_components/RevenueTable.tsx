@@ -36,6 +36,12 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
     ),
   },
   {
+    accessorKey: 'category',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Category</SortableHeader>
+    ),
+  },
+  {
     accessorKey: 'amount',
     header: ({ column }) => (
       <SortableHeader column={column}>Amount</SortableHeader>

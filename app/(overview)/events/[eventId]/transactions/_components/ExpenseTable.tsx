@@ -30,6 +30,12 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
     ),
   },
   {
+    accessorKey: 'category',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Category</SortableHeader>
+    ),
+  },
+  {
     accessorKey: 'unit_count',
     header: ({ column }) => (
       <SortableHeader column={column}>Unit Count</SortableHeader>

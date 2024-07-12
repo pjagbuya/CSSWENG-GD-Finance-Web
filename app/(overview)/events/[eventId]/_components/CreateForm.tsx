@@ -44,11 +44,11 @@ const CreateForm = ({
         </DialogHeader>
 
         <form action={action}>
-          {Children.map(children, child => (
-            <div className="flex flex-col gap-6 py-4">
+          <div className="flex flex-col gap-5 py-4">
+            {Children.map(children, child => (
               <div className="flex flex-col gap-2">{child}</div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           <DialogFooter className="mt-3">
             <Button type="submit">Create</Button>

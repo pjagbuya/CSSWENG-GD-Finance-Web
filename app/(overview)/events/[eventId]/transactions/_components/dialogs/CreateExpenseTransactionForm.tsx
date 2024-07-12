@@ -3,19 +3,31 @@ import { useFormState } from 'react-dom';
 import { addExpense } from '@/actions/transactions';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import CreateForm from '../../../_components/CreateForm';
 import ErrorDisplay from '../../../_components/ErrorDisplay';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { getItemCategories } from '@/actions/forms';
 
 type CreateExpenseTransactionFormProps = {
+  eventId: string;
   onFinish?: () => void;
 };
 
 const CreateExpenseTransactionForm = ({
+  eventId,
   onFinish,
 }: CreateExpenseTransactionFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
+
+  const [categories, setCategories] = useState<string[]>([]);
 
   const [state, action] = useFormState(addExpense, {
     errors: {},
@@ -23,6 +35,15 @@ const CreateExpenseTransactionForm = ({
 
   useEffect(() => {
     dateElemRef.current!.value = new Date().toISOString().substring(0, 10);
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+
+    async function fetchCategories() {
+      const categories = await getItemCategories(eventId);
+      setCategories(categories);
+    }
   }, []);
 
   return (
@@ -51,6 +72,23 @@ const CreateExpenseTransactionForm = ({
         <Input id="item_name" name="item_name" placeholder="Item Name" />
 
         <ErrorDisplay errors={state?.errors?.item_name} />
+      </>
+
+      <>
+        <Label htmlFor="category">Category</Label>
+        <Select name="category">
+          <SelectTrigger>
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+
+          <SelectContent>
+            {categories.map(category => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </>
 
       <>
