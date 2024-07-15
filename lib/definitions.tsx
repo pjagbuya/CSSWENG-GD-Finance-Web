@@ -355,4 +355,64 @@ export const varSchema = z.object({
   }),
 });
 
+export const AddCategoryFormSchema = z.object({
+  category_name: z
+    .string({
+      required_error: 'Please enter a category name.',
+    })
+    .min(1),
+});
+
+export const AddExpenseFormSchema = z.object({
+  date: z.string({ required_error: 'Please enter a date.' }).date(),
+  item_name: z
+    .string({
+      required_error: 'Please enter an item name.',
+    })
+    .min(1),
+  category: z.string({ required_error: 'Please enter a category.' }).min(1),
+  unit_count: z
+    .number({
+      required_error: 'Please enter a unit count.',
+    })
+    .int()
+    .min(1),
+  unit_price: z.number({ required_error: 'Please enter a unit price.' }).min(1),
+  acc_to: z
+    .string({
+      required_error: 'Please enter the account transferred to.',
+    })
+    .min(1),
+});
+
+export const AddRevenueFormSchema = z.object({
+  date: z.string({ required_error: 'Please enter a date.' }).date(),
+  acc_from: z
+    .string({
+      required_error: 'Please enter the account received from.',
+    })
+    .min(1),
+  acc_to: z
+    .string({
+      required_error: 'Please enter the account transferred to.',
+    })
+    .min(1),
+  category: z.string({ required_error: 'Please enter a category.' }).min(1),
+  amount: z.number({ required_error: 'Please enter an amount.' }).min(1),
+});
+
+export const UpdateExpenseFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  notes: z.string(),
+});
+
+export const UpdateRevenueFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  notes: z.string(),
+});
+
 export const LoginForm = UserSchema.pick({ email: true, password: true });

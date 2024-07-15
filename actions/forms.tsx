@@ -3,6 +3,9 @@
 import {
   CreateExpenseFormSchema,
   CreateRevenueFormSchema,
+  EventSchema,
+  UpdateExpenseFormSchema,
+  UpdateRevenueFormSchema,
 } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
@@ -224,6 +227,19 @@ export async function updateExpenseForm(
   prevState: EditExpenseFormState,
   formData: FormData,
 ) {
+  const supabase = createClient();
+  const validatedFields = UpdateExpenseFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
   return {} as EditExpenseFormState;
 }
 
@@ -257,6 +273,19 @@ export async function updateRevenueForm(
   prevState: EditRevenueFormState,
   formData: FormData,
 ) {
+  const supabase = createClient();
+  const validatedFields = UpdateRevenueFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
   return {} as EditRevenueFormState;
 }
 

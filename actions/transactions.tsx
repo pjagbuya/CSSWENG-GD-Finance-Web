@@ -1,3 +1,10 @@
+import {
+  AddCategoryFormSchema,
+  AddExpenseFormSchema,
+  AddRevenueFormSchema,
+} from '@/lib/definitions';
+import { createClient } from '@/utils/supabase/client';
+
 export type AddCategoryFormState = {
   errors?: {
     name?: string[];
@@ -29,6 +36,19 @@ export async function addCategory(
   prevState: AddCategoryFormState,
   formData: FormData,
 ) {
+  const supabase = createClient();
+  const validatedFields = AddCategoryFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
   return {} as AddCategoryFormState;
 }
 
@@ -37,6 +57,19 @@ export async function addExpense(
   prevState: AddExpenseFormState,
   formData: FormData,
 ) {
+  const supabase = createClient();
+  const validatedFields = AddExpenseFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
   return {} as AddExpenseFormState;
 }
 
@@ -45,6 +78,19 @@ export async function addRevenue(
   prevState: AddRevenueFormState,
   formData: FormData,
 ) {
+  const supabase = createClient();
+  const validatedFields = AddRevenueFormSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
   return {} as AddRevenueFormState;
 }
 
