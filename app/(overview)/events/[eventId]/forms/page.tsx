@@ -1,15 +1,22 @@
-import FormsTable from './formsTable';
-import CreateFormDialogButton from './CreateFormDialogButton';
+import FormsTable from './_components/formsTable';
+import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
+import { getEvent } from '@/actions/events';
 
-const FormsPage = () => {
+type FormsPageProps = {
+  params: {
+    eventId: string;
+  };
+};
+
+const FormsPage = async ({ params }: FormsPageProps) => {
+  const event = await getEvent(params.eventId);
+
   return (
     <>
       <main className="flex flex-col gap-4 px-6 py-4 text-left">
         <div className="mb-1">
-          <h2 className="text-2xl font-bold">
-            Forms for: Brother Richie's Secret Event
-          </h2>
+          <h2 className="text-2xl font-bold">Forms for: {event.event_name}</h2>
           <p>Create, edit, and update GDSC event forms.</p>
         </div>
 
@@ -18,11 +25,11 @@ const FormsPage = () => {
             Expense Statement Forms
           </h3>
 
-          <div>
-            <CreateFormDialogButton />
-          </div>
-
-          <FormsTable nameFilter="" />
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter="" 
+            variant="expense"
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -30,11 +37,11 @@ const FormsPage = () => {
             Revenue Statement Forms
           </h3>
 
-          <div>
-            <CreateFormDialogButton />
-          </div>
-
-          <FormsTable nameFilter="" />
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter=""
+            variant="revenue"
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -56,10 +63,13 @@ const FormsPage = () => {
           </h3>
 
           <div>
-            <CreateFormDialogButton />
+            <CreateFormButton
+              eventId={params.eventId}
+              variant="fund_transfer"
+            />
           </div>
 
-          <FormsTable nameFilter="" />
+          {/* <FormsTable nameFilter="" /> */}
         </div>
       </main>
     </>

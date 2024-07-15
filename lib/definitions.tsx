@@ -1,26 +1,37 @@
 import { z } from 'zod';
 
 export const UserSchema = z.object({
-  email: z.string({
-    required_error: 'Please enter your email.'
-  }).email(),
-  password: z.string({
-    required_error: 'Please enter your password.'
-  }).min(6, `Password must be at least 6 characters`),
-  first_name: z.string({
-    required_error: 'Please enter your first name.'
-  }).min(1, `Please enter your first name.`),
-  last_name: z.string({
-    required_error: 'Please enter your last name.'
-  }).min(1, `Please enter your last name.`),
+  email: z
+    .string({
+      required_error: 'Please enter your email.',
+    })
+    .email(),
+  password: z
+    .string({
+      required_error: 'Please enter your password.',
+    })
+    .min(6, `Password must be at least 6 characters`),
+  first_name: z
+    .string({
+      required_error: 'Please enter your first name.',
+    })
+    .min(1, `Please enter your first name.`),
+  last_name: z
+    .string({
+      required_error: 'Please enter your last name.',
+    })
+    .min(1, `Please enter your last name.`),
   role: z.enum(['chief', 'member']),
-})
+});
 
 export const UserSchemaEdit = UserSchema.omit({ password: true }).extend({
-  password: z.string().min(6, 'Password must be at least 6 characters').optional()
-})
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .optional(),
+});
 
-export type userType = z.infer<typeof UserSchema>
+export type userType = z.infer<typeof UserSchema>;
 
 export const PaymentSchema = z.object({
   payment_id: z.string({
@@ -172,7 +183,7 @@ export const ActivityIncomeSchema = z.object({
 });
 
 export const ExpenseStatementSchema = z.object({
-  es_id: z.string({
+  id: z.string({
     required_error: 'Please enter Expense statement ID.',
   }),
   es_name: z.string({
@@ -202,6 +213,35 @@ export const ExpenseStatementSchema = z.object({
   noted_staff_id: z.string({
     required_error: 'Please enter Noted staff ID.',
   }),
+});
+
+export const CreateExpenseFormSchema = z.object({
+  es_name: z
+    .string({
+      required_error: 'Please enter expense statement name.',
+    })
+    .min(1),
+  es_category: z
+    .string({
+      required_error: 'Please enter expense statement category.',
+    })
+    .min(1),
+});
+
+export const EditExpenseFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  transferred_to: z
+    .string({ required_error: 'Transferred To is required.' })
+    .min(1),
+  transferred_on: z
+    .string({
+      required_error: 'Transferred On is required and must be a valid date.',
+    })
+    .date(),
+  notes: z.string(),
+  prepared_by: z.string({ required_error: 'Prepared By is required.' }).min(1),
 });
 
 export const RevenueStatementSchema = z.object({
@@ -235,6 +275,19 @@ export const RevenueStatementSchema = z.object({
   noted_staff_id: z.string({
     required_error: 'Please enter Noted staff ID.',
   }),
+});
+
+export const CreateRevenueFormSchema = z.object({
+  rs_name: z
+    .string({
+      required_error: 'Please enter expense statement name.',
+    })
+    .min(1),
+  rs_category: z
+    .string({
+      required_error: 'Please enter expense statement category.',
+    })
+    .min(1),
 });
 
 export const FundTransferSchema = z.object({
@@ -300,6 +353,66 @@ export const varSchema = z.object({
   var: z.string({
     required_error: 'Please enter an var.',
   }),
+});
+
+export const AddCategoryFormSchema = z.object({
+  category_name: z
+    .string({
+      required_error: 'Please enter a category name.',
+    })
+    .min(1),
+});
+
+export const AddExpenseFormSchema = z.object({
+  date: z.string({ required_error: 'Please enter a date.' }).date(),
+  item_name: z
+    .string({
+      required_error: 'Please enter an item name.',
+    })
+    .min(1),
+  category: z.string({ required_error: 'Please enter a category.' }).min(1),
+  unit_count: z
+    .number({
+      required_error: 'Please enter a unit count.',
+    })
+    .int()
+    .min(1),
+  unit_price: z.number({ required_error: 'Please enter a unit price.' }).min(1),
+  acc_to: z
+    .string({
+      required_error: 'Please enter the account transferred to.',
+    })
+    .min(1),
+});
+
+export const AddRevenueFormSchema = z.object({
+  date: z.string({ required_error: 'Please enter a date.' }).date(),
+  acc_from: z
+    .string({
+      required_error: 'Please enter the account received from.',
+    })
+    .min(1),
+  acc_to: z
+    .string({
+      required_error: 'Please enter the account transferred to.',
+    })
+    .min(1),
+  category: z.string({ required_error: 'Please enter a category.' }).min(1),
+  amount: z.number({ required_error: 'Please enter an amount.' }).min(1),
+});
+
+export const UpdateExpenseFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  notes: z.string(),
+});
+
+export const UpdateRevenueFormSchema = z.object({
+  receipts_link: z
+    .string({ required_error: 'Receipts Link is required.' })
+    .url({ message: 'Please enter a valid URL.' }),
+  notes: z.string(),
 });
 
 export const LoginForm = UserSchema.pick({ email: true, password: true });
