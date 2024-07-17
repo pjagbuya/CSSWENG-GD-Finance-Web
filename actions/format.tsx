@@ -12,7 +12,9 @@ export type varState = {
 }
 
 async function createVarValidation(prevState: varState, formData: FormData) {
-  const validatedFields = varSchema.safeParse(Object.fromEntries(formData.entries()))
+
+  var transformedData = transformData(formData)
+  const validatedFields = varSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -23,30 +25,37 @@ async function createVarValidation(prevState: varState, formData: FormData) {
   }
 
   // TODO: provide logic
+  var data = convertData(validatedFields.data)
+  const { error } = await createVar(data)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/accounts")
+  return {
+    message: null
+  }
 }
 
-async function editVarValidation(prevState: varState, formData: FormData) {
+async function editVarValidation(id: string, prevState: varState, formData: FormData) {
   const validatedFields = varSchema.safeParse(Object.fromEntries(formData.entries()))
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit event."
+      message: "Missing fields. Unable to edit var."
     }
   }
 
-  const { error } = await createVar({
-    
-  })
+  // TODO: provide logic
+  var data = convertData(validatedFields.data)
+  const { error } = await editVar(data, id)
   if (error) {
     throw new Error(error.message)
   }
 
-  revalidatePath("/accounts")
+  //revalidatePath("/accounts")
   return {
     message: null
   }
@@ -75,6 +84,18 @@ async function deleteVarValidation(id: string) {
 
   revalidatePath("")
   redirect("/")
+}
+
+async function transformData(data : any){
+
+  // TODO: provide logic
+
+}
+
+async function convertData(data : any){
+
+  // TODO: provide logic
+
 }
 
 async function createVar(data : any){
