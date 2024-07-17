@@ -61,7 +61,7 @@ const CreateRevenueTransactionForm = ({
           id="date"
           name="date"
           placeholder="Date"
-          value={Date.now()}
+          defaultValue={Date.now()}
         />
 
         <ErrorDisplay errors={state?.errors?.date} />

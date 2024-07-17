@@ -83,10 +83,15 @@ export async function createRevenueForm(
   prevState: CreateRevenueFormState,
   formData: FormData,
 ) {
+  console.log(123);
+
   const supabase = createClient();
   const validatedFields = CreateRevenueFormSchema.safeParse(
     Object.fromEntries(formData.entries()),
   );
+
+  console.log(formData);
+  console.log(validatedFields);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);

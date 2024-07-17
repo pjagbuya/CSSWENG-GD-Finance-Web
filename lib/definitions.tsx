@@ -398,7 +398,7 @@ export const AddRevenueFormSchema = z.object({
     })
     .min(1),
   category: z.string({ required_error: 'Please enter a category.' }).min(1),
-  amount: z.number({ required_error: 'Please enter an amount.' }).min(1),
+  amount: z.coerce.number({ required_error: 'Please enter an amount.' }).min(1),
 });
 
 export const UpdateExpenseFormSchema = z.object({
