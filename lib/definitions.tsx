@@ -371,13 +371,15 @@ export const AddExpenseFormSchema = z.object({
     })
     .min(1),
   category: z.string({ required_error: 'Please enter a category.' }).min(1),
-  unit_count: z
+  unit_count: z.coerce
     .number({
       required_error: 'Please enter a unit count.',
     })
     .int()
     .min(1),
-  unit_price: z.number({ required_error: 'Please enter a unit price.' }).min(1),
+  unit_price: z.coerce
+    .number({ required_error: 'Please enter a unit price.' })
+    .min(1),
   acc_to: z
     .string({
       required_error: 'Please enter the account transferred to.',
