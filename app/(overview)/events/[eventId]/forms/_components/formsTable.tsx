@@ -19,8 +19,8 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: @Enzo please change to the correct accessor key
-    accessorKey: 'id',
+    // TODO: @Enzo_ please change to the correct accessor key
+    accessorKey: 'es_id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
     ),
@@ -49,8 +49,8 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: @Enzo please change to the correct accessor key
-    accessorKey: 'id',
+    // TODO: @Enzo_ please change to the correct accessor key
+    accessorKey: 'rs_id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
     ),

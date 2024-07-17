@@ -85,15 +85,15 @@ async function editVar(data : any, id : string){
   return query.edit('varSchema', data, 'var_id', id);
 }
 
-async function deleteVar(data : any, id : string){
+async function deleteVar(id : string){
   return query.remove('varSchema', 'var_id', id);
 }
 
-async function selectOneVar(data : any, id : string){
+async function selectOneVar(id : string){
   return query.selectWhere('varSchema', 'var_id', id);
 }
 
-async function selectAllVar(data : any){
+async function selectAllVar(){
   return query.selectAll('varSchema');
 }
 
