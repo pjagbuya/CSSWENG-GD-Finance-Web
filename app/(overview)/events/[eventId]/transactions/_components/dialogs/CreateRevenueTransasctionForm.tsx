@@ -68,24 +68,6 @@ const CreateRevenueTransactionForm = ({
       </>
 
       <>
-        <Label htmlFor="acc_from">Account Received From</Label>
-        <Input
-          id="acc_from"
-          name="acc_from"
-          placeholder="Account Received From"
-        />
-
-        <ErrorDisplay errors={state?.errors?.acc_from} />
-      </>
-
-      <>
-        <Label htmlFor="acc_to">Account Transferred To</Label>
-        <Input id="acc_to" name="acc_to" placeholder="Account Transferred To" />
-
-        <ErrorDisplay errors={state?.errors?.acc_to} />
-      </>
-
-      <>
         <Label htmlFor="category">Category</Label>
         <Select name="category">
           <SelectTrigger>

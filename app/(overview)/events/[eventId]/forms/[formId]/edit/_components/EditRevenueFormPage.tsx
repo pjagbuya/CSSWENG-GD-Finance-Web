@@ -53,6 +53,28 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
           <ErrorDisplay errors={state.errors?.notes} />
         </div>
 
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="acc_from">Account Received From</Label>
+          <Input
+            id="acc_from"
+            name="acc_from"
+            placeholder="Account Received From"
+          />
+
+          <ErrorDisplay errors={state?.errors?.acc_from} />
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="acc_to">Account Transferred To</Label>
+          <Input
+            id="acc_to"
+            name="acc_to"
+            placeholder="Account Transferred To"
+          />
+
+          <ErrorDisplay errors={state?.errors?.acc_to} />
+        </div>
+
         <Button className="self-start" type="submit">
           Finish Edit
         </Button>

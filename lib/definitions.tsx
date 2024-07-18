@@ -380,25 +380,11 @@ export const AddExpenseFormSchema = z.object({
   unit_price: z.coerce
     .number({ required_error: 'Please enter a unit price.' })
     .min(1),
-  acc_to: z
-    .string({
-      required_error: 'Please enter the account transferred to.',
-    })
-    .min(1),
 });
 
 export const AddRevenueFormSchema = z.object({
   date: z.string({ required_error: 'Please enter a date.' }).date(),
-  acc_from: z
-    .string({
-      required_error: 'Please enter the account received from.',
-    })
-    .min(1),
-  acc_to: z
-    .string({
-      required_error: 'Please enter the account transferred to.',
-    })
-    .min(1),
+
   category: z.string({ required_error: 'Please enter a category.' }).min(1),
   amount: z.coerce.number({ required_error: 'Please enter an amount.' }).min(1),
 });
@@ -415,6 +401,16 @@ export const UpdateRevenueFormSchema = z.object({
     .string({ required_error: 'Receipts Link is required.' })
     .url({ message: 'Please enter a valid URL.' }),
   notes: z.string(),
+  acc_from: z
+    .string({
+      required_error: 'Please enter the account received from.',
+    })
+    .min(1),
+  acc_to: z
+    .string({
+      required_error: 'Please enter the account transferred to.',
+    })
+    .min(1),
 });
 
 export const LoginForm = UserSchema.pick({ email: true, password: true });

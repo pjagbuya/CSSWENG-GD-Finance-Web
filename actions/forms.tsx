@@ -33,6 +33,7 @@ export type EditExpenseFormState = {
   errors?: {
     receipts_link?: string[];
     notes?: string[];
+    acc_to?: string[];
   };
 };
 
@@ -40,6 +41,8 @@ export type EditRevenueFormState = {
   errors?: {
     receipts_link?: string[];
     notes?: string[];
+    acc_from?: string[];
+    acc_to?: string[];
   };
 };
 
