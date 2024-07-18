@@ -1,28 +1,30 @@
 
 // INSTRUCTIONS:
-// vare_ -> small case
-// Vare -> big case
+// itemList_ -> small case
+// ItemList -> big case
 // replace vals with column names
 // remove comments after
 
-import { VareSchema } from "@/lib/definitions";
+import { ItemListSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/supabase";
 
-export type vare_State = {
+export type itemList_State = {
   errors?: {
-    vals?: string[];    
+    item_list_id?: string[];    
+    item_list_type?: string[];    
+    item_list_name?: string[];    //wait dba may nabago dito 
   }; 
   message?: string | null;
 }
 
-var vare_Format = {
+var itemList_Format = {
   vals : null,
 }
 
-var schema = "VareSchema"
-var identifier = "vare__id"
+var schema = "item_lists"
+var identifier = "itemList__id"
 
 async function transformData(data : any){
 
@@ -45,10 +47,10 @@ async function convertData(data : any){
 }
 
 
-async function createVareValidation(prevState: vare_State, formData: FormData) {
+async function createItemListValidation(prevState: itemList_State, formData: FormData) {
 
   var transformedData = transformData(formData)
-  const validatedFields = VareSchema.safeParse(transformedData)
+  const validatedFields = ItemListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -60,7 +62,7 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
 
   // TODO: provide logic
   var data = convertData(validatedFields)
-  const { error } = await createVare(data)
+  const { error } = await createItemList(data)
   if (error) {
     throw new Error(error.message)
   }
@@ -71,10 +73,10 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
   }
 }
 
-async function editVareValidation(id: string, prevState: vare_State, formData: FormData) {
+async function editItemListValidation(id: string, prevState: itemList_State, formData: FormData) {
   
   var transformedData = transformData(formData)
-  const validatedFields = VareSchema.safeParse(transformedData)
+  const validatedFields = ItemListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -86,7 +88,7 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editVare(data, id)
+  const { error } = await editItemList(data, id)
   if (error) {
     throw new Error(error.message)
   }
@@ -97,10 +99,10 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
   }
 }
 
-async function selectOneVareValidation(id: string) {
+async function selectOneItemListValidation(id: string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneVare(id)
+  const { data, error } = await selectOneItemList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -111,10 +113,10 @@ async function selectOneVareValidation(id: string) {
   }
 }
 
-async function selectAllVareValidation() {
+async function selectAllItemListValidation() {
 
   // TODO: provide logic
-  const { data, error } = await selectAllVare()
+  const { data, error } = await selectAllItemList()
   if (error) {
     throw new Error(error.message)
   }
@@ -126,10 +128,10 @@ async function selectAllVareValidation() {
 }
 
 
-async function deleteVareValidation(id: string) {
+async function deleteItemListValidation(id: string) {
 
   // TODO: provide logic
-  const { error } = await deleteVare(id)
+  const { error } = await deleteItemList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -140,30 +142,30 @@ async function deleteVareValidation(id: string) {
   }
 }
 
-async function createVare(data : any){
+async function createItemList(data : any){
   return query.insert(schema, data);
 }
 
-async function editVare(data : any, id : string){
+async function editItemList(data : any, id : string){
   return query.edit(schema, data, identifier, id);
 }
 
-async function deleteVare(id : string){
+async function deleteItemList(id : string){
   return query.remove(schema, identifier, id);
 }
 
-async function selectOneVare(id : string){
+async function selectOneItemList(id : string){
   return query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllVare(){
+async function selectAllItemList(){
   return query.selectAll(schema);
 }
 
 export const varQuery = { 
-  createVareValidation, createVare,
-  editVareValidation, editVare,
-  deleteVareValidation, deleteVare,
-  selectOneVareValidation, selectOneVare,
-  selectAllVareValidation, selectAllVare
+  createItemListValidation, createItemList,
+  editItemListValidation, editItemList,
+  deleteItemListValidation, deleteItemList,
+  selectOneItemListValidation, selectOneItemList,
+  selectAllItemListValidation, selectAllItemList
 }

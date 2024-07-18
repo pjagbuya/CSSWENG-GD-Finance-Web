@@ -8,14 +8,13 @@ async function insert(schema: any, data: any) {
 }
 
 async function edit(schema: any, data: any, column: any, value: any) {
-  const { error } = await supabase.from(schema).update(data).eq(column, value)
-  console.log(error)
-  return error
+  const { data: result, error } = await supabase.from(schema).update(data).eq(column, value)
+  return { data: result ? result[0] : null, error: error }
 }
 
 async function remove(schema: any, column: any, value: any) {
-  const { error } = await supabase.from(schema).delete().eq(column, value)
-  return error
+  const { data: result, error }  = await supabase.from(schema).delete().eq(column, value)
+  return { data: result ? result[0] : null, error: error }
 }
 
 async function selectAll(schema: any) {

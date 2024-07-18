@@ -349,7 +349,7 @@ export const EventSchema = z.object({
     .min(1),
 });
 
-export const varSchema = z.object({
+export const VareSchema = z.object({
   var: z.string({
     required_error: 'Please enter an var.',
   }),
