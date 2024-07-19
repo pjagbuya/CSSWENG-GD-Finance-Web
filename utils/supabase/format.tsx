@@ -1,19 +1,58 @@
-'use server'
 
-import { varSchema } from "@/lib/definitions";
+// INSTRUCTIONS:
+// vare_ -> small case
+// Vare -> big case
+// replace vals with column names
+// remove comments after
+
+import { VareSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/supabase";
 
-export type varState = {
+export type vare_State = {
   errors?: {
-    var?: string[];
-  };
+    vals?: string[];    
+  }; 
   message?: string | null;
 }
 
-async function createVarValidation(prevState: varState, formData: FormData) {
-  const validatedFields = varSchema.safeParse(Object.fromEntries(formData.entries()))
+var vare_Format = {
+  vals : null,
+
+  /*
+
+  */
+}
+
+var schema = "VareSchema" // replace with table name
+var identifier = "vare__id"
+
+async function transformData(data : any){
+
+  var arrayData = Array.from(data.entries())
+  // TODO: provide logic
+
+  // TODO: fill information
+  var transformedData = {
+
+  }
+  return transformedData
+}
+
+async function convertData(data : any){
+
+  // TODO: provide logic
+
+  // JUST IN CASE: needs to do something with other data of validated fields
+  return data.data
+}
+
+
+async function createVareValidation(prevState: vare_State, formData: FormData) {
+
+  var transformedData = transformData(formData)
+  const validatedFields = VareSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -24,84 +63,111 @@ async function createVarValidation(prevState: varState, formData: FormData) {
   }
 
   // TODO: provide logic
+  var data = convertData(validatedFields)
+  const { error } = await createVare(data)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/")
+  return {
+    message: null
+  }
 }
 
-async function editVarValidation(prevState: varState, formData: FormData) {
-  const validatedFields = varSchema.safeParse(Object.fromEntries(formData.entries()))
+async function editVareValidation(id: string, prevState: vare_State, formData: FormData) {
+  
+  var transformedData = transformData(formData)
+  const validatedFields = VareSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit event."
+      message: "Missing fields. Unable to edit var."
     }
   }
 
   // TODO: provide logic
+  var data = convertData(validatedFields.data)
+  const { error } = await editVare(data, id)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/")
+  return {
+    message: null
+  }
 }
 
-async function selectOneVarValidation(id: string) {
+async function selectOneVareValidation(id: string) {
 
   // TODO: provide logic
+  const { data, error } = await selectOneVare(id)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/")
+  return {
+    data: data
+  }
 }
 
-async function selectAllVarValidation() {
+async function selectAllVareValidation() {
 
   // TODO: provide logic
+  const { data, error } = await selectAllVare()
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/")
+  return {
+    data: data
+  }
 }
 
 
-async function deleteVarValidation(id: string) {
+async function deleteVareValidation(id: string) {
 
   // TODO: provide logic
+  const { error } = await deleteVare(id)
+  if (error) {
+    throw new Error(error.message)
+  }
 
-  revalidatePath("")
-  redirect("/")
+  //revalidatePath("/")
+  return {
+    message: null
+  }
 }
 
-async function createVar(data : any){
-  return query.insert('varSchema', data);
+async function createVare(data : any){
+  return query.insert(schema, data);
 }
 
-async function editVar(data : any, id : string){
-  return query.edit('varSchema', data, 'var_id', id);
+async function editVare(data : any, id : string){
+  return query.edit(schema, data, identifier, id);
 }
 
-async function deleteVar(data : any, id : string){
-  return query.remove('varSchema', 'var_id', id);
+async function deleteVare(id : string){
+  return query.remove(schema, identifier, id);
 }
 
-async function selectOneVar(data : any, id : string){
-  return query.selectWhere('varSchema', 'var_id', id);
+async function selectOneVare(id : string){
+  return query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllVar(data : any){
-  return query.selectAll('varSchema');
+async function selectAllVare(){
+  return query.selectAll(schema);
 }
 
-export const varQuery = { 
-  createVarValidation, createVar,
-  editVarValidation, editVar,
-  deleteVarValidation, deleteVar,
-  selectOneVarValidation, selectOneVar,
-  selectAllVarValidation, selectAllVar
+export const vare_Query = { 
+  createVareValidation, createVare,
+  editVareValidation, editVare,
+  deleteVareValidation, deleteVare,
+  selectOneVareValidation, selectOneVare,
+  selectAllVareValidation, selectAllVare
 }
-
-/*
-const { data, error } = await supabase.from('countries').select().eq(column, var)
-const { error } = await supabase.from(schema).insert(data)
-const { error } = await supabase.from(schema).update(updateData).eq(column, var)
-const { error } = await supabase.from(schema).delete().eq(column, var)
-*/

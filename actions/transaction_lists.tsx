@@ -1,36 +1,36 @@
 
 // INSTRUCTIONS:
-// itemList -> small case
-// ItemList -> big case
+// transactionList -> small case
+// TransactionList -> big case
 // replace vals with column names
 // remove comments after
 
-import { ItemListSchema } from "@/lib/definitions";
+import { TransactionListSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/supabase";
 
-export type itemListState = {
+export type transactionListState = {
   errors?: {
-    item_list_id?: string[];    
+    transaction_list_id?: string[];    
   }; 
   message?: string | null;
 }
 
-var itemListFormat = {
-    item_list_id : null,
+var transactionListFormat = {
+    transaction_list_id : null,
 
   /*
-    CREATE TABLE IF NOT EXISTS item_lists
+    CREATE TABLE IF NOT EXISTS transaction_lists
     (
-        item_list_id VARCHAR(25),
-        PRIMARY KEY (item_list_id)
+        transaction_list_id VARCHAR(25),
+        PRIMARY KEY (transaction_list_id)
     );
   */
 }
 
-var schema = "ItemListSchema" // replace with table name
-var identifier = "item_list_id"
+var schema = "TransactionListSchema" // replace with table name
+var identifier = "transactionList_id"
 
 async function transformData(data : any){
 
@@ -53,10 +53,10 @@ async function convertData(data : any){
 }
 
 
-async function createItemListValidation(prevState: itemListState, formData: FormData) {
+async function createTransactionListValidation(prevState: transactionListState, formData: FormData) {
 
   var transformedData = transformData(formData)
-  const validatedFields = ItemListSchema.safeParse(transformedData)
+  const validatedFields = TransactionListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -68,7 +68,7 @@ async function createItemListValidation(prevState: itemListState, formData: Form
 
   // TODO: provide logic
   var data = convertData(validatedFields)
-  const { error } = await createItemList(data)
+  const { error } = await createTransactionList(data)
   if (error) {
     throw new Error(error.message)
   }
@@ -79,10 +79,10 @@ async function createItemListValidation(prevState: itemListState, formData: Form
   }
 }
 
-async function editItemListValidation(id: string, prevState: itemListState, formData: FormData) {
+async function editTransactionListValidation(id: string, prevState: transactionListState, formData: FormData) {
   
   var transformedData = transformData(formData)
-  const validatedFields = ItemListSchema.safeParse(transformedData)
+  const validatedFields = TransactionListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -94,7 +94,7 @@ async function editItemListValidation(id: string, prevState: itemListState, form
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editItemList(data, id)
+  const { error } = await editTransactionList(data, id)
   if (error) {
     throw new Error(error.message)
   }
@@ -105,10 +105,10 @@ async function editItemListValidation(id: string, prevState: itemListState, form
   }
 }
 
-async function selectOneItemListValidation(id: string) {
+async function selectOneTransactionListValidation(id: string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneItemList(id)
+  const { data, error } = await selectOneTransactionList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -119,10 +119,10 @@ async function selectOneItemListValidation(id: string) {
   }
 }
 
-async function selectAllItemListValidation() {
+async function selectAllTransactionListValidation() {
 
   // TODO: provide logic
-  const { data, error } = await selectAllItemList()
+  const { data, error } = await selectAllTransactionList()
   if (error) {
     throw new Error(error.message)
   }
@@ -134,10 +134,10 @@ async function selectAllItemListValidation() {
 }
 
 
-async function deleteItemListValidation(id: string) {
+async function deleteTransactionListValidation(id: string) {
 
   // TODO: provide logic
-  const { error } = await deleteItemList(id)
+  const { error } = await deleteTransactionList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -148,30 +148,30 @@ async function deleteItemListValidation(id: string) {
   }
 }
 
-async function createItemList(data : any){
+async function createTransactionList(data : any){
   return query.insert(schema, data);
 }
 
-async function editItemList(data : any, id : string){
+async function editTransactionList(data : any, id : string){
   return query.edit(schema, data, identifier, id);
 }
 
-async function deleteItemList(id : string){
+async function deleteTransactionList(id : string){
   return query.remove(schema, identifier, id);
 }
 
-async function selectOneItemList(id : string){
+async function selectOneTransactionList(id : string){
   return query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllItemList(){
+async function selectAllTransactionList(){
   return query.selectAll(schema);
 }
 
-export const itemListQuery = { 
-  createItemListValidation, createItemList,
-  editItemListValidation, editItemList,
-  deleteItemListValidation, deleteItemList,
-  selectOneItemListValidation, selectOneItemList,
-  selectAllItemListValidation, selectAllItemList
+export const transactionListQuery = { 
+  createTransactionListValidation, createTransactionList,
+  editTransactionListValidation, editTransactionList,
+  deleteTransactionListValidation, deleteTransactionList,
+  selectOneTransactionListValidation, selectOneTransactionList,
+  selectAllTransactionListValidation, selectAllTransactionList
 }

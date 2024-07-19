@@ -100,36 +100,6 @@ export const TransactionSchema = z.object({
   }),
 });
 
-export const TransactionDateSchema = z.object({
-  transaction_date_id: z.string({
-    required_error: 'Please enter Transaction date ID.',
-  }),
-  transaction_note: z.string({
-    required_error: 'Please enter Transaction note.',
-  }),
-  transaction_list_id: z.string({
-    required_error: 'Please enter Transaction list ID.',
-  }),
-});
-
-export const TransactionDetailsSchema = z.object({
-  td_id: z.string({
-    required_error: 'Please enter Transaction details ID.',
-  }),
-  transaction_amount: z.number().int({
-    message: 'Transaction amount must be a valid integer.',
-  }),
-  transaction_from_list_id: z.string({
-    required_error: 'Please enter Transaction from list ID.',
-  }),
-  transaction_to_list_id: z.string({
-    required_error: 'Please enter Transaction to list ID.',
-  }),
-  transaction_date_list_id: z.string({
-    required_error: 'Please enter Transaction date list ID.',
-  }),
-});
-
 export const StaffSchema = z.object({
   staff_id: z.string({
     required_error: 'Please enter Staff ID.',
@@ -181,6 +151,15 @@ export const ActivityIncomeSchema = z.object({
     required_error: 'Please enter Noted staff ID.',
   }),
 });
+
+export const CategorySchema = z.object({
+
+});
+
+export const StaffListSchema = z.object({
+
+});
+
 
 export const ExpenseStatementSchema = z.object({
   id: z.string({

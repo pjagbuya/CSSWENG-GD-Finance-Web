@@ -19,9 +19,13 @@ export type vare_State = {
 
 var vare_Format = {
   vals : null,
+
+  /*
+
+  */
 }
 
-var schema = "VareSchema"
+var schema = "VareSchema" // replace with table name
 var identifier = "vare__id"
 
 async function transformData(data : any){
@@ -160,7 +164,7 @@ async function selectAllVare(){
   return query.selectAll(schema);
 }
 
-export const varQuery = { 
+export const vare_Query = { 
   createVareValidation, createVare,
   editVareValidation, editVare,
   deleteVareValidation, deleteVare,

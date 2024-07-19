@@ -1,32 +1,40 @@
 
 // INSTRUCTIONS:
-// payment -> small case
-// Payment -> big case
+// staff -> small case
+// Staff -> big case
 // replace vals with column names
 // remove comments after
 
-import { PaymentSchema } from "@/lib/definitions";
+import { StaffSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/supabase";
 
-export type paymentState = {
+export type staffState = {
   errors?: {
-    payment_id?: string[];    
-    payment_date?: string[];   
-    payment_detail?: string[];   
+    vals?: string[];    
   }; 
   message?: string | null;
 }
 
-var paymentFormat = {
-  payment_id : null, 
-  payment_date : null,
-  payment_detail : null,
+var staffFormat = {
+  vals : null,
+
+  /*
+  CREATE TABLE IF NOT EXISTS staffs
+  (
+      staff_id VARCHAR(25),
+      staff_name VARCHAR(55),
+      staff_position VARCHAR(55),
+      staff_list_id VARCHAR(25),
+      FOREIGN KEY (staff_list_id) REFERENCES staff_lists(staff_list_id),
+      PRIMARY KEY (staff_id)
+  );
+  */
 }
 
-var schema = "payments"
-var identifier = "payment_id"
+var schema = "StaffSchema" // replace with table name
+var identifier = "staff_id"
 
 async function transformData(data : any){
 
@@ -35,9 +43,7 @@ async function transformData(data : any){
 
   // TODO: fill information
   var transformedData = {
-    payment_id : null, 
-    payment_date : null,
-    payment_detail : null,
+
   }
   return transformedData
 }
@@ -51,10 +57,10 @@ async function convertData(data : any){
 }
 
 
-async function createPaymentValidation(prevState: paymentState, formData: FormData) {
+async function createStaffValidation(prevState: staffState, formData: FormData) {
 
   var transformedData = transformData(formData)
-  const validatedFields = PaymentSchema.safeParse(transformedData)
+  const validatedFields = StaffSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -66,7 +72,7 @@ async function createPaymentValidation(prevState: paymentState, formData: FormDa
 
   // TODO: provide logic
   var data = convertData(validatedFields)
-  const { error } = await createPayment(data)
+  const { error } = await createStaff(data)
   if (error) {
     throw new Error(error.message)
   }
@@ -77,10 +83,10 @@ async function createPaymentValidation(prevState: paymentState, formData: FormDa
   }
 }
 
-async function editPaymentValidation(id: string, prevState: paymentState, formData: FormData) {
+async function editStaffValidation(id: string, prevState: staffState, formData: FormData) {
   
   var transformedData = transformData(formData)
-  const validatedFields = PaymentSchema.safeParse(transformedData)
+  const validatedFields = StaffSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -92,7 +98,7 @@ async function editPaymentValidation(id: string, prevState: paymentState, formDa
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editPayment(data, id)
+  const { error } = await editStaff(data, id)
   if (error) {
     throw new Error(error.message)
   }
@@ -103,10 +109,10 @@ async function editPaymentValidation(id: string, prevState: paymentState, formDa
   }
 }
 
-async function selectOnePaymentValidation(id: string) {
+async function selectOneStaffValidation(id: string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOnePayment(id)
+  const { data, error } = await selectOneStaff(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -117,10 +123,10 @@ async function selectOnePaymentValidation(id: string) {
   }
 }
 
-async function selectAllPaymentValidation() {
+async function selectAllStaffValidation() {
 
   // TODO: provide logic
-  const { data, error } = await selectAllPayment()
+  const { data, error } = await selectAllStaff()
   if (error) {
     throw new Error(error.message)
   }
@@ -132,10 +138,10 @@ async function selectAllPaymentValidation() {
 }
 
 
-async function deletePaymentValidation(id: string) {
+async function deleteStaffValidation(id: string) {
 
   // TODO: provide logic
-  const { error } = await deletePayment(id)
+  const { error } = await deleteStaff(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -146,30 +152,30 @@ async function deletePaymentValidation(id: string) {
   }
 }
 
-async function createPayment(data : any){
+async function createStaff(data : any){
   return query.insert(schema, data);
 }
 
-async function editPayment(data : any, id : string){
+async function editStaff(data : any, id : string){
   return query.edit(schema, data, identifier, id);
 }
 
-async function deletePayment(id : string){
+async function deleteStaff(id : string){
   return query.remove(schema, identifier, id);
 }
 
-async function selectOnePayment(id : string){
+async function selectOneStaff(id : string){
   return query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllPayment(){
+async function selectAllStaff(){
   return query.selectAll(schema);
 }
 
-export const varQuery = { 
-  createPaymentValidation, createPayment,
-  editPaymentValidation, editPayment,
-  deletePaymentValidation, deletePayment,
-  selectOnePaymentValidation, selectOnePayment,
-  selectAllPaymentValidation, selectAllPayment
+export const staffQuery = { 
+  createStaffValidation, createStaff,
+  editStaffValidation, editStaff,
+  deleteStaffValidation, deleteStaff,
+  selectOneStaffValidation, selectOneStaff,
+  selectAllStaffValidation, selectAllStaff
 }

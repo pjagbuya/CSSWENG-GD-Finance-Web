@@ -1,4 +1,10 @@
 
+// INSTRUCTIONS:
+// item -> small case
+// Item -> big case
+// replace vals with column names
+// remove comments after
+
 import { ItemSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -6,30 +12,45 @@ import { query } from "@/lib/supabase";
 
 export type itemState = {
   errors?: {
-    item_id : null,    
-    item_name : null, 
-    item_price : null, 
-    item_amount : null, 
-    item_note : null, 
-    item_list_id : null, 
-    item_category : null, 
-    payment_id : null, 
+    item_id?: string[];  
+    item_list_id?: string[];  
+    item_name?: string[];  
+    item_units?: string[];  
+    item_price?: string[];  
+    item_amount?: string[];  
+    item_date?: string[];  
+    item_payment_details?: string[];  
   }; 
   message?: string | null;
 }
 
 var itemFormat = {
-  item_id : null, 
-  item_name : null, 
-  item_price : null, 
-  item_amount : null, 
-  item_note : null, 
-  item_list_id : null, 
-  item_category : null, 
-  payment_id : null, 
+    item_id : null,
+    item_list_id : null,
+    item_name : null,
+    item_units : null,
+    item_price : null,
+    item_amount : null,
+    item_date : null,
+    item_payment_details : null,
+
+  /*
+CREATE TABLE IF NOT EXISTS items(
+    item_id VARCHAR(25),
+    item_list_id VARCHAR(25),    
+    item_name VARCHAR(55),    
+    item_units INT,
+    item_price FLOAT,
+    item_amount FLOAT,
+    item_date DATE,
+    item_payment_details VARCHAR(55),
+    PRIMARY KEY(item_id),
+    FOREIGN KEY(item_list_id) REFERENCES item_lists(item_list_id)
+);
+  */
 }
 
-var schema = "items"
+var schema = "ItemSchema" // replace with table name
 var identifier = "item_id"
 
 async function transformData(data : any){
@@ -39,14 +60,7 @@ async function transformData(data : any){
 
   // TODO: fill information
   var transformedData = {
-    item_id : null, 
-    item_name : null, 
-    item_price : null, 
-    item_amount : null, 
-    item_note : null, 
-    item_list_id : null, 
-    item_category : null, 
-    payment_id : null, 
+
   }
   return transformedData
 }
@@ -175,7 +189,7 @@ async function selectAllItem(){
   return query.selectAll(schema);
 }
 
-export const varQuery = { 
+export const itemQuery = { 
   createItemValidation, createItem,
   editItemValidation, editItem,
   deleteItemValidation, deleteItem,
