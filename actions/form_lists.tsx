@@ -1,32 +1,42 @@
 
 // INSTRUCTIONS:
-// vare_ -> small case
-// Vare -> big case
+// formList -> small case
+// FormList -> big case
 // replace vals with column names
 // remove comments after
 
-import { VareSchema } from "@/lib/definitions";
+import { FormListSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/supabase";
 
-export type vare_State = {
+export type formListState = {
   errors?: {
-    vals?: string[];    
+    form_list_id?: string[]; 
+    form_list_type?: string[]; 
+    form_list_name?: string[]; 
   }; 
   message?: string | null;
 }
 
-var vare_Format = {
-  vals : null,
+var formListFormat = {
+  form_list_id : null,
+  form_list_type : null,
+  form_list_name : null,
 
   /*
-
+    CREATE TABLE IF NOT EXISTS form_lists
+    (
+        form_list_id VARCHAR(25),
+        form_list_type ENUM('FT','RS','ES','AI'),
+        form_list_name VARCHAR(55),
+        PRIMARY KEY (form_list_id)
+    );
   */
 }
 
-var schema = "VareSchema" // replace with table name
-var identifier = "vare__id"
+var schema = "FormListSchema" // replace with table name
+var identifier = "formList_id"
 
 async function transformData(data : any){
 
@@ -49,10 +59,10 @@ async function convertData(data : any){
 }
 
 
-async function createVareValidation(prevState: vare_State, formData: FormData) {
+async function createFormListValidation(prevState: formListState, formData: FormData) {
 
   var transformedData = transformData(formData)
-  const validatedFields = VareSchema.safeParse(transformedData)
+  const validatedFields = FormListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -64,7 +74,7 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
 
   // TODO: provide logic
   var data = convertData(validatedFields)
-  const { error } = await createVare(data)
+  const { error } = await createFormList(data)
   if (error) {
     throw new Error(error.message)
   }
@@ -75,10 +85,10 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
   }
 }
 
-async function editVareValidation(id: string, prevState: vare_State, formData: FormData) {
+async function editFormListValidation(id: string, prevState: formListState, formData: FormData) {
   
   var transformedData = transformData(formData)
-  const validatedFields = VareSchema.safeParse(transformedData)
+  const validatedFields = FormListSchema.safeParse(transformedData)
 
   if (!validatedFields.success) {
     console.log(validatedFields.error)
@@ -90,7 +100,7 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editVare(data, id)
+  const { error } = await editFormList(data, id)
   if (error) {
     throw new Error(error.message)
   }
@@ -101,10 +111,10 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
   }
 }
 
-async function selectOneVareValidation(id: string) {
+async function selectOneFormListValidation(id: string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneVare(id)
+  const { data, error } = await selectOneFormList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -115,10 +125,10 @@ async function selectOneVareValidation(id: string) {
   }
 }
 
-async function selectAllVareValidation() {
+async function selectAllFormListValidation() {
 
   // TODO: provide logic
-  const { data, error } = await selectAllVare()
+  const { data, error } = await selectAllFormList()
   if (error) {
     throw new Error(error.message)
   }
@@ -130,10 +140,10 @@ async function selectAllVareValidation() {
 }
 
 
-async function deleteVareValidation(id: string) {
+async function deleteFormListValidation(id: string) {
 
   // TODO: provide logic
-  const { error } = await deleteVare(id)
+  const { error } = await deleteFormList(id)
   if (error) {
     throw new Error(error.message)
   }
@@ -144,30 +154,30 @@ async function deleteVareValidation(id: string) {
   }
 }
 
-async function createVare(data : any){
+async function createFormList(data : any){
   return query.insert(schema, data);
 }
 
-async function editVare(data : any, id : string){
+async function editFormList(data : any, id : string){
   return query.edit(schema, data, identifier, id);
 }
 
-async function deleteVare(id : string){
+async function deleteFormList(id : string){
   return query.remove(schema, identifier, id);
 }
 
-async function selectOneVare(id : string){
+async function selectOneFormList(id : string){
   return query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllVare(){
+async function selectAllFormList(){
   return query.selectAll(schema);
 }
 
-export const vare_Query = { 
-  createVareValidation, createVare,
-  editVareValidation, editVare,
-  deleteVareValidation, deleteVare,
-  selectOneVareValidation, selectOneVare,
-  selectAllVareValidation, selectAllVare
+export const formListQuery = { 
+  createFormListValidation, createFormList,
+  editFormListValidation, editFormList,
+  deleteFormListValidation, deleteFormList,
+  selectOneFormListValidation, selectOneFormList,
+  selectAllFormListValidation, selectAllFormList
 }

@@ -53,6 +53,17 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
           <ErrorDisplay errors={state.errors?.notes} />
         </div>
 
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="acc_to">Account Transferred To</Label>
+          <Input
+            id="acc_to"
+            name="acc_to"
+            placeholder="Account Transferred To"
+          />
+
+          <ErrorDisplay errors={state?.errors?.acc_to} />
+        </div>
+
         <Button className="self-start" type="submit">
           Finish Edit
         </Button>

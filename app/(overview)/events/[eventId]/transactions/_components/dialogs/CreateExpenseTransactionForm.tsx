@@ -119,13 +119,6 @@ const CreateExpenseTransactionForm = ({
 
         <ErrorDisplay errors={state?.errors?.unit_price} />
       </>
-
-      <>
-        <Label htmlFor="acc_to">Account Transferred To</Label>
-        <Input id="acc_to" name="acc_to" placeholder="Account Transferred To" />
-
-        <ErrorDisplay errors={state?.errors?.acc_to} />
-      </>
     </CreateForm>
   );
 };
