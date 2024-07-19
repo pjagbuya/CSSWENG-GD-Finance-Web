@@ -30,7 +30,6 @@ var staffListFormat = {
 }
 
 var schema = "StaffListSchema" // replace with table name
-var identifier = "staffList_id"
 
 async function transformData(data : any){
 
@@ -79,7 +78,7 @@ async function createStaffListValidation(prevState: staffListState, formData: Fo
   }
 }
 
-async function editStaffListValidation(id: string, prevState: staffListState, formData: FormData) {
+async function editStaffListValidation(id : string, identifier : string, prevState: staffListState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = StaffListSchema.safeParse(transformedData)
@@ -94,7 +93,7 @@ async function editStaffListValidation(id: string, prevState: staffListState, fo
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editStaffList(data, id)
+  const { error } = await editStaffList(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -105,10 +104,10 @@ async function editStaffListValidation(id: string, prevState: staffListState, fo
   }
 }
 
-async function selectOneStaffListValidation(id: string) {
+async function selectWhereStaffListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneStaffList(id)
+  const { data, error } = await selectWhereStaffList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -134,10 +133,10 @@ async function selectAllStaffListValidation() {
 }
 
 
-async function deleteStaffListValidation(id: string) {
+async function deleteStaffListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteStaffList(id)
+  const { error } = await deleteStaffList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -149,29 +148,29 @@ async function deleteStaffListValidation(id: string) {
 }
 
 async function createStaffList(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editStaffList(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editStaffList(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteStaffList(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteStaffList(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneStaffList(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereStaffList(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllStaffList(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const staffListQuery = { 
   createStaffListValidation, createStaffList,
   editStaffListValidation, editStaffList,
   deleteStaffListValidation, deleteStaffList,
-  selectOneStaffListValidation, selectOneStaffList,
+  selectWhereStaffListValidation, selectWhereStaffList,
   selectAllStaffListValidation, selectAllStaffList
 }

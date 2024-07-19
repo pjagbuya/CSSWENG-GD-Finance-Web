@@ -71,7 +71,6 @@ var fundTransferFormat = {
 }
 
 var schema = "FundTransferSchema" // replace with table name
-var identifier = "ft_id"
 
 async function transformData(data : any){
 
@@ -120,7 +119,7 @@ async function createFundTransferValidation(prevState: fundTransferState, formDa
   }
 }
 
-async function editFundTransferValidation(id: string, prevState: fundTransferState, formData: FormData) {
+async function editFundTransferValidation(id : string, identifier : string, prevState: fundTransferState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = FundTransferSchema.safeParse(transformedData)
@@ -135,7 +134,7 @@ async function editFundTransferValidation(id: string, prevState: fundTransferSta
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editFundTransfer(data, id)
+  const { error } = await editFundTransfer(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -146,10 +145,10 @@ async function editFundTransferValidation(id: string, prevState: fundTransferSta
   }
 }
 
-async function selectOneFundTransferValidation(id: string) {
+async function selectWhereFundTransferValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneFundTransfer(id)
+  const { data, error } = await selectWhereFundTransfer(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -175,10 +174,10 @@ async function selectAllFundTransferValidation() {
 }
 
 
-async function deleteFundTransferValidation(id: string) {
+async function deleteFundTransferValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteFundTransfer(id)
+  const { error } = await deleteFundTransfer(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -190,29 +189,29 @@ async function deleteFundTransferValidation(id: string) {
 }
 
 async function createFundTransfer(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editFundTransfer(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editFundTransfer(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteFundTransfer(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteFundTransfer(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneFundTransfer(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereFundTransfer(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllFundTransfer(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const fundTransferQuery = { 
   createFundTransferValidation, createFundTransfer,
   editFundTransferValidation, editFundTransfer,
   deleteFundTransferValidation, deleteFundTransfer,
-  selectOneFundTransferValidation, selectOneFundTransfer,
+  selectWhereFundTransferValidation, selectWhereFundTransfer,
   selectAllFundTransferValidation, selectAllFundTransfer
 }

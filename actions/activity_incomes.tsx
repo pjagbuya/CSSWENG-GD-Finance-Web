@@ -55,7 +55,6 @@ var activityIncomeFormat = {
 }
 
 var schema = "ActivityIncomeSchema" // replace with table name
-var identifier = "ai_id"
 
 async function transformData(data : any){
 
@@ -104,7 +103,7 @@ async function createActivityIncomeValidation(prevState: activityIncomeState, fo
   }
 }
 
-async function editActivityIncomeValidation(id: string, prevState: activityIncomeState, formData: FormData) {
+async function editActivityIncomeValidation(id : string, identifier : string, prevState: activityIncomeState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData)
@@ -119,7 +118,7 @@ async function editActivityIncomeValidation(id: string, prevState: activityIncom
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editActivityIncome(data, id)
+  const { error } = await editActivityIncome(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -130,10 +129,10 @@ async function editActivityIncomeValidation(id: string, prevState: activityIncom
   }
 }
 
-async function selectOneActivityIncomeValidation(id: string) {
+async function selectWhereActivityIncomeValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneActivityIncome(id)
+  const { data, error } = await selectWhereActivityIncome(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -159,10 +158,10 @@ async function selectAllActivityIncomeValidation() {
 }
 
 
-async function deleteActivityIncomeValidation(id: string) {
+async function deleteActivityIncomeValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteActivityIncome(id)
+  const { error } = await deleteActivityIncome(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -174,29 +173,29 @@ async function deleteActivityIncomeValidation(id: string) {
 }
 
 async function createActivityIncome(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editActivityIncome(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editActivityIncome(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteActivityIncome(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteActivityIncome(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneActivityIncome(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereActivityIncome(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllActivityIncome(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const activityIncomeQuery = { 
   createActivityIncomeValidation, createActivityIncome,
   editActivityIncomeValidation, editActivityIncome,
   deleteActivityIncomeValidation, deleteActivityIncome,
-  selectOneActivityIncomeValidation, selectOneActivityIncome,
+  selectWhereActivityIncomeValidation, selectWhereActivityIncome,
   selectAllActivityIncomeValidation, selectAllActivityIncome
 }

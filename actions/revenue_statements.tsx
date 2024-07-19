@@ -68,7 +68,6 @@ var revenueStatementFormat = {
 }
 
 var schema = "RevenueStatementSchema" // replace with table name
-var identifier = "rs_id"
 
 async function transformData(data : any){
 
@@ -117,7 +116,7 @@ async function createRevenueStatementValidation(prevState: revenueStatementState
   }
 }
 
-async function editRevenueStatementValidation(id: string, prevState: revenueStatementState, formData: FormData) {
+async function editRevenueStatementValidation(id : string, identifier : string, prevState: revenueStatementState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = RevenueStatementSchema.safeParse(transformedData)
@@ -132,7 +131,7 @@ async function editRevenueStatementValidation(id: string, prevState: revenueStat
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editRevenueStatement(data, id)
+  const { error } = await editRevenueStatement(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -143,10 +142,10 @@ async function editRevenueStatementValidation(id: string, prevState: revenueStat
   }
 }
 
-async function selectOneRevenueStatementValidation(id: string) {
+async function selectWhereRevenueStatementValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneRevenueStatement(id)
+  const { data, error } = await selectWhereRevenueStatement(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -172,10 +171,10 @@ async function selectAllRevenueStatementValidation() {
 }
 
 
-async function deleteRevenueStatementValidation(id: string) {
+async function deleteRevenueStatementValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteRevenueStatement(id)
+  const { error } = await deleteRevenueStatement(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -187,30 +186,30 @@ async function deleteRevenueStatementValidation(id: string) {
 }
 
 async function createRevenueStatement(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editRevenueStatement(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editRevenueStatement(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteRevenueStatement(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteRevenueStatement(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneRevenueStatement(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereRevenueStatement(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllRevenueStatement(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const revenueStatementQuery = { 
   createRevenueStatementValidation, createRevenueStatement,
   editRevenueStatementValidation, editRevenueStatement,
   deleteRevenueStatementValidation, deleteRevenueStatement,
-  selectOneRevenueStatementValidation, selectOneRevenueStatement,
+  selectWhereRevenueStatementValidation, selectWhereRevenueStatement,
   selectAllRevenueStatementValidation, selectAllRevenueStatement
 }
  

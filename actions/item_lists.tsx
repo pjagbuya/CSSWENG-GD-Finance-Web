@@ -30,7 +30,6 @@ var itemListFormat = {
 }
 
 var schema = "ItemListSchema" // replace with table name
-var identifier = "item_list_id"
 
 async function transformData(data : any){
 
@@ -79,7 +78,7 @@ async function createItemListValidation(prevState: itemListState, formData: Form
   }
 }
 
-async function editItemListValidation(id: string, prevState: itemListState, formData: FormData) {
+async function editItemListValidation(id : string, identifier : string, prevState: itemListState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = ItemListSchema.safeParse(transformedData)
@@ -94,7 +93,7 @@ async function editItemListValidation(id: string, prevState: itemListState, form
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editItemList(data, id)
+  const { error } = await editItemList(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -105,10 +104,10 @@ async function editItemListValidation(id: string, prevState: itemListState, form
   }
 }
 
-async function selectOneItemListValidation(id: string) {
+async function selectWhereItemListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneItemList(id)
+  const { data, error } = await selectWhereItemList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -134,10 +133,10 @@ async function selectAllItemListValidation() {
 }
 
 
-async function deleteItemListValidation(id: string) {
+async function deleteItemListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteItemList(id)
+  const { error } = await deleteItemList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -149,29 +148,29 @@ async function deleteItemListValidation(id: string) {
 }
 
 async function createItemList(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editItemList(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editItemList(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteItemList(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteItemList(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneItemList(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereItemList(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllItemList(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const itemListQuery = { 
   createItemListValidation, createItemList,
   editItemListValidation, editItemList,
   deleteItemListValidation, deleteItemList,
-  selectOneItemListValidation, selectOneItemList,
+  selectWhereItemListValidation, selectWhereItemList,
   selectAllItemListValidation, selectAllItemList
 }

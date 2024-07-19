@@ -48,7 +48,6 @@ var transactionFormat = {
 }
 
 var schema = "TransactionSchema" // replace with table name
-var identifier = "transaction_id"
 
 async function transformData(data : any){
 
@@ -97,7 +96,7 @@ async function createTransactionValidation(prevState: transactionState, formData
   }
 }
 
-async function editTransactionValidation(id: string, prevState: transactionState, formData: FormData) {
+async function editTransactionValidation(id : string, identifier : string, prevState: transactionState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = TransactionSchema.safeParse(transformedData)
@@ -112,7 +111,7 @@ async function editTransactionValidation(id: string, prevState: transactionState
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editTransaction(data, id)
+  const { error } = await editTransaction(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -123,10 +122,10 @@ async function editTransactionValidation(id: string, prevState: transactionState
   }
 }
 
-async function selectOneTransactionValidation(id: string) {
+async function selectWhereTransactionValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneTransaction(id)
+  const { data, error } = await selectWhereTransaction(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -152,10 +151,10 @@ async function selectAllTransactionValidation() {
 }
 
 
-async function deleteTransactionValidation(id: string) {
+async function deleteTransactionValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteTransaction(id)
+  const { error } = await deleteTransaction(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -167,29 +166,29 @@ async function deleteTransactionValidation(id: string) {
 }
 
 async function createTransaction(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editTransaction(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editTransaction(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteTransaction(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteTransaction(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneTransaction(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereTransaction(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllTransaction(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const transactionQuery = { 
   createTransactionValidation, createTransaction,
   editTransactionValidation, editTransaction,
   deleteTransactionValidation, deleteTransaction,
-  selectOneTransactionValidation, selectOneTransaction,
+  selectWhereTransactionValidation, selectWhereTransaction,
   selectAllTransactionValidation, selectAllTransaction
 }

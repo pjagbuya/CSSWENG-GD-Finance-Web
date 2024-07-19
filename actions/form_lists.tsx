@@ -13,30 +13,23 @@ import { query } from "@/lib/supabase";
 export type formListState = {
   errors?: {
     form_list_id?: string[]; 
-    form_list_type?: string[]; 
-    form_list_name?: string[]; 
   }; 
   message?: string | null;
 }
 
 var formListFormat = {
   form_list_id : null,
-  form_list_type : null,
-  form_list_name : null,
 
   /*
     CREATE TABLE IF NOT EXISTS form_lists
     (
         form_list_id VARCHAR(25),
-        form_list_type ENUM('FT','RS','ES','AI'),
-        form_list_name VARCHAR(55),
         PRIMARY KEY (form_list_id)
     );
   */
 }
 
 var schema = "FormListSchema" // replace with table name
-var identifier = "formList_id"
 
 async function transformData(data : any){
 
@@ -85,7 +78,7 @@ async function createFormListValidation(prevState: formListState, formData: Form
   }
 }
 
-async function editFormListValidation(id: string, prevState: formListState, formData: FormData) {
+async function editFormListValidation(id : string, identifier : string, prevState: formListState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = FormListSchema.safeParse(transformedData)
@@ -100,7 +93,7 @@ async function editFormListValidation(id: string, prevState: formListState, form
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editFormList(data, id)
+  const { error } = await editFormList(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -111,10 +104,10 @@ async function editFormListValidation(id: string, prevState: formListState, form
   }
 }
 
-async function selectOneFormListValidation(id: string) {
+async function selectWhereFormListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneFormList(id)
+  const { data, error } = await selectWhereFormList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -140,10 +133,10 @@ async function selectAllFormListValidation() {
 }
 
 
-async function deleteFormListValidation(id: string) {
+async function deleteFormListValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteFormList(id)
+  const { error } = await deleteFormList(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -155,29 +148,29 @@ async function deleteFormListValidation(id: string) {
 }
 
 async function createFormList(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editFormList(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editFormList(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteFormList(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteFormList(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneFormList(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereFormList(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllFormList(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const formListQuery = { 
   createFormListValidation, createFormList,
   editFormListValidation, editFormList,
   deleteFormListValidation, deleteFormList,
-  selectOneFormListValidation, selectOneFormList,
+  selectWhereFormListValidation, selectWhereFormList,
   selectAllFormListValidation, selectAllFormList
 }

@@ -26,7 +26,6 @@ var vare_Format = {
 }
 
 var schema = "VareSchema" // replace with table name
-var identifier = "vare__id"
 
 async function transformData(data : any){
 
@@ -75,7 +74,7 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
   }
 }
 
-async function editVareValidation(id: string, prevState: vare_State, formData: FormData) {
+async function editVareValidation(id : string, identifier : string, prevState: vare_State, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = VareSchema.safeParse(transformedData)
@@ -90,7 +89,7 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editVare(data, id)
+  const { error } = await editVare(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -101,10 +100,10 @@ async function editVareValidation(id: string, prevState: vare_State, formData: F
   }
 }
 
-async function selectOneVareValidation(id: string) {
+async function selectWhereVareValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneVare(id)
+  const { data, error } = await selectWhereVare(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -130,10 +129,10 @@ async function selectAllVareValidation() {
 }
 
 
-async function deleteVareValidation(id: string) {
+async function deleteVareValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteVare(id)
+  const { error } = await deleteVare(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -145,29 +144,29 @@ async function deleteVareValidation(id: string) {
 }
 
 async function createVare(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editVare(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editVare(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteVare(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteVare(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneVare(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereVare(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllVare(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const vare_Query = { 
   createVareValidation, createVare,
   editVareValidation, editVare,
   deleteVareValidation, deleteVare,
-  selectOneVareValidation, selectOneVare,
+  selectWhereVareValidation, selectWhereVare,
   selectAllVareValidation, selectAllVare
 }

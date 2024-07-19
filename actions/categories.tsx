@@ -45,7 +45,6 @@ var categoryFormat = {
 }
 
 var schema = "CategorySchema" // replace with table name
-var identifier = "category_id"
 
 async function transformData(data : any){
 
@@ -94,7 +93,7 @@ async function createCategoryValidation(prevState: categoryState, formData: Form
   }
 }
 
-async function editCategoryValidation(id: string, prevState: categoryState, formData: FormData) {
+async function editCategoryValidation(id : string, identifier : string, prevState: categoryState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = CategorySchema.safeParse(transformedData)
@@ -109,7 +108,7 @@ async function editCategoryValidation(id: string, prevState: categoryState, form
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editCategory(data, id)
+  const { error } = await editCategory(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -120,10 +119,10 @@ async function editCategoryValidation(id: string, prevState: categoryState, form
   }
 }
 
-async function selectOneCategoryValidation(id: string) {
+async function selectWhereCategoryValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneCategory(id)
+  const { data, error } = await selectWhereCategory(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -149,10 +148,10 @@ async function selectAllCategoryValidation() {
 }
 
 
-async function deleteCategoryValidation(id: string) {
+async function deleteCategoryValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteCategory(id)
+  const { error } = await deleteCategory(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -164,29 +163,29 @@ async function deleteCategoryValidation(id: string) {
 }
 
 async function createCategory(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editCategory(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editCategory(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteCategory(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteCategory(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneCategory(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereCategory(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllCategory(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const categoryQuery = { 
   createCategoryValidation, createCategory,
   editCategoryValidation, editCategory,
   deleteCategoryValidation, deleteCategory,
-  selectOneCategoryValidation, selectOneCategory,
+  selectWhereCategoryValidation, selectWhereCategory,
   selectAllCategoryValidation, selectAllCategory
 }
