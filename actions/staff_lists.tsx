@@ -18,7 +18,7 @@ export type staffListState = {
 }
 
 var staffListFormat = {
-    staff_list_id : null,
+  staff_list_id : null,
 
   /*
     CREATE TABLE IF NOT EXISTS staff_lists

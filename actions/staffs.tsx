@@ -12,21 +12,31 @@ import { query } from "@/lib/supabase";
 
 export type staffState = {
   errors?: {
-    vals?: string[];    
+    staff_id?: string[];   
+    user_id?: string[];   
+    staff_name?: string[];   
+    staff_position?: string[];   
+    staff_list_id?: string[];   
   }; 
   message?: string | null;
 }
 
 var staffFormat = {
-  vals : null,
+  staff_id : null,  
+  user_id : null,
+  staff_name : null,
+  staff_position : null,
+  staff_list_id : null,
 
   /*
   CREATE TABLE IF NOT EXISTS staffs
   (
       staff_id VARCHAR(25),
+      user_id VARCHAR(25),
       staff_name VARCHAR(55),
       staff_position VARCHAR(55),
       staff_list_id VARCHAR(25),
+      FOREIGN KEY (user_id) REFERENCES users(user_id),
       FOREIGN KEY (staff_list_id) REFERENCES staff_lists(staff_list_id),
       PRIMARY KEY (staff_id)
   );

@@ -15,8 +15,6 @@ export type activityIncomeState = {
     ai_id?: string[];  
     ai_name?: string[];  
     ai_date?: string[];  
-    revenue_list_id?: string[];  
-    expense_list_id?: string[];  
     ai_notes?: string[];  
     prepared_staff_id?: string[];  
     certified_staff_id?: string[];  
@@ -30,8 +28,6 @@ var activityIncomeFormat = {
   ai_id : null,  
   ai_name : null, 
   ai_date : null, 
-  revenue_list_id : null, 
-  expense_list_id : null, 
   ai_notes : null, 
   prepared_staff_id : null, 
   certified_staff_id : null, 
@@ -44,15 +40,11 @@ var activityIncomeFormat = {
         ai_id VARCHAR(25),
         ai_name VARCHAR(55),
         ai_date DATE,
-        revenue_list_id VARCHAR(25),
-        expense_list_id VARCHAR(25),
         ai_notes VARCHAR(205),
         prepared_staff_id VARCHAR(25),
         certified_staff_id VARCHAR(25),
         noted_staff_list_id VARCHAR(25),
         form_list_id VARCHAR(25), 
-        FOREIGN KEY (revenue_list_id) REFERENCES item_lists(item_list_id),
-        FOREIGN KEY (expense_list_id) REFERENCES item_lists(item_list_id),
         FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
         FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
         FOREIGN KEY (noted_staff_id) REFERENCES staff_lists(staff_list_id),

@@ -12,13 +12,14 @@ import { query } from "@/lib/supabase";
 
 export type expenseStatementState = {
   errors?: {
-    vals?: string[];    
     es_id?: string[]; 
     es_name?: string[]; 
     es_date?: string[]; 
     receipt_link?: string[]; 
-    category_id?: string[]; 
+    es_to?: string[];  
+    es_from?: string[]; 
     es_notes?: string[]; 
+    category_id?: string[]; 
     prepared_staff_id?: string[]; 
     certified_staff_id?: string[]; 
     noted_staff_list_id?: string[]; 
@@ -29,36 +30,40 @@ export type expenseStatementState = {
 
 var expenseStatementFormat = {
   es_id : null,
-    es_name : null,
-    es_date : null,
-    receipt_link : null,
-    category_id : null,
-    es_notes : null,
-    prepared_staff_id : null,
-    certified_staff_id : null,
-    noted_staff_list_id : null,
-    form_list_id : null,
+  es_name : null,
+  es_date : null,
+  receipt_link : null,
+  es_to : null,   
+  es_from : null,
+  es_notes : null,
+  category_id : null,
+  prepared_staff_id : null,
+  certified_staff_id : null,
+  noted_staff_list_id : null,
+  form_list_id : null,
   /*
-    CREATE TABLE IF NOT EXISTS expense_statements
-(
-    es_id VARCHAR(25),
-    es_name VARCHAR(55),
-    es_date DATE,
-    receipt_link VARCHAR(55),
-    category_id VARCHAR(25),
-    es_notes VARCHAR(105),
-    prepared_staff_id VARCHAR(25),
-    certified_staff_id VARCHAR(25),
-    noted_staff_list_id VARCHAR(25),
-    form_list_id VARCHAR(25),
-    FOREIGN KEY (expense_list_id) REFERENCES item_lists(item_list_id),
-    FOREIGN KEY (td_id) REFERENCES transaction_details(td_id),
-    FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
-    FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
-    FOREIGN KEY (noted_staff_id) REFERENCES staff_lists(staff_list_id),
-    FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id),
-    PRIMARY KEY (es_id)
-);
+  CREATE TABLE IF NOT EXISTS expense_statements
+  (
+      es_id VARCHAR(25),
+      es_name VARCHAR(55),
+      es_date DATE,
+      receipt_link VARCHAR(55),    
+      es_to VARCHAR(105),    
+      es_from VARCHAR(105),
+      es_notes VARCHAR(105),
+      category_id VARCHAR(25),
+      prepared_staff_id VARCHAR(25),
+      certified_staff_id VARCHAR(25),
+      noted_staff_list_id VARCHAR(25),
+      form_list_id VARCHAR(25),
+      FOREIGN KEY (expense_list_id) REFERENCES item_lists(item_list_id),
+      FOREIGN KEY (td_id) REFERENCES transaction_details(td_id),
+      FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
+      FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
+      FOREIGN KEY (noted_staff_id) REFERENCES staff_lists(staff_list_id),
+      FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id),
+      PRIMARY KEY (es_id)
+  );
   */
 }
 
