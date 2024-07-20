@@ -8,7 +8,7 @@
 import { ExpenseStatementSchema } from "@/lib/definitions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import *  from "@/lib/supabase";
 
 export type expenseStatementState = {
   errors?: {
@@ -68,7 +68,6 @@ var expenseStatementFormat = {
 }
 
 var schema = "ExpenseStatementSchema" // replace with table name
-var identifier = "es_id"
 
 async function transformData(data : any){
 
@@ -117,7 +116,7 @@ async function createExpenseStatementValidation(prevState: expenseStatementState
   }
 }
 
-async function editExpenseStatementValidation(id: string, prevState: expenseStatementState, formData: FormData) {
+async function editExpenseStatementValidation(id : string, identifier : string, prevState: expenseStatementState, formData: FormData) {
   
   var transformedData = transformData(formData)
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData)
@@ -132,7 +131,7 @@ async function editExpenseStatementValidation(id: string, prevState: expenseStat
 
   // TODO: provide logic
   var data = convertData(validatedFields.data)
-  const { error } = await editExpenseStatement(data, id)
+  const { error } = await editExpenseStatement(data, id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -143,10 +142,10 @@ async function editExpenseStatementValidation(id: string, prevState: expenseStat
   }
 }
 
-async function selectOneExpenseStatementValidation(id: string) {
+async function selectWhereExpenseStatementValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { data, error } = await selectOneExpenseStatement(id)
+  const { data, error } = await selectWhereExpenseStatement(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -172,10 +171,10 @@ async function selectAllExpenseStatementValidation() {
 }
 
 
-async function deleteExpenseStatementValidation(id: string) {
+async function deleteExpenseStatementValidation(id : string, identifier : string) {
 
   // TODO: provide logic
-  const { error } = await deleteExpenseStatement(id)
+  const { error } = await deleteExpenseStatement(id, identifier)
   if (error) {
     throw new Error(error.message)
   }
@@ -187,30 +186,30 @@ async function deleteExpenseStatementValidation(id: string) {
 }
 
 async function createExpenseStatement(data : any){
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editExpenseStatement(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editExpenseStatement(data : any, id : string, identifier : string){
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteExpenseStatement(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteExpenseStatement(id : string, identifier : string){
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneExpenseStatement(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereExpenseStatement(id : string, identifier : string){
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllExpenseStatement(){
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const expenseStatementQuery = { 
   createExpenseStatementValidation, createExpenseStatement,
   editExpenseStatementValidation, editExpenseStatement,
   deleteExpenseStatementValidation, deleteExpenseStatement,
-  selectOneExpenseStatementValidation, selectOneExpenseStatement,
+  selectWhereExpenseStatementValidation, selectWhereExpenseStatement,
   selectAllExpenseStatementValidation, selectAllExpenseStatement
 }
         

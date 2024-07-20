@@ -1,35 +1,34 @@
-
 // INSTRUCTIONS:
 // transaction -> small case
 // Transaction -> big case
 // replace vals with column names
 // remove comments after
 
-import { TransactionSchema } from "@/lib/definitions";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import { TransactionSchema } from '@/lib/definitions';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { query } from '@/lib/supabase';
 
 export type transactionState = {
-  errors?: {    
-    transaction_id?: string[]; 
-    transaction_name?: string[]; 
-    transaction_note?: string[];  
-    transaction_date?: string[];   
-    transaction_list_id?: string[]; 
-    item_list_id?: string[]; 
-  }; 
+  errors?: {
+    transaction_id?: string[];
+    transaction_name?: string[];
+    transaction_note?: string[];
+    transaction_date?: string[];
+    transaction_list_id?: string[];
+    item_list_id?: string[];
+  };
   message?: string | null;
-}
+};
 
 var transactionFormat = {
-  vals : null,
-    transaction_id : null, 
-    transaction_name : null, 
-    transaction_note : null,  
-    transaction_date : null,   
-    transaction_list_id : null, 
-    item_list_id : null, 
+  vals: null,
+  transaction_id: null,
+  transaction_name: null,
+  transaction_note: null,
+  transaction_date: null,
+  transaction_list_id: null,
+  item_list_id: null,
 
   /*
     CREATE TABLE IF NOT EXISTS transactions
@@ -45,151 +44,155 @@ var transactionFormat = {
         FOREIGN KEY (item_list_id) REFERENCES item_lists(item_list_id)
     );
   */
-}
+};
 
-var schema = "TransactionSchema" // replace with table name
-var identifier = "transaction_id"
+var schema = 'TransactionSchema'; // replace with table name
 
-async function transformData(data : any){
-
-  var arrayData = Array.from(data.entries())
+async function transformData(data: any) {
+  var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
   // TODO: fill information
-  var transformedData = {
-
-  }
-  return transformedData
+  var transformedData = {};
+  return transformedData;
 }
 
-async function convertData(data : any){
-
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data
+  return data.data;
 }
 
-
-async function createTransactionValidation(prevState: transactionState, formData: FormData) {
-
-  var transformedData = transformData(formData)
-  const validatedFields = TransactionSchema.safeParse(transformedData)
+async function createTransactionValidation(
+  prevState: transactionState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = TransactionSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create var."
-    }
+      message: 'Missing fields. Unable to create var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields)
-  const { error } = await createTransaction(data)
+  var data = convertData(validatedFields);
+  const { error } = await createTransaction(data);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function editTransactionValidation(id: string, prevState: transactionState, formData: FormData) {
-  
-  var transformedData = transformData(formData)
-  const validatedFields = TransactionSchema.safeParse(transformedData)
+async function editTransactionValidation(
+  id: string,
+  identifier: string,
+  prevState: transactionState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = TransactionSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit var."
-    }
+      message: 'Missing fields. Unable to edit var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data)
-  const { error } = await editTransaction(data, id)
+  var data = convertData(validatedFields.data);
+  const { error } = await editTransaction(data, id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function selectOneTransactionValidation(id: string) {
-
+async function selectWhereTransactionValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { data, error } = await selectOneTransaction(id)
+  const { data, error } = await selectWhereTransaction(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
 async function selectAllTransactionValidation() {
-
   // TODO: provide logic
-  const { data, error } = await selectAllTransaction()
+  const { data, error } = await selectAllTransaction();
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-
-async function deleteTransactionValidation(id: string) {
-
+async function deleteTransactionValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { error } = await deleteTransaction(id)
+  const { error } = await deleteTransaction(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function createTransaction(data : any){
-  return query.insert(schema, data);
+async function createTransaction(data: any) {
+  return await query.insert(schema, data);
 }
 
-async function editTransaction(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editTransaction(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteTransaction(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteTransaction(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneTransaction(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereTransaction(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllTransaction(){
-  return query.selectAll(schema);
+async function selectAllTransaction() {
+  return await query.selectAll(schema);
 }
 
-export const transactionQuery = { 
-  createTransactionValidation, createTransaction,
-  editTransactionValidation, editTransaction,
-  deleteTransactionValidation, deleteTransaction,
-  selectOneTransactionValidation, selectOneTransaction,
-  selectAllTransactionValidation, selectAllTransaction
-}
+export const transactionQuery = {
+  createTransactionValidation,
+  createTransaction,
+  editTransactionValidation,
+  editTransaction,
+  deleteTransactionValidation,
+  deleteTransaction,
+  selectWhereTransactionValidation,
+  selectWhereTransaction,
+  selectAllTransactionValidation,
+  selectAllTransaction,
+};

@@ -7,7 +7,7 @@
 import { CreateEventSchema } from '@/lib/definitions';
 import * as query from '@/lib/supabase';
 
-export type EventState = {
+export type eventState = {
   errors?: {
     event_name?: string[];
   };
@@ -86,11 +86,12 @@ async function createEventValidation(
 
 async function editEventValidation(
   id: string,
-  prevState: EventState,
+  identifier: string,
+  prevState: eventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
-  const validatedFields = CreateEventSchema.safeParse(transformedData);
+  const validatedFields = EventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -102,7 +103,7 @@ async function editEventValidation(
 
   // TODO: provide logic
   var data = convertData(validatedFields.data);
-  const { error } = await editEvent(data, id);
+  const { error } = await editEvent(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -113,9 +114,9 @@ async function editEventValidation(
   };
 }
 
-async function selectOneEventValidation(id: string) {
+async function selectWhereEventValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { data, error } = await selectOneEvent(id);
+  const { data, error } = await selectWhereEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -139,9 +140,9 @@ async function selectAllEventValidation() {
   };
 }
 
-async function deleteEventValidation(id: string) {
+async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { error } = await deleteEvent(id);
+  const { error } = await deleteEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -153,8 +154,37 @@ async function deleteEventValidation(id: string) {
 }
 
 async function createEvent(data: any) {
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
+
+async function editEvent(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
+}
+
+async function deleteEvent(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
+}
+
+async function selectWhereEvent(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
+}
+
+async function selectAllEvent() {
+  return await query.selectAll(schema);
+}
+
+export const eventQuery = {
+  createEventValidation,
+  createEvent,
+  editEventValidation,
+  editEvent,
+  deleteEventValidation,
+  deleteEvent,
+  selectWhereEventValidation,
+  selectWhereEvent,
+  selectAllEventValidation,
+  selectAllEvent,
+};
 
 async function editEvent(data: any, id: string) {
   return query.edit(schema, data, identifier, id);

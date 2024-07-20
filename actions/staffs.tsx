@@ -1,32 +1,31 @@
-
 // INSTRUCTIONS:
 // staff -> small case
 // Staff -> big case
 // replace vals with column names
 // remove comments after
 
-import { StaffSchema } from "@/lib/definitions";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import { StaffSchema } from '@/lib/definitions';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { query } from '@/lib/supabase';
 
 export type staffState = {
   errors?: {
-    staff_id?: string[];   
-    user_id?: string[];   
-    staff_name?: string[];   
-    staff_position?: string[];   
-    staff_list_id?: string[];   
-  }; 
+    staff_id?: string[];
+    user_id?: string[];
+    staff_name?: string[];
+    staff_position?: string[];
+    staff_list_id?: string[];
+  };
   message?: string | null;
-}
+};
 
 var staffFormat = {
-  staff_id : null,  
-  user_id : null,
-  staff_name : null,
-  staff_position : null,
-  staff_list_id : null,
+  staff_id: null,
+  user_id: null,
+  staff_name: null,
+  staff_position: null,
+  staff_list_id: null,
 
   /*
   CREATE TABLE IF NOT EXISTS staffs
@@ -41,151 +40,152 @@ var staffFormat = {
       PRIMARY KEY (staff_id)
   );
   */
-}
+};
 
-var schema = "StaffSchema" // replace with table name
-var identifier = "staff_id"
+var schema = 'StaffSchema'; // replace with table name
 
-async function transformData(data : any){
-
-  var arrayData = Array.from(data.entries())
+async function transformData(data: any) {
+  var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
   // TODO: fill information
-  var transformedData = {
-
-  }
-  return transformedData
+  var transformedData = {};
+  return transformedData;
 }
 
-async function convertData(data : any){
-
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data
+  return data.data;
 }
 
-
-async function createStaffValidation(prevState: staffState, formData: FormData) {
-
-  var transformedData = transformData(formData)
-  const validatedFields = StaffSchema.safeParse(transformedData)
+async function createStaffValidation(
+  prevState: staffState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = StaffSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create var."
-    }
+      message: 'Missing fields. Unable to create var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields)
-  const { error } = await createStaff(data)
+  var data = convertData(validatedFields);
+  const { error } = await createStaff(data);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function editStaffValidation(id: string, prevState: staffState, formData: FormData) {
-  
-  var transformedData = transformData(formData)
-  const validatedFields = StaffSchema.safeParse(transformedData)
+async function editStaffValidation(
+  id: string,
+  identifier: string,
+  prevState: staffState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = StaffSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit var."
-    }
+      message: 'Missing fields. Unable to edit var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data)
-  const { error } = await editStaff(data, id)
+  var data = convertData(validatedFields.data);
+  const { error } = await editStaff(data, id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function selectOneStaffValidation(id: string) {
-
+async function selectWhereStaffValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { data, error } = await selectOneStaff(id)
+  const { data, error } = await selectWhereStaff(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
 async function selectAllStaffValidation() {
-
   // TODO: provide logic
-  const { data, error } = await selectAllStaff()
+  const { data, error } = await selectAllStaff();
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-
-async function deleteStaffValidation(id: string) {
-
+async function deleteStaffValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { error } = await deleteStaff(id)
+  const { error } = await deleteStaff(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function createStaff(data : any){
-  return query.insert(schema, data);
+async function createStaff(data: any) {
+  return await query.insert(schema, data);
 }
 
-async function editStaff(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editStaff(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteStaff(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteStaff(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneStaff(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereStaff(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllStaff(){
-  return query.selectAll(schema);
+async function selectAllStaff() {
+  return await query.selectAll(schema);
 }
 
-export const staffQuery = { 
-  createStaffValidation, createStaff,
-  editStaffValidation, editStaff,
-  deleteStaffValidation, deleteStaff,
-  selectOneStaffValidation, selectOneStaff,
-  selectAllStaffValidation, selectAllStaff
-}
+export const staffQuery = {
+  createStaffValidation,
+  createStaff,
+  editStaffValidation,
+  editStaff,
+  deleteStaffValidation,
+  deleteStaff,
+  selectWhereStaffValidation,
+  selectWhereStaff,
+  selectAllStaffValidation,
+  selectAllStaff,
+};
