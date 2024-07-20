@@ -131,19 +131,18 @@ export const TransactionDetailsSchema = z.object({
 });
 
 export const StaffSchema = z.object({
-  staff_id: z.string({
-    required_error: 'Please enter Staff ID.',
-  }),
   staff_name: z.string({
     required_error: 'Please enter Staff name.',
   }),
   staff_position: z.string({
     required_error: 'Please enter Staff position.',
   }),
-  staff_list_id: z.string({
-    required_error: 'Please enter Staff list ID.',
-  }),
+  // staff_list_id: z.string({
+  //   required_error: 'Please enter Staff list ID.',
+  // }),
 });
+
+export type staffType = z.infer<typeof StaffSchema>;
 
 export const FormListSchema = z.object({
   form_list_id: z.string({
