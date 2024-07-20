@@ -408,7 +408,7 @@ export const AddRevenueFormSchema = z.object({
   amount: z.coerce.number({ required_error: 'Please enter an amount.' }).min(1),
 });
 
-export const AddUserFormSchema = z.object({
+export const UserFormSchema = z.object({
   email: z
     .string({
       required_error: 'Please enter your email.',
@@ -432,7 +432,11 @@ export const AddUserFormSchema = z.object({
   role: z.enum(['chief', 'member']),
 });
 
-export type userType = z.infer<typeof AddUserFormSchema>
+export const AddUserFormSchema = UserFormSchema.omit({
+  role: true
+})
+
+export type addUserType = z.infer<typeof AddUserFormSchema>
 
 export const CreateEventSchema = z.object({
   event_name: z
@@ -451,7 +455,7 @@ export const EditUserFormSchema = AddUserFormSchema.omit({
     .optional(),
 });
 
-export const LoginForm = AddUserFormSchema.pick({
+export const LoginForm = UserFormSchema.pick({
   email: true,
   password: true,
 });

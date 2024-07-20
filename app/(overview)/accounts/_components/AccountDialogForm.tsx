@@ -127,28 +127,6 @@ const AccountDialogForm: React.FC<AccountDialogFormProps> = ({
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="position">Position</Label>
-              <Select name='role' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Position" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="chief">Chief</SelectItem>
-                  <SelectItem value="member">Member</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div id="position-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.role &&
-                  state.errors.role.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                  ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
               <Input id="password" name='password' type="password" placeholder="Password" />
 
