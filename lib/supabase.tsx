@@ -3,6 +3,8 @@
 import { createClient } from '@/utils/supabase/server';
 
 export async function insert(schema: any, data: any) {
+  'use server';
+
   const supabase = createClient();
 
   const { data: result, error } = await supabase

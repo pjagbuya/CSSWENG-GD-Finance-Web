@@ -1,3 +1,5 @@
+'use server';
+
 // INSTRUCTIONS:
 // event -> small case
 // Event -> big case
@@ -42,27 +44,36 @@ var eventFormat = {
 var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+export async function transformData(data: FormData) {
+  var eventData = await selectAllEventValidation();
+  var count = 0;
+
+  if (eventData.data) {
+    count = eventData.data!.length;
+  }
 
   // TODO: fill information
-  var transformedData = {};
+  var transformedData = {
+    event_id: `event_${count + 10000}`,
+    event_name: data.get('event_name'),
+    ft_form_list_id: `ftl_${count + 10000}`,
+    rs_form_list_id: `rsl_${count + 10000}`,
+    es_form_list_id: `esl_${count + 10000}`,
+    ai_form_list_id: `ail_${count + 10000}`,
+  };
+
   return transformedData;
 }
 
-async function convertData(data: any) {
-  // TODO: provide logic
-
-  // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+export async function convertData(data: any) {
+  return data;
 }
 
-async function createEventValidation(
+export async function createEventValidation(
   prevState: EventState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformData(formData);
   const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -74,17 +85,17 @@ async function createEventValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
   const { error } = await createEvent(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
   return {};
 }
 
-async function editEventValidation(
+export async function editEventValidation(
   id: string,
   identifier: string,
   prevState: EventState,
@@ -114,7 +125,10 @@ async function editEventValidation(
   };
 }
 
-async function selectWhereEventValidation(id: string, identifier: string) {
+export async function selectWhereEventValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereEvent(id, identifier);
   if (error) {
@@ -127,7 +141,7 @@ async function selectWhereEventValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllEventValidation() {
+export async function selectAllEventValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllEvent();
   if (error) {
@@ -140,7 +154,7 @@ async function selectAllEventValidation() {
   };
 }
 
-async function deleteEventValidation(id: string, identifier: string) {
+export async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteEvent(id, identifier);
   if (error) {
@@ -153,35 +167,22 @@ async function deleteEventValidation(id: string, identifier: string) {
   };
 }
 
-async function createEvent(data: any) {
+export async function createEvent(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editEvent(data: any, id: string, identifier: string) {
+export async function editEvent(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteEvent(id: string, identifier: string) {
+export async function deleteEvent(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereEvent(id: string, identifier: string) {
+export async function selectWhereEvent(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllEvent() {
+export async function selectAllEvent() {
   return await query.selectAll(schema);
 }
-
-export const eventQuery = {
-  createEventValidation,
-  createEvent,
-  editEventValidation,
-  editEvent,
-  deleteEventValidation,
-  deleteEvent,
-  selectWhereEventValidation,
-  selectWhereEvent,
-  selectAllEventValidation,
-  selectAllEvent,
-};

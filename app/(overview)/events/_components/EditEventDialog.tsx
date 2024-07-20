@@ -1,4 +1,8 @@
-import { EventState, eventQuery } from '@/actions/events';
+import {
+  EventState,
+  editEventValidation,
+  selectWhereEventValidation,
+} from '@/actions/events';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
@@ -17,7 +21,7 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
     },
   };
   const [state, formAction] = useFormState(
-    eventQuery.editEventValidation.bind(null, eventId, 'event_id'),
+    editEventValidation.bind(null, eventId, 'event_id'),
     initialState,
   );
 
@@ -31,10 +35,7 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
     }
 
     async function getEventInfo() {
-      const { data } = await eventQuery.selectWhereEventValidation(
-        eventId,
-        'event_id',
-      );
+      const { data } = await selectWhereEventValidation(eventId, 'event_id');
       setFields(data![0]);
       setOpen(true);
     }

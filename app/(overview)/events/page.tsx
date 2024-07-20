@@ -1,4 +1,4 @@
-import { eventQuery } from '@/actions/events';
+import { selectAllEventValidation } from '@/actions/events';
 import SearchInput from '@/components/SearchInput';
 
 import CreateEventButton from './_components/CreateEventButton';
@@ -14,7 +14,7 @@ type EventsPageProps = {
 };
 
 const EventsPage = async ({ searchParams }: EventsPageProps) => {
-  const { data } = await eventQuery.selectAllEventValidation();
+  const { data } = await selectAllEventValidation();
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
