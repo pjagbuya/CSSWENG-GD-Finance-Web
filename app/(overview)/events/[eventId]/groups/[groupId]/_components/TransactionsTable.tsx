@@ -11,6 +11,7 @@ import { toast } from '@/components/ui/use-toast';
 import { ColumnDef } from '@tanstack/react-table';
 import { deleteCategoryValidation } from '@/actions/categories';
 import { redirect, usePathname } from 'next/navigation';
+import EditTransactionDialog from './EditTransactionDialog';
 
 type TransactionsTableProps = {
   transactions: any[];
@@ -33,15 +34,14 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
   },
   {
     accessorKey: 'transaction_note',
-    header: ({ column }) => (
-      <SortableHeader column={column}>Notes</SortableHeader>
-    ),
+    header: () => 'Notes',
   },
 ];
 
 const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
   const pathname = usePathname();
 
+  const [toEditId, setToEditId] = useState('');
   const [toSelectId, setToSelectId] = useState('');
   const [toDeleteId, setToDeleteId] = useState('');
 
@@ -52,7 +52,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
   }, [pathname, toSelectId]);
 
   async function handleTransactionDelete() {
-    await deleteCategoryValidation(toDeleteId, 'category_id');
+    await deleteCategoryValidation(toDeleteId, 'transaction_id');
     setToDeleteId('');
 
     toast({
@@ -79,6 +79,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
         onRowSelect={(transactionId: string) =>
           handleTransactionSelect(transactionId)
         }
+        onRowEdit={(transactionId: string) => setToEditId(transactionId)}
         onRowDelete={(transactionId: string) => setToDeleteId(transactionId)}
       />
 
@@ -87,6 +88,12 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={handleTransactionDelete}
+      />
+
+      <EditTransactionDialog
+        transactionId={toEditId}
+        open={!!toEditId}
+        onFinish={() => setToEditId('')}
       />
     </>
   );

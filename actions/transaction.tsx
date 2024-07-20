@@ -111,9 +111,7 @@ export async function editTransactionValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as TransactionState;
 }
 
 export async function selectWhereTransactionValidation(

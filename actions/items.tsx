@@ -7,12 +7,10 @@
 import { ItemSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
-export type itemState = {
+export type ItemState = {
   errors?: {
-    item_id?: string[];
-    item_list_id?: string[];
     item_name?: string[];
     item_units?: string[];
     item_price?: string[];
@@ -20,7 +18,6 @@ export type itemState = {
     item_date?: string[];
     item_payment_details?: string[];
   };
-  message?: string | null;
 };
 
 var itemFormat = {
@@ -51,7 +48,7 @@ CREATE TABLE IF NOT EXISTS items(
 
 var schema = 'ItemSchema'; // replace with table name
 
-async function transformData(data: any) {
+export async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
@@ -60,14 +57,17 @@ async function transformData(data: any) {
   return transformedData;
 }
 
-async function convertData(data: any) {
+export async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
   return data.data;
 }
 
-async function createItemValidation(prevState: itemState, formData: FormData) {
+export async function createItemValidation(
+  prevState: ItemState,
+  formData: FormData,
+) {
   var transformedData = transformData(formData);
   const validatedFields = ItemSchema.safeParse(transformedData);
 
@@ -87,15 +87,13 @@ async function createItemValidation(prevState: itemState, formData: FormData) {
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as ItemState;
 }
 
-async function editItemValidation(
+export async function editItemValidation(
   id: string,
   identifier: string,
-  prevState: itemState,
+  prevState: ItemState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -117,12 +115,13 @@ async function editItemValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as ItemState;
 }
 
-async function selectWhereItemValidation(id: string, identifier: string) {
+export async function selectWhereItemValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereItem(id, identifier);
   if (error) {
@@ -135,7 +134,7 @@ async function selectWhereItemValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllItemValidation() {
+export async function selectAllItemValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllItem();
   if (error) {
@@ -148,7 +147,7 @@ async function selectAllItemValidation() {
   };
 }
 
-async function deleteItemValidation(id: string, identifier: string) {
+export async function deleteItemValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteItem(id, identifier);
   if (error) {
@@ -161,35 +160,22 @@ async function deleteItemValidation(id: string, identifier: string) {
   };
 }
 
-async function createItem(data: any) {
+export async function createItem(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editItem(data: any, id: string, identifier: string) {
+export async function editItem(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteItem(id: string, identifier: string) {
+export async function deleteItem(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereItem(id: string, identifier: string) {
+export async function selectWhereItem(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllItem() {
+export async function selectAllItem() {
   return await query.selectAll(schema);
 }
-
-export const itemQuery = {
-  createItemValidation,
-  createItem,
-  editItemValidation,
-  editItem,
-  deleteItemValidation,
-  deleteItem,
-  selectWhereItemValidation,
-  selectWhereItem,
-  selectAllItemValidation,
-  selectAllItem,
-};
