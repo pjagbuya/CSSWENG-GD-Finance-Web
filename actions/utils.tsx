@@ -16,9 +16,10 @@ import { query } from "@/lib/supabase";
 //-------------------------------------------------------------------
 //          Dashboard Functions
 //-------------------------------------------------------------------
+
 // get specific form from event
 
-// gets AI form of event ID
+// gets AI form of Event ID
 async function getAIFormFromEvent(event_id : any){
     let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
     if(eventData.data){
@@ -30,19 +31,7 @@ async function getAIFormFromEvent(event_id : any){
     return null
 }
 
-// gets RS forms of event ID
-async function getRSFormFromEvent(event_id : any){
-    let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
-    if(eventData.data){
-        let form_list_id = eventData.data[0].rs_form_list_id
-        return await revenueStatementQuery.selectWhereRevenueStatementValidation(
-            form_list_id, 'form_list_id'
-        )
-    }
-    return null
-}
-
-// gets ES forms of event ID
+// gets ES forms of Event ID
 async function getESFormFromEvent(event_id : any){
     let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
     if(eventData.data){
@@ -54,7 +43,19 @@ async function getESFormFromEvent(event_id : any){
     return null
 }
 
-// gets FT forms of event ID
+// gets RS forms of Event ID
+async function getRSFormFromEvent(event_id : any){
+    let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
+    if(eventData.data){
+        let form_list_id = eventData.data[0].rs_form_list_id
+        return await revenueStatementQuery.selectWhereRevenueStatementValidation(
+            form_list_id, 'form_list_id'
+        )
+    }
+    return null
+}
+
+// gets FT forms of Event ID
 async function getFTFormFromEvent(event_id : any){
     let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
     if(eventData.data){
@@ -68,19 +69,19 @@ async function getFTFormFromEvent(event_id : any){
 
 // get specific category from event
 
-// gets Revenue Categories of event ID
-async function getRevenueCategoryFromEvent(event_id : any){
-    return await query.supabase.from('categories').select().eq('event_id', event_id).eq('category_type', 'Revenue')
-}
-
-// gets Expense Categories of event ID
+// gets Expense Categories of Event ID
 async function getExpenseCategoryFromEvent(event_id : any){
     return await query.supabase.from('categories').select().eq('event_id', event_id).eq('category_type', 'Expense')
 }
 
+// gets Revenue Categories of Event ID
+async function getRevenueCategoryFromEvent(event_id : any){
+    return await query.supabase.from('categories').select().eq('event_id', event_id).eq('category_type', 'Revenue')
+}
+
 // get specific transaction from category
 
-// gets Transactions of category ID
+// gets Transactions of Category ID
 async function getTransactionsFromCategory(category_id : any){
     let categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
     if(categoryData.data){
@@ -94,7 +95,7 @@ async function getTransactionsFromCategory(category_id : any){
 
 // get specific item from transaction
 
-// gets Items from transaction ID
+// gets Items from Transaction ID
 async function getItemsFromTransaction(transaction_id : any){
     let transactionData = await transactionQuery.selectWhereTransactionValidation(transaction_id, 'transaction_id')
     if(transactionData.data){
@@ -106,9 +107,9 @@ async function getItemsFromTransaction(transaction_id : any){
     return null
 }
 
-// get specific item from transaction
+// get specific item from category
 
-// gets Items from transaction ID
+// gets Items from Category ID
 async function getItemsFromCategory(category_id : any){
     let itemList = []
     let categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
@@ -133,31 +134,119 @@ async function getItemsFromCategory(category_id : any){
     return null
 }
 
+// get specific staff from form
+
+// get Prepared Staff from Form Id
+async function getPreparedStaffFromEvent(form_id : any, form_type : string){
+    let formData
+    switch(form_type){
+        case 'ai': 
+            formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(form_id, 'ai_id')
+            if(formData.data){
+                let staff_id = formData.data[0].prepared_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'es': 
+            formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+            if(formData.data){
+                let staff_id = formData.data[0].prepared_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'rs': 
+            formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+            if(formData.data){
+                let staff_id = formData.data[0].prepared_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'ft': 
+            formData = await fundTransferQuery.selectWhereFundTransferValidation(form_id, 'ft_id')
+            if(formData.data){
+                let staff_id = formData.data[0].prepared_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+    }
+    return null
+}
+
+// get Certified Staff from Form Id
+async function getCertifiedStaffFromEvent(form_id : any, form_type : string){
+    let formData
+    switch(form_type){
+        case 'ai': 
+            formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(form_id, 'ai_id')
+            if(formData.data){
+                let staff_id = formData.data[0].certified_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'es': 
+            formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+            if(formData.data){
+                let staff_id = formData.data[0].certified_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'rs': 
+            formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+            if(formData.data){
+                let staff_id = formData.data[0].certified_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+        case 'ft': 
+            formData = await fundTransferQuery.selectWhereFundTransferValidation(form_id, 'ft_id')
+            if(formData.data){
+                let staff_id = formData.data[0].certified_staff_id
+                return await staffQuery.selectWhereStaffValidation(staff_id, 'staff_id')
+            }
+            break;
+    }
+    return null
+}
+
+// get Noted Staff from Form Id
+async function getNotedStaffFromEvent(form_id : any, form_type : string){
+    let formData
+    switch(form_type){
+        case 'ai': 
+            formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(form_id, 'ai_id')
+            if(formData.data){
+                let staff_list_id = formData.data[0].noted_staff_list_id
+                return await staffQuery.selectWhereStaffValidation(staff_list_id, 'staff_list_id')
+            }
+            break;
+        case 'es': 
+            formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+            if(formData.data){
+                let staff_list_id = formData.data[0].noted_staff_list_id
+                return await staffQuery.selectWhereStaffValidation(staff_list_id, 'staff_list_id')
+            }
+            break;
+        case 'rs': 
+            formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+            if(formData.data){
+                let staff_list_id = formData.data[0].noted_staff_list_id
+                return await staffQuery.selectWhereStaffValidation(staff_list_id, 'staff_list_id')
+            }
+            break;
+        case 'ft': 
+            formData = await fundTransferQuery.selectWhereFundTransferValidation(form_id, 'ft_id')
+            if(formData.data){
+                let staff_list_id = formData.data[0].noted_staff_list_id
+                return await staffQuery.selectWhereStaffValidation(staff_list_id, 'staff_list_id')
+            }
+            break;
+    }
+    return null
+}
 
 //-------------------------------------------------------------------
 //          Activity Income Functions
 //-------------------------------------------------------------------
-
-// gets Revenue Items from event ID
-async function getRevenueItemsFromEvent(event_id : any){
-    let itemList = []
-    let categoryData = await getRevenueCategoryFromEvent(event_id)
-    if(categoryData.data){
-        for(let i = 0; i < categoryData.data.length; i++){
-            let category_id = categoryData.data[i].category_id
-            let itemData = await getItemsFromCategory(category_id)
-            if(itemData){
-                for(let j = 0; j < itemData.length; j++){
-                    itemList.push(itemData[j])
-                }
-            }
-        }
-    }
-    if(itemList.length > 0){
-        return itemList
-    }
-    return null
-}
 
 // gets Expense Items from event ID
 async function getExpenseItemsFromEvent(event_id : any){
@@ -180,9 +269,30 @@ async function getExpenseItemsFromEvent(event_id : any){
     return null
 }
 
-// gets Revenue Total from event ID
-async function getRevenueTotalFromEvent(event_id : any){
-    let itemList = await getRevenueItemsFromEvent(event_id)
+// gets Revenue Items from event ID
+async function getRevenueItemsFromEvent(event_id : any){
+    let itemList = []
+    let categoryData = await getRevenueCategoryFromEvent(event_id)
+    if(categoryData.data){
+        for(let i = 0; i < categoryData.data.length; i++){
+            let category_id = categoryData.data[i].category_id
+            let itemData = await getItemsFromCategory(category_id)
+            if(itemData){
+                for(let j = 0; j < itemData.length; j++){
+                    itemList.push(itemData[j])
+                }
+            }
+        }
+    }
+    if(itemList.length > 0){
+        return itemList
+    }
+    return null
+}
+
+// gets Expense Total from event ID
+async function getExpenseTotalFromEvent(event_id : any){
+    let itemList = await getExpenseItemsFromEvent(event_id)
     let total = 0
     if(itemList){
         for(let i = 0; i < itemList.length ; i++){
@@ -192,9 +302,9 @@ async function getRevenueTotalFromEvent(event_id : any){
     return total
 }
 
-// gets Expense Total from event ID
-async function getExpenseTotalFromEvent(event_id : any){
-    let itemList = await getExpenseItemsFromEvent(event_id)
+// gets Revenue Total from event ID
+async function getRevenueTotalFromEvent(event_id : any){
+    let itemList = await getRevenueItemsFromEvent(event_id)
     let total = 0
     if(itemList){
         for(let i = 0; i < itemList.length ; i++){
@@ -223,13 +333,13 @@ async function getAIBodyData(data : any){
 
 }
 
-// transforms Revenue Statement body data
-async function getRSBodyData(data : any){
+// transforms Expense Statement body data
+async function getESBodyData(data : any){
 
 }
 
-// transforms Expense Statement body data
-async function getESBodyData(data : any){
+// transforms Revenue Statement body data
+async function getRSBodyData(data : any){
 
 }
 
@@ -248,6 +358,9 @@ export const utilFunc = {
     getTransactionsFromCategory,
     getItemsFromTransaction,
     getItemsFromCategory,
+    getPreparedStaffFromEvent,
+    getCertifiedStaffFromEvent,
+    getNotedStaffFromEvent,
 
     getRevenueItemsFromEvent,
     getExpenseItemsFromEvent,
