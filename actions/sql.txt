@@ -1,0 +1,189 @@
+-- Drop statements for all tables
+DROP TABLE IF EXISTS fund_transfers CASCADE;
+DROP TABLE IF EXISTS revenue_statements CASCADE;
+DROP TABLE IF EXISTS expense_statements CASCADE;
+DROP TABLE IF EXISTS activity_incomes CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
+DROP TABLE IF EXISTS gdsc_events CASCADE;
+DROP TABLE IF EXISTS form_lists CASCADE;
+DROP TABLE IF EXISTS staffs CASCADE;
+DROP TABLE IF EXISTS staff_lists CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS transaction_lists CASCADE;
+DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS item_lists CASCADE;
+
+-- Create statements for all tables
+
+-- Define enums
+CREATE TYPE category_type_enum AS ENUM ('Revenue', 'Expense');
+
+-- Create tables
+
+CREATE TABLE IF NOT EXISTS item_lists
+(
+    item_list_id VARCHAR(25) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS items(
+    item_id VARCHAR(25) PRIMARY KEY,
+    item_list_id VARCHAR(25),    
+    item_name VARCHAR(55),    
+    item_units INT,
+    item_price FLOAT,
+    item_amount FLOAT,
+    item_date DATE,
+    item_payment_details VARCHAR(55),
+    FOREIGN KEY (item_list_id) REFERENCES item_lists(item_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS transaction_lists
+(
+    transaction_list_id VARCHAR(25) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS transactions
+(
+    transaction_id VARCHAR(25) PRIMARY KEY,    
+    transaction_name VARCHAR(25),    
+    transaction_note VARCHAR(55),    
+    transaction_date DATE,    
+    transaction_list_id VARCHAR(25),
+    item_list_id VARCHAR(25),  
+    FOREIGN KEY (transaction_list_id) REFERENCES transaction_lists(transaction_list_id),
+    FOREIGN KEY (item_list_id) REFERENCES item_lists(item_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS users
+(
+    user_id VARCHAR(25) PRIMARY KEY,
+    user_name VARCHAR(55),
+    user_password VARCHAR(55)
+);
+
+CREATE TABLE IF NOT EXISTS staff_lists
+(
+    staff_list_id VARCHAR(25) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS staffs
+(
+    staff_id VARCHAR(25) PRIMARY KEY,
+    user_id VARCHAR(25),
+    staff_name VARCHAR(55),
+    staff_position VARCHAR(55),
+    staff_list_id VARCHAR(25),    
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (staff_list_id) REFERENCES staff_lists(staff_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS form_lists
+(
+    form_list_id VARCHAR(25) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS gdsc_events
+(
+    event_id VARCHAR(25) PRIMARY KEY,
+    event_name VARCHAR(55),
+    ft_form_list_id VARCHAR(25),
+    rs_form_list_id VARCHAR(25),
+    es_form_list_id VARCHAR(25),
+    ai_form_list_id VARCHAR(25),
+    FOREIGN KEY (ft_form_list_id) REFERENCES form_lists(form_list_id),
+    FOREIGN KEY (rs_form_list_id) REFERENCES form_lists(form_list_id),
+    FOREIGN KEY (es_form_list_id) REFERENCES form_lists(form_list_id),
+    FOREIGN KEY (ai_form_list_id) REFERENCES form_lists(form_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS categories
+(
+    category_id VARCHAR(25) PRIMARY KEY,
+    category_name VARCHAR(55),
+    category_type category_type_enum,
+    event_id VARCHAR(25),
+    transaction_list_id VARCHAR(25),    
+    FOREIGN KEY (event_id) REFERENCES gdsc_events(event_id),
+    FOREIGN KEY (transaction_list_id) REFERENCES transaction_lists(transaction_list_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS activity_incomes
+(
+    ai_id VARCHAR(25) PRIMARY KEY,
+    ai_name VARCHAR(55),
+    ai_date DATE,
+    ai_notes VARCHAR(205),
+    prepared_staff_id VARCHAR(25),
+    certified_staff_id VARCHAR(25),
+    noted_staff_list_id VARCHAR(25),
+    form_list_id VARCHAR(25),
+    FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (noted_staff_list_id) REFERENCES staff_lists(staff_list_id),
+    FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS expense_statements
+(
+    es_id VARCHAR(25) PRIMARY KEY,
+    es_name VARCHAR(55),
+    es_date DATE,
+    receipt_link VARCHAR(55),    
+    es_to VARCHAR(105),    
+    es_from VARCHAR(105),
+    es_notes VARCHAR(105),
+    category_id VARCHAR(25),
+    prepared_staff_id VARCHAR(25),
+    certified_staff_id VARCHAR(25),
+    noted_staff_list_id VARCHAR(25),
+    form_list_id VARCHAR(25),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (noted_staff_list_id) REFERENCES staff_lists(staff_list_id),
+    FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS revenue_statements
+(
+    rs_id VARCHAR(25) PRIMARY KEY,
+    rs_name VARCHAR(55),
+    rs_date DATE,
+    receipt_link VARCHAR(55),    
+    rs_to VARCHAR(105),    
+    rs_from VARCHAR(105),
+    rs_notes VARCHAR(105),
+    category_id VARCHAR(25),
+    prepared_staff_id VARCHAR(25),
+    certified_staff_id VARCHAR(25),
+    noted_staff_list_id VARCHAR(25),
+    form_list_id VARCHAR(25),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (noted_staff_list_id) REFERENCES staff_lists(staff_list_id),
+    FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id)
+);
+
+CREATE TABLE IF NOT EXISTS fund_transfers
+(
+    ft_id VARCHAR(25) PRIMARY KEY,
+    ft_name VARCHAR(55),
+    ft_date DATE,
+    ft_reason VARCHAR(105),
+    ft_amount VARCHAR(105), 
+    ft_to VARCHAR(105),    
+    ft_from VARCHAR(105),    
+    ft_on VARCHAR(105),
+    receipt_link VARCHAR(55),
+    prepared_staff_id VARCHAR(25),
+    certified_staff_id VARCHAR(25),
+    noted_staff_list_id VARCHAR(25),
+    form_list_id VARCHAR(25),
+    FOREIGN KEY (prepared_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (certified_staff_id) REFERENCES staffs(staff_id),
+    FOREIGN KEY (noted_staff_list_id) REFERENCES staff_lists(staff_list_id),
+    FOREIGN KEY (form_list_id) REFERENCES form_lists(form_list_id)
+);
