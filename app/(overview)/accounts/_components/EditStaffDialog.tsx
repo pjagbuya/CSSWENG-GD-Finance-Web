@@ -18,7 +18,6 @@ const EditStaffDialog = ({ open, onFinish, id }: EditEventDialogProps) => {
   const registerAction = registerAccount.bind(null, id)
   const [state, formAction] = useFormState(registerAction, initialState);
   const [fields, setFields] = useState({
-    staff_name: '',
     position: '',
   });
 
@@ -41,7 +40,7 @@ const EditStaffDialog = ({ open, onFinish, id }: EditEventDialogProps) => {
   return (
     <RegisterAccountForm
       action={formAction}
-      label={'Create'}
+      label={'Register'}
       state={state}
       open={open}
       onOpenChange={onFinish}
