@@ -1,12 +1,10 @@
 'use server';
 
-import { StaffSchema, UserSchema, UserSchemaEdit, staffType, userType } from "@/lib/definitions";
+import { StaffSchema, AddUserFormSchema, EditUserFormSchema, staffType, userType } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
-import { query } from "@/lib/supabase";
-import { use } from "react";
-import { create } from "domain";
+import { insert, remove } from "@/lib/supabase";
 
 export type AccountState = {
   errors?: {
@@ -135,7 +133,7 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
 
 export async function createStaff(data: staffType, userId: string) {
   const supabase = createAdminClient()
-  const { data: staffData, error: staffError } = await query.insert('staffs', {
+  const { data: staffData, error: staffError } = await insert('staffs', {
     staff_name: data.staff_name,
     staff_position: data.staff_position.toUpperCase(),
   });
@@ -192,7 +190,7 @@ export async function getUser(uuid: string) {
 
 
 async function createAccountDb(data: userType, userId: string) {
-  const { data: staffData, error: staffError } = await query.insert('staffs', {
+  const { data: staffData, error: staffError } = await insert('staffs', {
     staff_position: data.role.toUpperCase(),
   });
 
@@ -204,7 +202,7 @@ async function createAccountDb(data: userType, userId: string) {
     console.log(staffError);
   }
 
-  const { error: userError } = await query.insert('users', {
+  const { error: userError } = await insert('users', {
     first_name: data.first_name,
     last_name: data.last_name,
     user_id: userId,
@@ -246,7 +244,7 @@ async function editAccountDb(data: userType, uuid: string) {
 }
 
 async function deleteAccountDb(data: userType, id: string) {
-  return query.remove('varSchema', 'var_id', id);
+  return remove('varSchema', 'var_id', id);
 }
 
 async function selectOneAccountDb(uuid: string) {

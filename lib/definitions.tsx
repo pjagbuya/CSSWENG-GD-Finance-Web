@@ -432,6 +432,8 @@ export const AddUserFormSchema = z.object({
   role: z.enum(['chief', 'member']),
 });
 
+export type userType = z.infer<typeof AddUserFormSchema>
+
 export const CreateEventSchema = z.object({
   event_name: z
     .string({
