@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS item_lists CASCADE;
 -- Create statements for all tables
 
 -- Define enums
+DROP TYPE category_type_enum;
 CREATE TYPE category_type_enum AS ENUM ('Revenue', 'Expense');
 
 -- Create tables
@@ -57,9 +58,9 @@ CREATE TABLE IF NOT EXISTS transactions
 
 CREATE TABLE IF NOT EXISTS users
 (
-    user_id VARCHAR(25) PRIMARY KEY,
-    user_name VARCHAR(55),
-    user_password VARCHAR(55)
+    user_id uuid PRIMARY KEY,
+    user_first_name VARCHAR(25),
+    user_last_name VARCHAR(25)
 );
 
 CREATE TABLE IF NOT EXISTS staff_lists
@@ -70,8 +71,7 @@ CREATE TABLE IF NOT EXISTS staff_lists
 CREATE TABLE IF NOT EXISTS staffs
 (
     staff_id VARCHAR(25) PRIMARY KEY,
-    user_id VARCHAR(25),
-    staff_name VARCHAR(55),
+    user_id uuid,
     staff_position VARCHAR(55),
     staff_list_id VARCHAR(25),    
     FOREIGN KEY (user_id) REFERENCES users(user_id),
