@@ -14,6 +14,7 @@ type CreateFormProps = {
   children: React.ReactNode;
   state: { errors?: {}; message?: string | null };
   title: string;
+  open?: boolean;
   onFinish?: () => void;
 };
 
@@ -23,6 +24,7 @@ const CreateForm = ({
   state,
   title,
   onFinish,
+  open,
 }: CreateFormProps) => {
   useEffect(() => {
     if (!state.errors) {
@@ -37,7 +39,7 @@ const CreateForm = ({
   }, [state]);
 
   return (
-    <Dialog open={true} onOpenChange={onFinish}>
+    <Dialog open={open === undefined ? true : open} onOpenChange={onFinish}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

@@ -1,4 +1,4 @@
-import { getEvent } from '@/actions/events';
+import { eventQuery } from '@/actions/events';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -38,8 +38,11 @@ const EventJumpPointDialog = ({
         return;
       }
 
-      const event = await getEvent(eventId);
-      setEvent(event);
+      const { data } = await eventQuery.selectWhereEventValidation(
+        eventId,
+        'event_id',
+      );
+      setEvent(data![0]);
       setOpen(true);
     }
   }, [eventId]);
@@ -63,9 +66,9 @@ const EventJumpPointDialog = ({
           </Button>
 
           <Button asChild>
-            <Link href={`/events/${eventId}/transactions`}>
+            <Link href={`/events/${eventId}/groups`}>
               <Coins className="mr-2 w-4" />
-              View Transactions
+              View Groups
             </Link>
           </Button>
         </DialogFooter>

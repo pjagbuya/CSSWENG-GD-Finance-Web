@@ -1,46 +1,45 @@
-
 // INSTRUCTIONS:
 // expenseStatement -> small case
 // ExpenseStatement -> big case
 // replace vals with column names
 // remove comments after
 
-import { ExpenseStatementSchema } from "@/lib/definitions";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import { ExpenseStatementSchema } from '@/lib/definitions';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import * as query from '@/lib/supabase';
 
 export type expenseStatementState = {
   errors?: {
-    es_id?: string[]; 
-    es_name?: string[]; 
-    es_date?: string[]; 
-    receipt_link?: string[]; 
-    es_to?: string[];  
-    es_from?: string[]; 
-    es_notes?: string[]; 
-    category_id?: string[]; 
-    prepared_staff_id?: string[]; 
-    certified_staff_id?: string[]; 
-    noted_staff_list_id?: string[]; 
-    form_list_id?: string[]; 
-  }; 
+    es_id?: string[];
+    es_name?: string[];
+    es_date?: string[];
+    receipt_link?: string[];
+    es_to?: string[];
+    es_from?: string[];
+    es_notes?: string[];
+    category_id?: string[];
+    prepared_staff_id?: string[];
+    certified_staff_id?: string[];
+    noted_staff_list_id?: string[];
+    form_list_id?: string[];
+  };
   message?: string | null;
-}
+};
 
 var expenseStatementFormat = {
-  es_id : null,
-  es_name : null,
-  es_date : null,
-  receipt_link : null,
-  es_to : null,   
-  es_from : null,
-  es_notes : null,
-  category_id : null,
-  prepared_staff_id : null,
-  certified_staff_id : null,
-  noted_staff_list_id : null,
-  form_list_id : null,
+  es_id: null,
+  es_name: null,
+  es_date: null,
+  receipt_link: null,
+  es_to: null,
+  es_from: null,
+  es_notes: null,
+  category_id: null,
+  prepared_staff_id: null,
+  certified_staff_id: null,
+  noted_staff_list_id: null,
+  form_list_id: null,
   /*
   CREATE TABLE IF NOT EXISTS expense_statements
   (
@@ -65,152 +64,158 @@ var expenseStatementFormat = {
       PRIMARY KEY (es_id)
   );
   */
-}
+};
 
-var schema = "ExpenseStatementSchema" // replace with table name
-var identifier = "es_id"
+var schema = 'ExpenseStatementSchema'; // replace with table name
 
-async function transformData(data : any){
-
-  var arrayData = Array.from(data.entries())
+async function transformData(data: any) {
+  var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
   // TODO: fill information
-  var transformedData = {
-
-  }
-  return transformedData
+  var transformedData = {};
+  return transformedData;
 }
 
-async function convertData(data : any){
-
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data
+  return data.data;
 }
 
-
-async function createExpenseStatementValidation(prevState: expenseStatementState, formData: FormData) {
-
-  var transformedData = transformData(formData)
-  const validatedFields = ExpenseStatementSchema.safeParse(transformedData)
+async function createExpenseStatementValidation(
+  prevState: expenseStatementState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create var."
-    }
+      message: 'Missing fields. Unable to create var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields)
-  const { error } = await createExpenseStatement(data)
+  var data = convertData(validatedFields);
+  const { error } = await createExpenseStatement(data);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function editExpenseStatementValidation(id: string, prevState: expenseStatementState, formData: FormData) {
-  
-  var transformedData = transformData(formData)
-  const validatedFields = ExpenseStatementSchema.safeParse(transformedData)
+async function editExpenseStatementValidation(
+  id: string,
+  identifier: string,
+  prevState: expenseStatementState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit var."
-    }
+      message: 'Missing fields. Unable to edit var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data)
-  const { error } = await editExpenseStatement(data, id)
+  var data = convertData(validatedFields.data);
+  const { error } = await editExpenseStatement(data, id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function selectOneExpenseStatementValidation(id: string) {
-
+async function selectWhereExpenseStatementValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { data, error } = await selectOneExpenseStatement(id)
+  const { data, error } = await selectWhereExpenseStatement(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
 async function selectAllExpenseStatementValidation() {
-
   // TODO: provide logic
-  const { data, error } = await selectAllExpenseStatement()
+  const { data, error } = await selectAllExpenseStatement();
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-
-async function deleteExpenseStatementValidation(id: string) {
-
+async function deleteExpenseStatementValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { error } = await deleteExpenseStatement(id)
+  const { error } = await deleteExpenseStatement(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function createExpenseStatement(data : any){
-  return query.insert(schema, data);
+async function createExpenseStatement(data: any) {
+  return await query.insert(schema, data);
 }
 
-async function editExpenseStatement(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editExpenseStatement(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteExpenseStatement(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteExpenseStatement(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneExpenseStatement(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereExpenseStatement(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllExpenseStatement(){
-  return query.selectAll(schema);
+async function selectAllExpenseStatement() {
+  return await query.selectAll(schema);
 }
 
-export const expenseStatementQuery = { 
-  createExpenseStatementValidation, createExpenseStatement,
-  editExpenseStatementValidation, editExpenseStatement,
-  deleteExpenseStatementValidation, deleteExpenseStatement,
-  selectOneExpenseStatementValidation, selectOneExpenseStatement,
-  selectAllExpenseStatementValidation, selectAllExpenseStatement
-}
-        
+export const expenseStatementQuery = {
+  createExpenseStatementValidation,
+  createExpenseStatement,
+  editExpenseStatementValidation,
+  editExpenseStatement,
+  deleteExpenseStatementValidation,
+  deleteExpenseStatement,
+  selectWhereExpenseStatementValidation,
+  selectWhereExpenseStatement,
+  selectAllExpenseStatementValidation,
+  selectAllExpenseStatement,
+};

@@ -1,33 +1,28 @@
-
 // INSTRUCTIONS:
 // category -> small case
 // Category -> big case
 // replace vals with column names
 // remove comments after
 
-import { CategorySchema } from "@/lib/definitions";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import { CategorySchema } from '@/lib/definitions';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import * as query from '@/lib/supabase';
 
-export type categoryState = {
+export type CategoryState = {
   errors?: {
-    category_id?: string[];    
-    category_name?: string[];    
-    category_type?: string[];    
-    event_id?: string[];    
-    transaction_list_id?: string[];    
-  }; 
-  message?: string | null;
-}
+    category_name?: string[];
+  };
+  hasDuplicateCategory?: boolean;
+};
 
 var categoryFormat = {
-    vals : null,
-    category_id : null,
-    category_name : null,
-    category_type : null,
-    event_id : null, 
-    transaction_list_id : null, 
+  vals: null,
+  category_id: null,
+  category_name: null,
+  category_type: null,
+  event_id: null,
+  transaction_list_id: null,
 
   /*
     CREATE TABLE IF NOT EXISTS categories
@@ -42,151 +37,144 @@ var categoryFormat = {
         FOREIGN KEY (transaction_list_id) REFERENCES transaction_lists(transaction_list_id)
     );
   */
-}
+};
 
-var schema = "CategorySchema" // replace with table name
-var identifier = "category_id"
+var schema = 'Categories'; // replace with table export name
 
-async function transformData(data : any){
-
-  var arrayData = Array.from(data.entries())
+async function transformData(data: any) {
+  var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
   // TODO: fill information
-  var transformedData = {
-
-  }
-  return transformedData
+  var transformedData = {};
+  return transformedData;
 }
 
-async function convertData(data : any){
-
+export async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data
+  return data.data;
 }
 
-
-async function createCategoryValidation(prevState: categoryState, formData: FormData) {
-
-  var transformedData = transformData(formData)
-  const validatedFields = CategorySchema.safeParse(transformedData)
+export async function createCategoryValidation(
+  eventId: string,
+  type: 'revenue' | 'expense',
+  prevState: CategoryState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create var."
-    }
+      message: 'Missing fields. Unable to create var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields)
-  const { error } = await createCategory(data)
+  var data = convertData(validatedFields);
+  const { error } = await createCategory(data);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    hasDuplicateCategory: false,
+  } as CategoryState;
 }
 
-async function editCategoryValidation(id: string, prevState: categoryState, formData: FormData) {
-  
-  var transformedData = transformData(formData)
-  const validatedFields = CategorySchema.safeParse(transformedData)
+export async function editCategoryValidation(
+  id: string,
+  identifier: string,
+  prevState: CategoryState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit var."
-    }
+      message: 'Missing fields. Unable to edit var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data)
-  const { error } = await editCategory(data, id)
+  var data = convertData(validatedFields.data);
+  const { error } = await editCategory(data, id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function selectOneCategoryValidation(id: string) {
-
+export async function selectWhereCategoryValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { data, error } = await selectOneCategory(id)
+  const { data, error } = await selectWhereCategory(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-async function selectAllCategoryValidation() {
-
+export async function selectAllCategoryValidation() {
   // TODO: provide logic
-  const { data, error } = await selectAllCategory()
+  const { data, error } = await selectAllCategory();
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-
-async function deleteCategoryValidation(id: string) {
-
+export async function deleteCategoryValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { error } = await deleteCategory(id)
+  const { error } = await deleteCategory(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function createCategory(data : any){
-  return query.insert(schema, data);
+export async function createCategory(data: any) {
+  return await query.insert(schema, data);
 }
 
-async function editCategory(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+export async function editCategory(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteCategory(id : string){
-  return query.remove(schema, identifier, id);
+export async function deleteCategory(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneCategory(id : string){
-  return query.selectWhere(schema, identifier, id);
+export async function selectWhereCategory(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllCategory(){
-  return query.selectAll(schema);
-}
-
-export const categoryQuery = { 
-  createCategoryValidation, createCategory,
-  editCategoryValidation, editCategory,
-  deleteCategoryValidation, deleteCategory,
-  selectOneCategoryValidation, selectOneCategory,
-  selectAllCategoryValidation, selectAllCategory
+export async function selectAllCategory() {
+  return await query.selectAll(schema);
 }

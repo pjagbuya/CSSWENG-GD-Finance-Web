@@ -5,21 +5,12 @@
 // remove comments after
 
 import { CreateEventSchema } from '@/lib/definitions';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
-export type eventState = {
+export type EventState = {
   errors?: {
-    vals?: string[];
-    event_id?: string[];
     event_name?: string[];
-    ft_form_list_id?: string[];
-    rs_form_list_id?: string[];
-    es_form_list_id?: string[];
-    ai_form_list_id?: string[];
   };
-  message?: string | null;
 };
 
 var eventFormat = {
@@ -48,7 +39,7 @@ var eventFormat = {
   */
 };
 
-var schema = 'CreateEventSchema'; // replace with table name
+var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
 async function transformData(data: any) {
@@ -68,7 +59,7 @@ async function convertData(data: any) {
 }
 
 async function createEventValidation(
-  prevState: eventState,
+  prevState: EventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -90,14 +81,13 @@ async function createEventValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {};
 }
 
 async function editEventValidation(
   id: string,
-  prevState: eventState,
+  identifier: string,
+  prevState: EventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -113,7 +103,7 @@ async function editEventValidation(
 
   // TODO: provide logic
   var data = convertData(validatedFields.data);
-  const { error } = await editEvent(data, id);
+  const { error } = await editEvent(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -124,9 +114,9 @@ async function editEventValidation(
   };
 }
 
-async function selectOneEventValidation(id: string) {
+async function selectWhereEventValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { data, error } = await selectOneEvent(id);
+  const { data, error } = await selectWhereEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -150,9 +140,9 @@ async function selectAllEventValidation() {
   };
 }
 
-async function deleteEventValidation(id: string) {
+async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
-  const { error } = await deleteEvent(id);
+  const { error } = await deleteEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
@@ -164,23 +154,23 @@ async function deleteEventValidation(id: string) {
 }
 
 async function createEvent(data: any) {
-  return query.insert(schema, data);
+  return await query.insert(schema, data);
 }
 
-async function editEvent(data: any, id: string) {
-  return query.edit(schema, data, identifier, id);
+async function editEvent(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteEvent(id: string) {
-  return query.remove(schema, identifier, id);
+async function deleteEvent(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneEvent(id: string) {
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereEvent(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
 async function selectAllEvent() {
-  return query.selectAll(schema);
+  return await query.selectAll(schema);
 }
 
 export const eventQuery = {
@@ -190,8 +180,8 @@ export const eventQuery = {
   editEvent,
   deleteEventValidation,
   deleteEvent,
-  selectOneEventValidation,
-  selectOneEvent,
+  selectWhereEventValidation,
+  selectWhereEvent,
   selectAllEventValidation,
   selectAllEvent,
 };

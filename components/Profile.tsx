@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { logout } from '@/actions/login';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
 
 type LogoProps = {
   className?: string;
@@ -13,14 +13,14 @@ type LogoProps = {
 };
 
 const Profile = ({ className, setChiefProps }: LogoProps) => {
-  const [email, setEmail] = useState<string | undefined>()
-  const [position, setPosition] = useState<string | undefined>()
-  const [isLogin, setLogin] = useState<boolean>(false)
+  const [email, setEmail] = useState<string | undefined>();
+  const [position, setPosition] = useState<string | undefined>();
+  const [isLogin, setLogin] = useState<boolean>(false);
   useEffect(() => {
     async function getUser() {
-      const supabase = createClient()
+      const supabase = createClient();
 
-      const { data } = await supabase.auth.getUser()
+      const { data } = await supabase.auth.getUser();
 
       const user = data?.user;
 
@@ -31,15 +31,15 @@ const Profile = ({ className, setChiefProps }: LogoProps) => {
         const { data: userData, error: userError } = await supabase
           .from('users_view')
           .select('*')
-          .eq('uuid', user?.id)
+          .eq('uuid', user?.id);
 
         setPosition(userData && userData[0]?.staff_position || undefined)
         setChiefProps(!userError && userData[0]?.staff_position.toLowerCase() === 'chief')
       }
     }
 
-    getUser()
-  }, [email])
+    getUser();
+  }, [email]);
   return (
     <div className={`${className} flex items-center gap-5`}>
       <div>
@@ -48,20 +48,18 @@ const Profile = ({ className, setChiefProps }: LogoProps) => {
       </div>
 
       {isLogin ? (
-        <form action={async () => {
-          await logout()
-          setEmail('')
-        }}>
-          <Button>
-            Sign Out
-          </Button>
+        <form
+          action={async () => {
+            await logout();
+            setEmail('');
+          }}
+        >
+          <Button>Sign Out</Button>
         </form>
       ) : (
         <form>
           <Button asChild>
-            <Link href="/login">
-              Log in
-            </Link>
+            <Link href="/login">Log in</Link>
           </Button>
         </form>
       )}

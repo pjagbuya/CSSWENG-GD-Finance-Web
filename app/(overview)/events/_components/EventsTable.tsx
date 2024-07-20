@@ -10,7 +10,6 @@ import DataTable, {
 } from '../../../../components/DataTable';
 import EditEventDialog from './EditEventDialog';
 import EventJumpPointDialog from './EventJumpPointDialog';
-import { deleteEvent } from '@/actions/events';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -37,7 +36,7 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
 ];
 
 type EventsTableProps = {
-  events: any[];
+  events: any[] | null;
   nameFilter: string;
   onDelete?: () => void;
 };
@@ -52,7 +51,7 @@ const EventsTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
       return;
     }
 
-    deleteEvent(toDeleteId);
+    deleteEventValidation(toDeleteId);
     setToDeleteId('');
   }
 
@@ -86,3 +85,6 @@ const EventsTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
 };
 
 export default EventsTable;
+function deleteEventValidation(toDeleteId: string) {
+  throw new Error('Function not implemented.');
+}

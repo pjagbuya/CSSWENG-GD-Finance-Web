@@ -1,46 +1,45 @@
-
 // INSTRUCTIONS:
 // revenueStatement -> small case
 // RevenueStatement -> big case
 // replace vals with column names
 // remove comments after
 
-import { RevenueStatementSchema } from "@/lib/definitions";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { query } from "@/lib/supabase";
+import { RevenueStatementSchema } from '@/lib/definitions';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { query } from '@/lib/supabase';
 
 export type revenueStatementState = {
-  errors?: {   
-    rs_id?: string[]; 
-    rs_name?: string[]; 
-    rs_date?: string[]; 
+  errors?: {
+    rs_id?: string[];
+    rs_name?: string[];
+    rs_date?: string[];
     receipt_link?: string[];
-    rs_to?: string[];  
-    rs_from?: string[];  
-    rs_notes?: string[]; 
-    category_id?: string[]; 
-    prepared_staff_id?: string[]; 
-    certified_staff_id?: string[]; 
-    noted_staff_list_id?: string[]; 
-    form_list_id?: string[]; 
-  }; 
+    rs_to?: string[];
+    rs_from?: string[];
+    rs_notes?: string[];
+    category_id?: string[];
+    prepared_staff_id?: string[];
+    certified_staff_id?: string[];
+    noted_staff_list_id?: string[];
+    form_list_id?: string[];
+  };
   message?: string | null;
-}
+};
 
 var revenueStatementFormat = {
-  rs_id : null,
-  rs_name : null,
-  rs_date : null,
-  receipt_link : null,
-  rs_to : null,   
-  rs_from : null,
-  rs_notes : null,
-  category_id : null,
-  prepared_staff_id : null,
-  certified_staff_id : null,
-  noted_staff_list_id : null,
-  form_list_id : null,
+  rs_id: null,
+  rs_name: null,
+  rs_date: null,
+  receipt_link: null,
+  rs_to: null,
+  rs_from: null,
+  rs_notes: null,
+  category_id: null,
+  prepared_staff_id: null,
+  certified_staff_id: null,
+  noted_staff_list_id: null,
+  form_list_id: null,
   /*
   CREATE TABLE IF NOT EXISTS revenue_statements
   (
@@ -65,152 +64,158 @@ var revenueStatementFormat = {
       PRIMARY KEY (rs_id)
   );
   */
-}
+};
 
-var schema = "RevenueStatementSchema" // replace with table name
-var identifier = "rs_id"
+var schema = 'RevenueStatementSchema'; // replace with table name
 
-async function transformData(data : any){
-
-  var arrayData = Array.from(data.entries())
+async function transformData(data: any) {
+  var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
   // TODO: fill information
-  var transformedData = {
-
-  }
-  return transformedData
+  var transformedData = {};
+  return transformedData;
 }
 
-async function convertData(data : any){
-
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data
+  return data.data;
 }
 
-
-async function createRevenueStatementValidation(prevState: revenueStatementState, formData: FormData) {
-
-  var transformedData = transformData(formData)
-  const validatedFields = RevenueStatementSchema.safeParse(transformedData)
+async function createRevenueStatementValidation(
+  prevState: revenueStatementState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to create var."
-    }
+      message: 'Missing fields. Unable to create var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields)
-  const { error } = await createRevenueStatement(data)
+  var data = convertData(validatedFields);
+  const { error } = await createRevenueStatement(data);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function editRevenueStatementValidation(id: string, prevState: revenueStatementState, formData: FormData) {
-  
-  var transformedData = transformData(formData)
-  const validatedFields = RevenueStatementSchema.safeParse(transformedData)
+async function editRevenueStatementValidation(
+  id: string,
+  identifier: string,
+  prevState: revenueStatementState,
+  formData: FormData,
+) {
+  var transformedData = transformData(formData);
+  const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error)
+    console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Unable to edit var."
-    }
+      message: 'Missing fields. Unable to edit var.',
+    };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data)
-  const { error } = await editRevenueStatement(data, id)
+  var data = convertData(validatedFields.data);
+  const { error } = await editRevenueStatement(data, id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function selectOneRevenueStatementValidation(id: string) {
-
+async function selectWhereRevenueStatementValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { data, error } = await selectOneRevenueStatement(id)
+  const { data, error } = await selectWhereRevenueStatement(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
 async function selectAllRevenueStatementValidation() {
-
   // TODO: provide logic
-  const { data, error } = await selectAllRevenueStatement()
+  const { data, error } = await selectAllRevenueStatement();
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    data: data
-  }
+    data: data,
+  };
 }
 
-
-async function deleteRevenueStatementValidation(id: string) {
-
+async function deleteRevenueStatementValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  const { error } = await deleteRevenueStatement(id)
+  const { error } = await deleteRevenueStatement(id, identifier);
   if (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 
   //revalidatePath("/")
   return {
-    message: null
-  }
+    message: null,
+  };
 }
 
-async function createRevenueStatement(data : any){
-  return query.insert(schema, data);
+async function createRevenueStatement(data: any) {
+  return await query.insert(schema, data);
 }
 
-async function editRevenueStatement(data : any, id : string){
-  return query.edit(schema, data, identifier, id);
+async function editRevenueStatement(data: any, id: string, identifier: string) {
+  return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteRevenueStatement(id : string){
-  return query.remove(schema, identifier, id);
+async function deleteRevenueStatement(id: string, identifier: string) {
+  return await query.remove(schema, identifier, id);
 }
 
-async function selectOneRevenueStatement(id : string){
-  return query.selectWhere(schema, identifier, id);
+async function selectWhereRevenueStatement(id: string, identifier: string) {
+  return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllRevenueStatement(){
-  return query.selectAll(schema);
+async function selectAllRevenueStatement() {
+  return await query.selectAll(schema);
 }
 
-export const revenueStatementQuery = { 
-  createRevenueStatementValidation, createRevenueStatement,
-  editRevenueStatementValidation, editRevenueStatement,
-  deleteRevenueStatementValidation, deleteRevenueStatement,
-  selectOneRevenueStatementValidation, selectOneRevenueStatement,
-  selectAllRevenueStatementValidation, selectAllRevenueStatement
-}
- 
+export const revenueStatementQuery = {
+  createRevenueStatementValidation,
+  createRevenueStatement,
+  editRevenueStatementValidation,
+  editRevenueStatement,
+  deleteRevenueStatementValidation,
+  deleteRevenueStatement,
+  selectWhereRevenueStatementValidation,
+  selectWhereRevenueStatement,
+  selectAllRevenueStatementValidation,
+  selectAllRevenueStatement,
+};
