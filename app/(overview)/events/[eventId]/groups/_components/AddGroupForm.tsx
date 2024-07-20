@@ -1,21 +1,26 @@
 import { useFormState } from 'react-dom';
 
+import { createCategoryValidation } from '@/actions/categories';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import CreateForm from '../../_components/CreateForm';
 import ErrorDisplay from '../../_components/ErrorDisplay';
 
 type AddGroupFormProps = {
+  eventId: string;
   type: 'expense' | 'revenue';
   onFinish?: () => void;
 };
 
-const AddGroupForm = ({ type, onFinish }: AddGroupFormProps) => {
+const AddGroupForm = ({ eventId, type, onFinish }: AddGroupFormProps) => {
   // TODO: @Enzo link functions
-  const [state, action] = useFormState(addCategory.bind(null, type), {
-    errors: {},
-    hasDuplicateCategory: false,
-  });
+  const [state, action] = useFormState(
+    createCategoryValidation.bind(null, eventId, type),
+    {
+      errors: {},
+      hasDuplicateCategory: false,
+    },
+  );
 
   const typeLabel = type === 'expense' ? 'Expense' : 'Revenue';
 
@@ -31,7 +36,7 @@ const AddGroupForm = ({ type, onFinish }: AddGroupFormProps) => {
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" placeholder="Name" />
 
-          <ErrorDisplay errors={state?.errors?.name} />
+          <ErrorDisplay errors={state?.errors?.category_name} />
         </>
       </CreateForm>
     </>

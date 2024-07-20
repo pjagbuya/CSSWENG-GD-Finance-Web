@@ -1,5 +1,8 @@
+import * as utilFunc from '@/actions/utils';
+
 import AddGroupButton from './_components/AddGroupButton';
 import GroupList from './_components/GroupList';
+import { eventQuery } from '@/actions/events';
 
 type TransactionsPageProps = {
   params: {
@@ -9,15 +12,24 @@ type TransactionsPageProps = {
 
 // groups (categories) - 1 for expense, 1 for revenue
 const GroupsPage = async ({ params }: TransactionsPageProps) => {
-  // TODO: @Enzo link functions
-  const event = await getEvent(params.eventId);
-  const categories = await getGroups(params.eventId);
+  const { data: event } = await eventQuery.selectWhereEventValidation(
+    params.eventId,
+    'event_id',
+  );
+  const { data: expenseGroups } = await utilFunc.getExpenseCategoryFromEvent(
+    params.eventId,
+  );
+  const { data: revenueGroups } = await utilFunc.getRevenueCategoryFromEvent(
+    params.eventId,
+  );
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">
-        <h2 className="text-2xl font-bold">Groups for: {event.event_name}</h2>
-        <p>(todo description)</p>
+        <h2 className="text-2xl font-bold">
+          Groups for: {event![0].event_name}
+        </h2>
+        <p>Create and edit transaction groupings</p>
       </div>
 
       <div className="mb-8 flex flex-col gap-3">
@@ -26,10 +38,10 @@ const GroupsPage = async ({ params }: TransactionsPageProps) => {
         </h3>
 
         <div>
-          <AddGroupButton type="expense" />
+          <AddGroupButton eventId={params.eventId} type="expense" />
         </div>
 
-        <GroupList categories={categories} eventId={params.eventId} />
+        <GroupList categories={expenseGroups!} />
       </div>
 
       <div className="flex flex-col gap-3">
@@ -38,10 +50,10 @@ const GroupsPage = async ({ params }: TransactionsPageProps) => {
         </h3>
 
         <div>
-          <AddGroupButton type="revenue" />
+          <AddGroupButton eventId={params.eventId} type="revenue" />
         </div>
 
-        <GroupList categories={categories} eventId={params.eventId} />
+        <GroupList categories={revenueGroups!} />
       </div>
     </main>
   );

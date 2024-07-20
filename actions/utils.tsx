@@ -1,3 +1,5 @@
+'use server';
+
 import { eventQuery } from '@/actions/events';
 import { formListQuery } from '@/actions/form_lists';
 import { fundTransferQuery } from '@/actions/fund_transfers';
@@ -11,7 +13,8 @@ import { transactionListQuery } from '@/actions/transaction_lists';
 import { transactionQuery } from '@/actions/transaction';
 import { itemListQuery } from '@/actions/item_lists';
 import { itemQuery } from '@/actions/items';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 //-------------------------------------------------------------------
 //          Dashboard Functions
@@ -20,7 +23,7 @@ import { query } from '@/lib/supabase';
 // get specific form from event
 
 // gets AI form of Event ID
-async function getAIFormFromEvent(event_id: any) {
+export async function getAIFormFromEvent(event_id: any) {
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',
@@ -36,7 +39,7 @@ async function getAIFormFromEvent(event_id: any) {
 }
 
 // gets ES forms of Event ID
-async function getESFormFromEvent(event_id: any) {
+export async function getESFormFromEvent(event_id: any) {
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',
@@ -52,7 +55,7 @@ async function getESFormFromEvent(event_id: any) {
 }
 
 // gets RS forms of Event ID
-async function getRSFormFromEvent(event_id: any) {
+export async function getRSFormFromEvent(event_id: any) {
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',
@@ -68,7 +71,7 @@ async function getRSFormFromEvent(event_id: any) {
 }
 
 // gets FT forms of Event ID
-async function getFTFormFromEvent(event_id: any) {
+export async function getFTFormFromEvent(event_id: any) {
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',
@@ -86,8 +89,10 @@ async function getFTFormFromEvent(event_id: any) {
 // get specific category from event
 
 // gets Expense Categories of Event ID
-async function getExpenseCategoryFromEvent(event_id: any) {
-  return await query.supabase
+export async function getExpenseCategoryFromEvent(event_id: any) {
+  const supabase = createClient();
+
+  return await supabase
     .from('categories')
     .select()
     .eq('event_id', event_id)
@@ -95,8 +100,10 @@ async function getExpenseCategoryFromEvent(event_id: any) {
 }
 
 // gets Revenue Categories of Event ID
-async function getRevenueCategoryFromEvent(event_id: any) {
-  return await query.supabase
+export async function getRevenueCategoryFromEvent(event_id: any) {
+  const supabase = createClient();
+
+  return await supabase
     .from('categories')
     .select()
     .eq('event_id', event_id)
@@ -106,7 +113,7 @@ async function getRevenueCategoryFromEvent(event_id: any) {
 // get specific transaction from category
 
 // gets Transactions of Category ID
-async function getTransactionsFromCategory(category_id: any) {
+export async function getTransactionsFromCategory(category_id: any) {
   let categoryData = await categoryQuery.selectWhereCategoryValidation(
     category_id,
     'category_id',
@@ -124,7 +131,7 @@ async function getTransactionsFromCategory(category_id: any) {
 // get specific item from transaction
 
 // gets Items from Transaction ID
-async function getItemsFromTransaction(transaction_id: any) {
+export async function getItemsFromTransaction(transaction_id: any) {
   let transactionData = await transactionQuery.selectWhereTransactionValidation(
     transaction_id,
     'transaction_id',
@@ -142,7 +149,7 @@ async function getItemsFromTransaction(transaction_id: any) {
 // get specific item from category
 
 // gets Items from Category ID
-async function getItemsFromCategory(category_id: any) {
+export async function getItemsFromCategory(category_id: any) {
   let itemList = [];
   let categoryData = await categoryQuery.selectWhereCategoryValidation(
     category_id,
@@ -179,7 +186,10 @@ async function getItemsFromCategory(category_id: any) {
 // get specific staff from form
 
 // get Prepared Staff from Form Id
-async function getPreparedStaffFromEvent(form_id: any, form_type: string) {
+export async function getPreparedStaffFromEvent(
+  form_id: any,
+  form_type: string,
+) {
   let formData;
   switch (form_type) {
     case 'ai':
@@ -241,7 +251,10 @@ async function getPreparedStaffFromEvent(form_id: any, form_type: string) {
 }
 
 // get Certified Staff from Form Id
-async function getCertifiedStaffFromEvent(form_id: any, form_type: string) {
+export async function getCertifiedStaffFromEvent(
+  form_id: any,
+  form_type: string,
+) {
   let formData;
   switch (form_type) {
     case 'ai':
@@ -303,7 +316,7 @@ async function getCertifiedStaffFromEvent(form_id: any, form_type: string) {
 }
 
 // get Noted Staff from Form Id
-async function getNotedStaffFromEvent(form_id: any, form_type: string) {
+export async function getNotedStaffFromEvent(form_id: any, form_type: string) {
   let formData;
   switch (form_type) {
     case 'ai':
@@ -369,7 +382,7 @@ async function getNotedStaffFromEvent(form_id: any, form_type: string) {
 //-------------------------------------------------------------------
 
 // gets Expense Items from event ID
-async function getExpenseItemsFromEvent(event_id: any) {
+export async function getExpenseItemsFromEvent(event_id: any) {
   let itemList = [];
   let categoryData = await getExpenseCategoryFromEvent(event_id);
   if (categoryData.data) {
@@ -390,7 +403,7 @@ async function getExpenseItemsFromEvent(event_id: any) {
 }
 
 // gets Revenue Items from event ID
-async function getRevenueItemsFromEvent(event_id: any) {
+export async function getRevenueItemsFromEvent(event_id: any) {
   let itemList = [];
   let categoryData = await getRevenueCategoryFromEvent(event_id);
   if (categoryData.data) {
@@ -411,7 +424,7 @@ async function getRevenueItemsFromEvent(event_id: any) {
 }
 
 // gets Expense Total from event ID
-async function getExpenseTotalFromEvent(event_id: any) {
+export async function getExpenseTotalFromEvent(event_id: any) {
   let itemList = await getExpenseItemsFromEvent(event_id);
   let total = 0;
   if (itemList) {
@@ -423,7 +436,7 @@ async function getExpenseTotalFromEvent(event_id: any) {
 }
 
 // gets Revenue Total from event ID
-async function getRevenueTotalFromEvent(event_id: any) {
+export async function getRevenueTotalFromEvent(event_id: any) {
   let itemList = await getRevenueItemsFromEvent(event_id);
   let total = 0;
   if (itemList) {
@@ -439,46 +452,19 @@ async function getRevenueTotalFromEvent(event_id: any) {
 //-------------------------------------------------------------------
 
 // transforms header data
-async function getFormHeaderData(data: any) {}
+export async function getFormHeaderData(data: any) {}
 
 // transforms footer data
-async function getFormFooterData(data: any) {}
+export async function getFormFooterData(data: any) {}
 
 // transforms Activity Income body data
-async function getAIBodyData(data: any) {}
+export async function getAIBodyData(data: any) {}
 
 // transforms Expense Statement body data
-async function getESBodyData(data: any) {}
+export async function getESBodyData(data: any) {}
 
 // transforms Revenue Statement body data
-async function getRSBodyData(data: any) {}
+export async function getRSBodyData(data: any) {}
 
 // transforms Fund Transfer body data
-async function getFTBodyData(data: any) {}
-
-export const utilFunc = {
-  getAIFormFromEvent,
-  getRSFormFromEvent,
-  getESFormFromEvent,
-  getFTFormFromEvent,
-  getRevenueCategoryFromEvent,
-  getExpenseCategoryFromEvent,
-  getTransactionsFromCategory,
-  getItemsFromTransaction,
-  getItemsFromCategory,
-  getPreparedStaffFromEvent,
-  getCertifiedStaffFromEvent,
-  getNotedStaffFromEvent,
-
-  getRevenueItemsFromEvent,
-  getExpenseItemsFromEvent,
-  getRevenueTotalFromEvent,
-  getExpenseTotalFromEvent,
-
-  getFormHeaderData,
-  getFormFooterData,
-  getAIBodyData,
-  getRSBodyData,
-  getESBodyData,
-  getFTBodyData,
-};
+export async function getFTBodyData(data: any) {}

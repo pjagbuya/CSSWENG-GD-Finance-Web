@@ -7,17 +7,13 @@
 import { CategorySchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
-export type categoryState = {
+export type CategoryState = {
   errors?: {
-    category_id?: string[];
     category_name?: string[];
-    category_type?: string[];
-    event_id?: string[];
-    transaction_list_id?: string[];
   };
-  message?: string | null;
+  hasDuplicateCategory?: boolean;
 };
 
 var categoryFormat = {
@@ -43,7 +39,7 @@ var categoryFormat = {
   */
 };
 
-var schema = 'CategorySchema'; // replace with table name
+var schema = 'Categories'; // replace with table export name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
@@ -54,15 +50,17 @@ async function transformData(data: any) {
   return transformedData;
 }
 
-async function convertData(data: any) {
+export async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
   return data.data;
 }
 
-async function createCategoryValidation(
-  prevState: categoryState,
+export async function createCategoryValidation(
+  eventId: string,
+  type: 'revenue' | 'expense',
+  prevState: CategoryState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -85,14 +83,14 @@ async function createCategoryValidation(
 
   //revalidatePath("/")
   return {
-    message: null,
-  };
+    hasDuplicateCategory: false,
+  } as CategoryState;
 }
 
-async function editCategoryValidation(
+export async function editCategoryValidation(
   id: string,
   identifier: string,
-  prevState: categoryState,
+  prevState: CategoryState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -119,7 +117,10 @@ async function editCategoryValidation(
   };
 }
 
-async function selectWhereCategoryValidation(id: string, identifier: string) {
+export async function selectWhereCategoryValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereCategory(id, identifier);
   if (error) {
@@ -132,7 +133,7 @@ async function selectWhereCategoryValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllCategoryValidation() {
+export async function selectAllCategoryValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllCategory();
   if (error) {
@@ -145,7 +146,7 @@ async function selectAllCategoryValidation() {
   };
 }
 
-async function deleteCategoryValidation(id: string, identifier: string) {
+export async function deleteCategoryValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteCategory(id, identifier);
   if (error) {
@@ -158,35 +159,22 @@ async function deleteCategoryValidation(id: string, identifier: string) {
   };
 }
 
-async function createCategory(data: any) {
+export async function createCategory(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editCategory(data: any, id: string, identifier: string) {
+export async function editCategory(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteCategory(id: string, identifier: string) {
+export async function deleteCategory(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereCategory(id: string, identifier: string) {
+export async function selectWhereCategory(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllCategory() {
+export async function selectAllCategory() {
   return await query.selectAll(schema);
 }
-
-export const categoryQuery = {
-  createCategoryValidation,
-  createCategory,
-  editCategoryValidation,
-  editCategory,
-  deleteCategoryValidation,
-  deleteCategory,
-  selectWhereCategoryValidation,
-  selectWhereCategory,
-  selectAllCategoryValidation,
-  selectAllCategory,
-};

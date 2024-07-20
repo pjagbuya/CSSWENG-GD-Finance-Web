@@ -38,7 +38,10 @@ const EventJumpPointDialog = ({
         return;
       }
 
-      const { data } = await eventQuery.selectOneEventValidation(eventId);
+      const { data } = await eventQuery.selectWhereEventValidation(
+        eventId,
+        'event_id',
+      );
       setEvent(data![0]);
       setOpen(true);
     }

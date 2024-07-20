@@ -1,1 +1,1 @@
-// transactions in group (revenue/expense)
+// items in transactions (revenue/expense)

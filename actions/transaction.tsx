@@ -7,18 +7,14 @@
 import { TransactionSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
-export type transactionState = {
+export type TransactionState = {
   errors?: {
-    transaction_id?: string[];
     transaction_name?: string[];
     transaction_note?: string[];
     transaction_date?: string[];
-    transaction_list_id?: string[];
-    item_list_id?: string[];
   };
-  message?: string | null;
 };
 
 var transactionFormat = {
@@ -48,7 +44,7 @@ var transactionFormat = {
 
 var schema = 'TransactionSchema'; // replace with table name
 
-async function transformData(data: any) {
+export async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
@@ -57,15 +53,15 @@ async function transformData(data: any) {
   return transformedData;
 }
 
-async function convertData(data: any) {
+export async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
   return data.data;
 }
 
-async function createTransactionValidation(
-  prevState: transactionState,
+export async function createTransactionValidation(
+  prevState: TransactionState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -87,15 +83,13 @@ async function createTransactionValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as TransactionState;
 }
 
-async function editTransactionValidation(
+export async function editTransactionValidation(
   id: string,
   identifier: string,
-  prevState: transactionState,
+  prevState: TransactionState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -122,7 +116,7 @@ async function editTransactionValidation(
   };
 }
 
-async function selectWhereTransactionValidation(
+export async function selectWhereTransactionValidation(
   id: string,
   identifier: string,
 ) {
@@ -138,7 +132,7 @@ async function selectWhereTransactionValidation(
   };
 }
 
-async function selectAllTransactionValidation() {
+export async function selectAllTransactionValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllTransaction();
   if (error) {
@@ -151,7 +145,10 @@ async function selectAllTransactionValidation() {
   };
 }
 
-async function deleteTransactionValidation(id: string, identifier: string) {
+export async function deleteTransactionValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { error } = await deleteTransaction(id, identifier);
   if (error) {
@@ -164,35 +161,26 @@ async function deleteTransactionValidation(id: string, identifier: string) {
   };
 }
 
-async function createTransaction(data: any) {
+export async function createTransaction(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editTransaction(data: any, id: string, identifier: string) {
+export async function editTransaction(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteTransaction(id: string, identifier: string) {
+export async function deleteTransaction(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereTransaction(id: string, identifier: string) {
+export async function selectWhereTransaction(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllTransaction() {
+export async function selectAllTransaction() {
   return await query.selectAll(schema);
 }
-
-export const transactionQuery = {
-  createTransactionValidation,
-  createTransaction,
-  editTransactionValidation,
-  editTransaction,
-  deleteTransactionValidation,
-  deleteTransaction,
-  selectWhereTransactionValidation,
-  selectWhereTransaction,
-  selectAllTransactionValidation,
-  selectAllTransaction,
-};

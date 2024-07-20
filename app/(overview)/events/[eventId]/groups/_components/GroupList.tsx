@@ -2,20 +2,26 @@
 
 import { Trash2 } from 'lucide-react';
 
-import { deleteCategory } from '@/actions/transactions';
+import { deleteCategoryValidation } from '@/actions/categories';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type CategoryListProps = {
-  categories: string[];
-  eventId: string;
+  categories: any[];
 };
 
 // TODO: Use a modal for category deletion confirmation
-const GroupList = ({ categories, eventId }: CategoryListProps) => {
-  async function handleCategoryDelete(category: string) {
-    await deleteCategory(eventId, category);
+const GroupList = ({ categories }: CategoryListProps) => {
+  const pathname = usePathname();
+
+  function getRedirectLink(category: any) {
+    return `${pathname}/${category.category_id}`;
+  }
+
+  async function handleCategoryDelete(category: any) {
+    await deleteCategoryValidation(category.category_id, 'category_id');
 
     toast({
       variant: 'success',
@@ -26,7 +32,7 @@ const GroupList = ({ categories, eventId }: CategoryListProps) => {
 
   return (
     <ol className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] border-2 p-4 hover:bg-gray-50">
-      {categories.length !== 0 ? (
+      {categories && categories.length !== 0 ? (
         categories.map(category => (
           <li className="ml-4 list-disc" key={category}>
             <div className="flex items-center">

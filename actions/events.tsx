@@ -7,7 +7,7 @@
 import { CreateEventSchema } from '@/lib/definitions';
 import * as query from '@/lib/supabase';
 
-export type eventState = {
+export type EventState = {
   errors?: {
     event_name?: string[];
   };
@@ -87,11 +87,11 @@ async function createEventValidation(
 async function editEventValidation(
   id: string,
   identifier: string,
-  prevState: eventState,
+  prevState: EventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
-  const validatedFields = EventSchema.safeParse(transformedData);
+  const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -182,35 +182,6 @@ export const eventQuery = {
   deleteEvent,
   selectWhereEventValidation,
   selectWhereEvent,
-  selectAllEventValidation,
-  selectAllEvent,
-};
-
-async function editEvent(data: any, id: string) {
-  return query.edit(schema, data, identifier, id);
-}
-
-async function deleteEvent(id: string) {
-  return query.remove(schema, identifier, id);
-}
-
-async function selectOneEvent(id: string) {
-  return query.selectWhere(schema, identifier, id);
-}
-
-async function selectAllEvent() {
-  return query.selectAll(schema);
-}
-
-export const eventQuery = {
-  createEventValidation,
-  createEvent,
-  editEventValidation,
-  editEvent,
-  deleteEventValidation,
-  deleteEvent,
-  selectOneEventValidation,
-  selectOneEvent,
   selectAllEventValidation,
   selectAllEvent,
 };
