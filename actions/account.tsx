@@ -149,6 +149,22 @@ export async function createStaff(data: staffType, userId: string) {
     .select()
 }
 
+export async function getUserStaff(uuid: string) {
+  noStore();
+  const { data, error } = await selectOneAccountDb(uuid);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data?.map(user => {
+    return {
+      staff_name: user.staff_name,
+      position: user.staff_position && user.staff_position.toLowerCase(),
+    };
+  })[0];
+}
+
 export async function getUsers() {
   noStore();
   const { data, error } = await selectAllAccountDb();
