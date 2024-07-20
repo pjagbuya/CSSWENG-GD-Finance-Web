@@ -33,8 +33,8 @@ const Profile = ({ className, setChiefProps }: LogoProps) => {
           .select('*')
           .eq('uuid', user?.id);
 
-        setPosition((userData && userData[0]?.staff_position) || undefined);
-        setChiefProps(!userError && userData[0]?.staff_position === 'chief');
+        setPosition(userData && userData[0]?.staff_position || undefined)
+        setChiefProps(!userError && userData[0]?.staff_position.toLowerCase() === 'chief')
       }
     }
 
