@@ -1,6 +1,6 @@
 'use server';
 
-import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType } from "@/lib/definitions";
+import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType, AddUserFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
@@ -12,7 +12,6 @@ export type AccountState = {
     password?: string[];
     first_name?: string[];
     last_name?: string[];
-    role?: string[];
   };
   message?: string | null;
 };
@@ -30,7 +29,7 @@ export async function createAccount(
   formData: FormData,
 ) {
   const supabase = createAdminClient();
-  const validatedFields = UserFormSchema.safeParse(
+  const validatedFields = AddUserFormSchema.safeParse(
     Object.fromEntries(formData.entries()),
   );
   if (!validatedFields.success) {

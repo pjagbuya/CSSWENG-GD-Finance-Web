@@ -103,6 +103,8 @@ const AccountsTable = ({
           userInfos && setToEditId(userInfos[Number(id)].uuid);
         }}
         onRowDelete={id => {
+          console.log(userInfos)
+          console.log(id)
           userInfos && setToDeleteId(userInfos[Number(id)].uuid);
         }}
       />
