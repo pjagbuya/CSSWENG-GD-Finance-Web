@@ -1,15 +1,12 @@
 'use server';
 
-import {
-  AddUserFormSchema,
-  EditUserFormSchema,
-  userType,
-} from '@/lib/definitions';
-import { revalidatePath } from 'next/cache';
-import { createAdminClient } from '@/utils/supabase/server';
-import { unstable_noStore as noStore } from 'next/cache';
-import { query } from '@/lib/supabase';
-import { use } from 'react';
+import { StaffSchema, UserSchema, UserSchemaEdit, staffType, userType } from "@/lib/definitions";
+import { revalidatePath } from "next/cache";
+import { createAdminClient } from "@/utils/supabase/server";
+import { unstable_noStore as noStore } from "next/cache";
+import { query } from "@/lib/supabase";
+import { use } from "react";
+import { create } from "domain";
 
 export type AccountState = {
   errors?: {
@@ -18,6 +15,14 @@ export type AccountState = {
     first_name?: string[];
     last_name?: string[];
     role?: string[];
+  };
+  message?: string | null;
+};
+
+export type RegisterAccountState = {
+  errors?: {
+    staff_name?: string[];
+    staff_position?: string[];
   };
   message?: string | null;
 };
@@ -108,6 +113,45 @@ export async function deleteAccount(id: string) {
   revalidatePath('/accounts');
 }
 
+//TODO: do it clyde
+export async function registerAccount(id: string, prevState: RegisterAccountState, formData: FormData) {
+  const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Unable to register account.',
+    };
+  }
+
+  await createStaff(validatedFields.data, id)
+
+  revalidatePath('/accounts');
+  return {
+    message: null,
+  };
+}
+
+export async function createStaff(data: staffType, userId: string) {
+  const supabase = createAdminClient()
+  const { data: staffData, error: staffError } = await query.insert('staffs', {
+    staff_name: data.staff_name,
+    staff_position: data.staff_position.toUpperCase(),
+  });
+
+  if (staffError) {
+    console.log(staffError)
+  }
+
+
+  await supabase
+    .from('users')
+    .update({ staff_id: staffData.staff_id })
+    .eq('user_id', userId)
+    .select()
+}
+
 export async function getUsers() {
   noStore();
   const { data, error } = await selectAllAccountDb();
@@ -145,6 +189,7 @@ export async function getUser(uuid: string) {
     };
   })[0];
 }
+
 
 async function createAccountDb(data: userType, userId: string) {
   const { data: staffData, error: staffError } = await query.insert('staffs', {

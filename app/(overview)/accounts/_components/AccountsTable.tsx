@@ -9,6 +9,8 @@ import DataTable, {
 } from '../../../../components/DataTable';
 import EditAccountDialog from './EditAccountDialog';
 import { deleteAccount, getUsers } from '@/actions/account';
+import RegisterButton from './RegisterButton';
+import RegisterAccountButton from './RegisterButton';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -34,23 +36,18 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     header: ({ column }) => <SortableHeader column={column}>ID</SortableHeader>,
   },
   {
-    accessorKey: 'position',
+    accessorKey: 'register',
     header: ({ column }) => (
-      <SortableHeader column={column}>Position</SortableHeader>
+      <SortableHeader column={column}>Register</SortableHeader>
     ),
-  },
-];
-
-const TEMP_DATA = [
-  {
-    name: 'name',
-    id: 123,
-    position: 'position',
-  },
-  {
-    name: 'name2',
-    id: 124,
-    position: 'position',
+    cell: ({ row }) => {
+      const id = row.getValue('id') as string
+      return (
+        <div className='flex gap-2'>
+          <RegisterAccountButton id={id} />
+        </div>
+      )
+    }
   },
 ];
 

@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url))
     }
 
-    if (userData[0]?.staff_position !== 'chief') {
+    if (userData[0]?.staff_position.toLowerCase() !== 'chief') {
       return NextResponse.redirect(new URL('/', request.url))
     }
   }

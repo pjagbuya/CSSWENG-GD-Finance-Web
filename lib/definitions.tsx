@@ -53,6 +53,19 @@ export const CategorySchema = z.object({
     .min(1),
 });
 
+
+export const StaffSchema = z.object({
+  staff_name: z.string({
+    required_error: 'Please enter Staff name.',
+  }),
+  staff_position: z.string({
+    required_error: 'Please enter Staff position.',
+  }),
+  // staff_list_id: z.string({
+  //   required_error: 'Please enter Staff list ID.',
+  // }),
+});
+
 export const ExpenseStatementSchema = z.object({
   es_id: z
     .string({
@@ -109,6 +122,8 @@ export const ExpenseStatementSchema = z.object({
     })
     .min(1),
 });
+
+export type staffType = z.infer<typeof StaffSchema>;
 
 export const FormListSchema = z.object({
   form_list_id: z
