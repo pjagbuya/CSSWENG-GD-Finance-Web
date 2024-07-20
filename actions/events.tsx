@@ -5,21 +5,12 @@
 // remove comments after
 
 import { CreateEventSchema } from '@/lib/definitions';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
-export type eventState = {
+export type EventState = {
   errors?: {
-    vals?: string[];
-    event_id?: string[];
     event_name?: string[];
-    ft_form_list_id?: string[];
-    rs_form_list_id?: string[];
-    es_form_list_id?: string[];
-    ai_form_list_id?: string[];
   };
-  message?: string | null;
 };
 
 var eventFormat = {
@@ -48,7 +39,7 @@ var eventFormat = {
   */
 };
 
-var schema = 'CreateEventSchema'; // replace with table name
+var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
 async function transformData(data: any) {
@@ -68,7 +59,7 @@ async function convertData(data: any) {
 }
 
 async function createEventValidation(
-  prevState: eventState,
+  prevState: EventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);
@@ -90,14 +81,12 @@ async function createEventValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {};
 }
 
 async function editEventValidation(
   id: string,
-  prevState: eventState,
+  prevState: EventState,
   formData: FormData,
 ) {
   var transformedData = transformData(formData);

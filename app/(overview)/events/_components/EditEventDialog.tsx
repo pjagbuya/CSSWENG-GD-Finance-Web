@@ -1,8 +1,7 @@
-import { EventState, editEvent, getEvent } from '@/actions/events';
+import { EventState, eventQuery } from '@/actions/events';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
-import { set } from 'zod';
 
 type EditEventDialogProps = {
   eventId: string;
@@ -12,9 +11,13 @@ type EditEventDialogProps = {
 const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
   const [open, setOpen] = useState(false);
 
-  const initialState: EventState = { message: null, errors: {} };
+  const initialState: EventState = {
+    errors: {
+      event_name: [],
+    },
+  };
   const [state, formAction] = useFormState(
-    editEvent.bind(null, eventId),
+    eventQuery.editEventValidation.bind(null, eventId),
     initialState,
   );
 
@@ -28,9 +31,8 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
     }
 
     async function getEventInfo() {
-      const event = await getEvent(eventId);
-      setFields({ ...event });
-
+      const { data } = await eventQuery.selectOneEventValidation(eventId);
+      setFields(data![0]);
       setOpen(true);
     }
 
