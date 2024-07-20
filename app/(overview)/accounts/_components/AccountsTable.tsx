@@ -49,6 +49,12 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
       )
     }
   },
+  {
+    accessorKey: 'position',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Position</SortableHeader>
+    ),
+  },
 ];
 
 type AccountsTableProps = {
