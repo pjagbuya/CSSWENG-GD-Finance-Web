@@ -11,6 +11,7 @@ import { transactionListQuery } from "@/actions/transaction_lists";
 import { transactionQuery } from "@/actions/transaction";
 import { itemListQuery } from "@/actions/item_lists";
 import { itemQuery } from "@/actions/items";
+import { query } from "@/lib/supabase";
 
 //-------------------------------------------------------------------
 //          Dashboard Functions
@@ -69,57 +70,138 @@ async function getFTFormFromEvent(event_id : any){
 
 // gets Revenue Categories of event ID
 async function getRevenueCategoryFromEvent(event_id : any){
-    let eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
-    if(eventData.data){
-        let form_list_id = eventData.data[0].ft_form_list_id
-        return await fundTransferQuery.selectWhereFundTransferValidation(
-            form_list_id, 'form_list_id'
-        )
-    }
-    return null
+    return await query.supabase.from('categories').select().eq('event_id', event_id).eq('category_type', 'Revenue')
 }
 
 // gets Expense Categories of event ID
 async function getExpenseCategoryFromEvent(event_id : any){
-
+    return await query.supabase.from('categories').select().eq('event_id', event_id).eq('category_type', 'Expense')
 }
 
 // get specific transaction from category
 
 // gets Transactions of category ID
 async function getTransactionsFromCategory(category_id : any){
-
+    let categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
+    if(categoryData.data){
+        let transaction_list_id = categoryData.data[0].transaction_list_id
+        return await transactionQuery.selectWhereTransactionValidation(
+            transaction_list_id, 'transaction_list_id'
+        )
+    }
+    return null
 }
 
 // get specific item from transaction
 
 // gets Items from transaction ID
 async function getItemsFromTransaction(transaction_id : any){
-
+    let transactionData = await transactionQuery.selectWhereTransactionValidation(transaction_id, 'transaction_id')
+    if(transactionData.data){
+        let item_list_id = transactionData.data[0].item_list_id
+        return await itemQuery.selectWhereItemValidation(
+            item_list_id, 'item_list_id'
+        )
+    }
+    return null
 }
+
+// get specific item from transaction
+
+// gets Items from transaction ID
+async function getItemsFromCategory(category_id : any){
+    let itemList = []
+    let categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
+    if(categoryData.data){
+        let transaction_list_id = categoryData.data[0].transaction_list_id
+        let transactionData =  await transactionQuery.selectWhereTransactionValidation(transaction_list_id, 'transaction_list_id')
+        if(transactionData.data){
+            for(let i = 0; i < transactionData.data.length; i++){
+                let item_list_id = transactionData.data[i].item_list_id
+                let itemData = await itemQuery.selectWhereItemValidation(item_list_id, 'item_list_id')
+                if(itemData.data){
+                    for(let j = 0; j < itemData.data.length; j++){
+                        itemList.push(itemData.data[j])
+                    }
+                }
+            }
+        }
+    }
+    if(itemList.length > 0){
+        return itemList
+    }
+    return null
+}
+
 
 //-------------------------------------------------------------------
 //          Activity Income Functions
 //-------------------------------------------------------------------
 
 // gets Revenue Items from event ID
-async function getRevenueItemsFromEvent(id : any){
-
+async function getRevenueItemsFromEvent(event_id : any){
+    let itemList = []
+    let categoryData = await getRevenueCategoryFromEvent(event_id)
+    if(categoryData.data){
+        for(let i = 0; i < categoryData.data.length; i++){
+            let category_id = categoryData.data[i].category_id
+            let itemData = await getItemsFromCategory(category_id)
+            if(itemData){
+                for(let j = 0; j < itemData.length; j++){
+                    itemList.push(itemData[j])
+                }
+            }
+        }
+    }
+    if(itemList.length > 0){
+        return itemList
+    }
+    return null
 }
 
 // gets Expense Items from event ID
-async function getExpenseItemsFromEvent(id : any){
-
+async function getExpenseItemsFromEvent(event_id : any){
+    let itemList = []
+    let categoryData = await getExpenseCategoryFromEvent(event_id)
+    if(categoryData.data){
+        for(let i = 0; i < categoryData.data.length; i++){
+            let category_id = categoryData.data[i].category_id
+            let itemData = await getItemsFromCategory(category_id)
+            if(itemData){
+                for(let j = 0; j < itemData.length; j++){
+                    itemList.push(itemData[j])
+                }
+            }
+        }
+    }
+    if(itemList.length > 0){
+        return itemList
+    }
+    return null
 }
 
 // gets Revenue Total from event ID
-async function getRevenueTotalFromEvent(id : any){
-
+async function getRevenueTotalFromEvent(event_id : any){
+    let itemList = await getRevenueItemsFromEvent(event_id)
+    let total = 0
+    if(itemList){
+        for(let i = 0; i < itemList.length ; i++){
+            total += itemList[i].item_amount 
+        }
+    }
+    return total
 }
 
 // gets Expense Total from event ID
-async function getExpenseTotalFromEvent(id : any){
-
+async function getExpenseTotalFromEvent(event_id : any){
+    let itemList = await getExpenseItemsFromEvent(event_id)
+    let total = 0
+    if(itemList){
+        for(let i = 0; i < itemList.length ; i++){
+            total += itemList[i].item_amount 
+        }
+    }
+    return total
 }
 
 //-------------------------------------------------------------------
@@ -128,7 +210,7 @@ async function getExpenseTotalFromEvent(id : any){
 
 // transforms header data
 async function getFormHeaderData(data : any){
-
+    
 }
 
 // transforms footer data
@@ -161,11 +243,11 @@ export const utilFunc = {
     getRSFormFromEvent,
     getESFormFromEvent,
     getFTFormFromEvent,
-
     getRevenueCategoryFromEvent,
     getExpenseCategoryFromEvent,
     getTransactionsFromCategory,
     getItemsFromTransaction,
+    getItemsFromCategory,
 
     getRevenueItemsFromEvent,
     getExpenseItemsFromEvent,

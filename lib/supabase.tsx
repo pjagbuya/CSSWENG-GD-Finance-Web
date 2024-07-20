@@ -28,7 +28,7 @@ async function selectWhere(schema: any, column: any, value: any) {
 }
 
 export const query = {
-  insert, edit, remove, selectAll, selectWhere
+  insert, edit, remove, selectAll, selectWhere, supabase
 }
 /*
 const { data, error } = await supabase.from(schema).select().eq(column, var)
