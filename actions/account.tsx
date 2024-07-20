@@ -134,6 +134,9 @@ export async function createStaff(data: staffType, userId: string) {
     staff_position: data.staff_position.toUpperCase(),
   });
 
+  console.log(staffData)
+  console.log(userId)
+
   if (staffError) {
     console.log(staffError)
   }
@@ -160,7 +163,7 @@ export async function getUsers() {
       uuid: user.uuid,
       first_name: user.first_name,
       last_name: user.last_name,
-      id: user.staff_id,
+      id: user.uuid,
       position: user.staff_position && user.staff_position.toLowerCase(),
     };
   });
