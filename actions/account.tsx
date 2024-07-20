@@ -1,12 +1,10 @@
 'use server';
 
-import { StaffSchema, UserSchema, UserSchemaEdit, staffType, userType } from "@/lib/definitions";
+import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType, AddUserFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
-import { query } from "@/lib/supabase";
-import { use } from "react";
-import { create } from "domain";
+import { insert, remove } from "@/lib/supabase";
 
 export type AccountState = {
   errors?: {
@@ -14,7 +12,6 @@ export type AccountState = {
     password?: string[];
     first_name?: string[];
     last_name?: string[];
-    role?: string[];
   };
   message?: string | null;
 };
@@ -87,14 +84,11 @@ export async function editAccount(
     throw new Error(error.message);
   }
 
-  const userError = await editAccountDb(
+  await editAccountDb(
     { ...validatedFields.data, password: validatedFields.data.password || '' },
     id,
   );
 
-  if (userError) {
-    throw new Error(userError.message);
-  }
 
   revalidatePath('/accounts');
   return {
@@ -135,10 +129,13 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
 
 export async function createStaff(data: staffType, userId: string) {
   const supabase = createAdminClient()
-  const { data: staffData, error: staffError } = await query.insert('staffs', {
+  const { data: staffData, error: staffError } = await insert('staffs', {
     staff_name: data.staff_name,
     staff_position: data.staff_position.toUpperCase(),
   });
+
+  console.log(staffData)
+  console.log(userId)
 
   if (staffError) {
     console.log(staffError)
@@ -150,6 +147,22 @@ export async function createStaff(data: staffType, userId: string) {
     .update({ staff_id: staffData.staff_id })
     .eq('user_id', userId)
     .select()
+}
+
+export async function getUserStaff(uuid: string) {
+  noStore();
+  const { data, error } = await selectOneAccountDb(uuid);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data?.map(user => {
+    return {
+      staff_name: user.staff_name,
+      position: user.staff_position && user.staff_position.toLowerCase(),
+    };
+  })[0];
 }
 
 export async function getUsers() {
@@ -166,7 +179,7 @@ export async function getUsers() {
       uuid: user.uuid,
       first_name: user.first_name,
       last_name: user.last_name,
-      id: user.staff_id,
+      id: user.uuid,
       position: user.staff_position && user.staff_position.toLowerCase(),
     };
   });
@@ -191,24 +204,11 @@ export async function getUser(uuid: string) {
 }
 
 
-async function createAccountDb(data: userType, userId: string) {
-  const { data: staffData, error: staffError } = await query.insert('staffs', {
-    staff_position: data.role.toUpperCase(),
-  });
-
-  if (!staffData) {
-    return;
-  }
-
-  if (staffError) {
-    console.log(staffError);
-  }
-
-  const { error: userError } = await query.insert('users', {
+async function createAccountDb(data: addUserType, userId: string) {
+  const { error: userError } = await insert('users', {
     first_name: data.first_name,
     last_name: data.last_name,
     user_id: userId,
-    staff_id: staffData.staff_id,
   });
 
   if (userError) {
@@ -216,7 +216,7 @@ async function createAccountDb(data: userType, userId: string) {
   }
 }
 
-async function editAccountDb(data: userType, uuid: string) {
+async function editAccountDb(data: addUserType, uuid: string) {
   const supabase = createAdminClient();
   const { data: userData, error } = await supabase
     .from('users')
@@ -234,19 +234,10 @@ async function editAccountDb(data: userType, uuid: string) {
   if (error) {
     return error;
   }
-
-  const { error: staffError } = await supabase
-    .from('staffs')
-    .update({
-      staff_position: data.role,
-    })
-    .eq('staff_id', userData[0].staff_id);
-
-  return staffError;
 }
 
-async function deleteAccountDb(data: userType, id: string) {
-  return query.remove('varSchema', 'var_id', id);
+async function deleteAccountDb(data: addUserType, id: string) {
+  return remove('varSchema', 'var_id', id);
 }
 
 async function selectOneAccountDb(uuid: string) {

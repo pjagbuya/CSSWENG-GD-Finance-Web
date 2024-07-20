@@ -334,29 +334,6 @@ export const StaffListSchema = z.object({
     .min(1),
 });
 
-export const StaffSchema = z.object({
-  staff_id: z
-    .string({
-      required_error: 'Please enter Staff ID.',
-    })
-    .min(1),
-  staff_name: z
-    .string({
-      required_error: 'Please enter Staff name.',
-    })
-    .min(1),
-  staff_position: z
-    .string({
-      required_error: 'Please enter Staff position.',
-    })
-    .min(1),
-  staff_list_id: z
-    .string({
-      required_error: 'Please enter Staff list ID.',
-    })
-    .min(1),
-});
-
 export const TransactionSchema = z.object({
   transaction_id: z
     .string({ required_error: 'Please enter Transaction ID.' })
@@ -431,7 +408,7 @@ export const AddRevenueFormSchema = z.object({
   amount: z.coerce.number({ required_error: 'Please enter an amount.' }).min(1),
 });
 
-export const AddUserFormSchema = z.object({
+export const UserFormSchema = z.object({
   email: z
     .string({
       required_error: 'Please enter your email.',
@@ -455,6 +432,12 @@ export const AddUserFormSchema = z.object({
   role: z.enum(['chief', 'member']),
 });
 
+export const AddUserFormSchema = UserFormSchema.omit({
+  role: true
+})
+
+export type addUserType = z.infer<typeof AddUserFormSchema>
+
 export const CreateEventSchema = z.object({
   event_name: z
     .string({
@@ -472,7 +455,7 @@ export const EditUserFormSchema = AddUserFormSchema.omit({
     .optional(),
 });
 
-export const LoginForm = AddUserFormSchema.pick({
+export const LoginForm = UserFormSchema.pick({
   email: true,
   password: true,
 });

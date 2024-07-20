@@ -11,6 +11,7 @@ import EditAccountDialog from './EditAccountDialog';
 import { deleteAccount, getUsers } from '@/actions/account';
 import RegisterButton from './RegisterButton';
 import RegisterAccountButton from './RegisterButton';
+import EditStaffButton from './EditStaffButton';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -45,9 +46,16 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
       return (
         <div className='flex gap-2'>
           <RegisterAccountButton id={id} />
+          <EditStaffButton id={id} />
         </div>
       )
     }
+  },
+  {
+    accessorKey: 'position',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Position</SortableHeader>
+    ),
   },
 ];
 
@@ -97,6 +105,8 @@ const AccountsTable = ({
           userInfos && setToEditId(userInfos[Number(id)].uuid);
         }}
         onRowDelete={id => {
+          console.log(userInfos)
+          console.log(id)
           userInfos && setToDeleteId(userInfos[Number(id)].uuid);
         }}
       />

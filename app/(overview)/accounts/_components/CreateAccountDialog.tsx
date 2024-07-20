@@ -15,7 +15,6 @@ const CreateAccountDialog = ({ open, onFinish }: CreateAccountDialogProps) => {
       password: [],
       first_name: [],
       last_name: [],
-      role: [],
     },
     message: null,
   };
