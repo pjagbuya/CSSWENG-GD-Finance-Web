@@ -42,19 +42,17 @@ var categoryFormat = {
 var schema = 'Categories'; // replace with table export name
 
 async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
-
-  // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  return {
+    category_id: data.get('category_id'),
+    category_name: data.get('category_name'),
+    category_type: data.get('category_type'),
+    event_id: data.get('event_id'),
+    transaction_list_id: data.get('transaction_list_id'),
+  };
 }
 
 export async function convertData(data: any) {
-  // TODO: provide logic
-
-  // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
 export async function createCategoryValidation(
@@ -93,7 +91,7 @@ export async function editCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  const transformedData = await transformData(formData);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -104,17 +102,14 @@ export async function editCategoryValidation(
     };
   }
 
-  // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  const data = await convertData(transformedData);
   const { error } = await editCategory(data, id, identifier);
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as CategoryState;
 }
 
 export async function selectWhereCategoryValidation(

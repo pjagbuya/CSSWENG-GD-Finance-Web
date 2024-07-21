@@ -129,26 +129,24 @@ export async function selectWhereEventValidation(
   id: string,
   identifier: string,
 ) {
-  // TODO: provide logic
   const { data, error } = await selectWhereEvent(id, identifier);
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
   return {
-    data: data,
+    data: data!,
   };
 }
 
 export async function selectAllEventValidation() {
-  // TODO: provide logic
   const { data, error } = await selectAllEvent();
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
   return {
     data: data,
   };

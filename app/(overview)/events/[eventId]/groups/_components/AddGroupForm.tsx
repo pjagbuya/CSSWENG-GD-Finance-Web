@@ -13,7 +13,6 @@ type AddGroupFormProps = {
 };
 
 const AddGroupForm = ({ eventId, type, onFinish }: AddGroupFormProps) => {
-  // TODO: @Enzo link functions
   const [state, action] = useFormState(
     createCategoryValidation.bind(null, eventId, type),
     {
