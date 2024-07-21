@@ -355,7 +355,7 @@ export const TransactionSchema = z.object({
     .min(1),
 });
 
-export const TransactionLists = z.object({
+export const TransactionListSchema = z.object({
   transaction_list_id: z
     .string({
       required_error: 'Please enter Transaction list ID.',

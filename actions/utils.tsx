@@ -1,18 +1,18 @@
 'use server';
 
-import { eventQuery } from '@/actions/events';
-import { formListQuery } from '@/actions/form_lists';
-import { fundTransferQuery } from '@/actions/fund_transfers';
-import { expenseStatementQuery } from '@/actions/expense_statements';
-import { revenueStatementQuery } from '@/actions/revenue_statements';
-import { activityIncomeQuery } from '@/actions/activity_incomes';
-import { staffQuery } from '@/actions/staffs';
-import { staffListQuery } from '@/actions/staff_lists';
-import { categoryQuery } from '@/actions/categories';
-import { transactionListQuery } from '@/actions/transaction_lists';
-import { transactionQuery } from '@/actions/transaction';
-import { itemListQuery } from '@/actions/item_lists';
-import { itemQuery } from '@/actions/items';
+import * as eventQuery from '@/actions/events';
+import * as formListQuery from '@/actions/form_lists';
+import * as fundTransferQuery from '@/actions/fund_transfers';
+import * as expenseStatementQuery from '@/actions/expense_statements';
+import * as revenueStatementQuery from '@/actions/revenue_statements';
+import * as activityIncomeQuery from '@/actions/activity_incomes';
+import * as staffQuery from '@/actions/staffs';
+import * as staffListQuery from '@/actions/staff_lists';
+import * as categoryQuery from '@/actions/categories';
+import * as transactionListQuery from '@/actions/transaction_lists';
+import * as transactionQuery from '@/actions/transaction';
+import * as itemListQuery from '@/actions/item_lists';
+import * as itemQuery from '@/actions/items';
 import * as query from '@/lib/supabase';
 import { createClient } from '@/utils/supabase/server';
 

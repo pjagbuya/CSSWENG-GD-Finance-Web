@@ -1,3 +1,4 @@
+/*
 // INSTRUCTIONS:
 // vare_ -> small case
 // Vare -> big case
@@ -7,7 +8,7 @@
 import { VareSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type vare_State = {
   errors?: {
@@ -19,9 +20,9 @@ export type vare_State = {
 var vare_Format = {
   vals: null,
 
-  /*
-
-  */
+  // 
+  Insert Database Code
+  //
 };
 
 var schema = 'VareSchema'; // replace with table name
@@ -42,7 +43,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createVareValidation(prevState: vare_State, formData: FormData) {
+export async function createVareValidation(prevState: vare_State, formData: FormData) {
   var transformedData = transformData(formData);
   const validatedFields = VareSchema.safeParse(transformedData);
 
@@ -67,7 +68,7 @@ async function createVareValidation(prevState: vare_State, formData: FormData) {
   };
 }
 
-async function editVareValidation(
+export async function editVareValidation(
   id: string,
   identifier: string,
   prevState: vare_State,
@@ -97,7 +98,7 @@ async function editVareValidation(
   };
 }
 
-async function selectWhereVareValidation(id: string, identifier: string) {
+export async function selectWhereVareValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { data, error } = await selectWhereVare(id, identifier);
   if (error) {
@@ -110,7 +111,7 @@ async function selectWhereVareValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllVareValidation() {
+export async function selectAllVareValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllVare();
   if (error) {
@@ -123,7 +124,7 @@ async function selectAllVareValidation() {
   };
 }
 
-async function deleteVareValidation(id: string, identifier: string) {
+export async function deleteVareValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteVare(id, identifier);
   if (error) {
@@ -136,35 +137,23 @@ async function deleteVareValidation(id: string, identifier: string) {
   };
 }
 
-async function createVare(data: any) {
+export async function createVare(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editVare(data: any, id: string, identifier: string) {
+export async function editVare(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteVare(id: string, identifier: string) {
+export async function deleteVare(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereVare(id: string, identifier: string) {
+export async function selectWhereVare(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllVare() {
+export async function selectAllVare() {
   return await query.selectAll(schema);
 }
-
-export const vare_Query = {
-  createVareValidation,
-  createVare,
-  editVareValidation,
-  editVare,
-  deleteVareValidation,
-  deleteVare,
-  selectWhereVareValidation,
-  selectWhereVare,
-  selectAllVareValidation,
-  selectAllVare,
-};
+*/

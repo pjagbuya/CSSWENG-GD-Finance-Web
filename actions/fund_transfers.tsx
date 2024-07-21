@@ -7,7 +7,7 @@
 import { FundTransferSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type fundTransferState = {
   errors?: {
@@ -87,7 +87,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createFundTransferValidation(
+export async function createFundTransferValidation(
   prevState: fundTransferState,
   formData: FormData,
 ) {
@@ -115,7 +115,7 @@ async function createFundTransferValidation(
   };
 }
 
-async function editFundTransferValidation(
+export async function editFundTransferValidation(
   id: string,
   identifier: string,
   prevState: fundTransferState,
@@ -145,7 +145,7 @@ async function editFundTransferValidation(
   };
 }
 
-async function selectWhereFundTransferValidation(
+export async function selectWhereFundTransferValidation(
   id: string,
   identifier: string,
 ) {
@@ -161,7 +161,7 @@ async function selectWhereFundTransferValidation(
   };
 }
 
-async function selectAllFundTransferValidation() {
+export async function selectAllFundTransferValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllFundTransfer();
   if (error) {
@@ -174,7 +174,7 @@ async function selectAllFundTransferValidation() {
   };
 }
 
-async function deleteFundTransferValidation(id: string, identifier: string) {
+export async function deleteFundTransferValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteFundTransfer(id, identifier);
   if (error) {
@@ -187,35 +187,22 @@ async function deleteFundTransferValidation(id: string, identifier: string) {
   };
 }
 
-async function createFundTransfer(data: any) {
+export async function createFundTransfer(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editFundTransfer(data: any, id: string, identifier: string) {
+export async function editFundTransfer(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteFundTransfer(id: string, identifier: string) {
+export async function deleteFundTransfer(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereFundTransfer(id: string, identifier: string) {
+export async function selectWhereFundTransfer(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllFundTransfer() {
+export async function selectAllFundTransfer() {
   return await query.selectAll(schema);
 }
-
-export const fundTransferQuery = {
-  createFundTransferValidation,
-  createFundTransfer,
-  editFundTransferValidation,
-  editFundTransfer,
-  deleteFundTransferValidation,
-  deleteFundTransfer,
-  selectWhereFundTransferValidation,
-  selectWhereFundTransfer,
-  selectAllFundTransferValidation,
-  selectAllFundTransfer,
-};

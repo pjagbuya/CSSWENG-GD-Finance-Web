@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS items(
 
 var schema = 'ItemSchema'; // replace with table name
 
-export async function transformData(data: any) {
+async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
   // TODO: provide logic
 
@@ -57,7 +57,7 @@ export async function transformData(data: any) {
   return transformedData;
 }
 
-export async function convertData(data: any) {
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields

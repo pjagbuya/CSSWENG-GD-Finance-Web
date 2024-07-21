@@ -7,7 +7,7 @@
 import { RevenueStatementSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type revenueStatementState = {
   errors?: {
@@ -84,7 +84,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createRevenueStatementValidation(
+export async function createRevenueStatementValidation(
   prevState: revenueStatementState,
   formData: FormData,
 ) {
@@ -112,7 +112,7 @@ async function createRevenueStatementValidation(
   };
 }
 
-async function editRevenueStatementValidation(
+export async function editRevenueStatementValidation(
   id: string,
   identifier: string,
   prevState: revenueStatementState,
@@ -142,7 +142,7 @@ async function editRevenueStatementValidation(
   };
 }
 
-async function selectWhereRevenueStatementValidation(
+export async function selectWhereRevenueStatementValidation(
   id: string,
   identifier: string,
 ) {
@@ -158,7 +158,7 @@ async function selectWhereRevenueStatementValidation(
   };
 }
 
-async function selectAllRevenueStatementValidation() {
+export async function selectAllRevenueStatementValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllRevenueStatement();
   if (error) {
@@ -171,7 +171,7 @@ async function selectAllRevenueStatementValidation() {
   };
 }
 
-async function deleteRevenueStatementValidation(
+export async function deleteRevenueStatementValidation(
   id: string,
   identifier: string,
 ) {
@@ -187,35 +187,22 @@ async function deleteRevenueStatementValidation(
   };
 }
 
-async function createRevenueStatement(data: any) {
+export async function createRevenueStatement(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editRevenueStatement(data: any, id: string, identifier: string) {
+export async function editRevenueStatement(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteRevenueStatement(id: string, identifier: string) {
+export async function deleteRevenueStatement(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereRevenueStatement(id: string, identifier: string) {
+export async function selectWhereRevenueStatement(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllRevenueStatement() {
+export async function selectAllRevenueStatement() {
   return await query.selectAll(schema);
 }
-
-export const revenueStatementQuery = {
-  createRevenueStatementValidation,
-  createRevenueStatement,
-  editRevenueStatementValidation,
-  editRevenueStatement,
-  deleteRevenueStatementValidation,
-  deleteRevenueStatement,
-  selectWhereRevenueStatementValidation,
-  selectWhereRevenueStatement,
-  selectAllRevenueStatementValidation,
-  selectAllRevenueStatement,
-};

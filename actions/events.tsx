@@ -44,7 +44,7 @@ var eventFormat = {
 var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
-export async function transformData(data: FormData) {
+async function transformData(data: FormData) {
   var eventData = await selectAllEventValidation();
   var count = 0;
 
@@ -65,7 +65,7 @@ export async function transformData(data: FormData) {
   return transformedData;
 }
 
-export async function convertData(data: any) {
+async function convertData(data: any) {
   return data;
 }
 

@@ -51,7 +51,7 @@ async function transformData(data: any) {
   };
 }
 
-export async function convertData(data: any) {
+async function convertData(data: any) {
   return data;
 }
 
