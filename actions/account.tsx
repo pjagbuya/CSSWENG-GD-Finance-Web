@@ -2,7 +2,7 @@
 
 import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType, AddUserFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
-import { createAdminClient } from "@/utils/supabase/server";
+import { createAdminClient, createClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
 import { insert, remove } from "@/lib/supabase";
 
@@ -125,6 +125,25 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
   };
 }
 
+export async function editSTaffForm(id: string, prevState: RegisterAccountState, formData: FormData) {
+  const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
+
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Unable to register account.',
+    };
+  }
+
+  await editSTaff(validatedFields.data, id)
+
+  revalidatePath('/accounts');
+  return {
+    message: null,
+  };
+}
+
 export async function createStaff(data: staffType, userId: string) {
   const { error: staffError } = await insert('staffs', {
     staff_position: data.staff_position.toUpperCase(),
@@ -135,6 +154,15 @@ export async function createStaff(data: staffType, userId: string) {
   if (staffError) {
     console.log(staffError)
   }
+}
+
+export async function editSTaff(data: staffType, userId: string) {
+  const supabase = createClient()
+  await supabase
+    .from('staffs')
+    .update({ staff_position: data.staff_position.toUpperCase() })
+    .eq('user_id', userId)
+    .select()
 }
 
 export async function getUserStaff(uuid: string) {
