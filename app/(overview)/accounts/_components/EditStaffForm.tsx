@@ -1,7 +1,6 @@
 'use client';
 
 import { RegisterAccountState } from '@/actions/account';
-import { EventState } from '@/actions/events';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -10,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { ToastAction } from '@/components/ui/toast';
@@ -59,27 +57,6 @@ const EditStaffForm: React.FC<EventDialogFormProps> = ({
 
         <form action={action}>
           <div className="flex flex-col gap-6 py-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="staff_name">Staff Name</Label>
-              <Input
-                id="staff_name"
-                name="staff_name"
-                placeholder="Name"
-              // value={fields?.event_name}
-              // onChange={e =>
-              //   onFieldsChange?.({ ...fields, event_name: e.target.value })
-              // }
-              />
-
-              <div id="name-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.staff_name &&
-                  state.errors.staff_name.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                  ))}
-              </div>
-            </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
               <Select name='staff_position' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
