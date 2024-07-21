@@ -4,7 +4,7 @@ import { CirclePlus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import RegisterAccountDialog from './RegisterAccountDialog';
+import EditStaffDialog from './EditStaffDialog';
 
 type RegisterAccountButtonType = {
   id: string;
@@ -19,7 +19,7 @@ const EditStaffButton = ({ id }: RegisterAccountButtonType) => {
         <CirclePlus className="mr-2 w-4" /> Edit Staff
       </Button>
 
-      <RegisterAccountDialog
+      <EditStaffDialog
         open={showRegisterAccountDialog}
         onFinish={() => setShowRegisterAccountDialog(false)}
         id={id}

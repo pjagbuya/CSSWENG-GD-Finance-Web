@@ -20,7 +20,7 @@ const RegisterAccountDialog = ({ open, onFinish, id }: EditEventDialogProps) => 
   return (
     <RegisterAccountForm
       action={formAction}
-      label={'Create'}
+      label={'Register'}
       state={state}
       open={open}
       onOpenChange={onFinish}

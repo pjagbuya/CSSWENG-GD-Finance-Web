@@ -2,7 +2,7 @@
 
 import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType, AddUserFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
-import { createAdminClient } from "@/utils/supabase/server";
+import { createAdminClient, createClient } from "@/utils/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
 import { insert, remove } from "@/lib/supabase";
 
@@ -18,7 +18,6 @@ export type AccountState = {
 
 export type RegisterAccountState = {
   errors?: {
-    staff_name?: string[];
     staff_position?: string[];
   };
   message?: string | null;
@@ -107,7 +106,6 @@ export async function deleteAccount(id: string) {
   revalidatePath('/accounts');
 }
 
-//TODO: do it clyde
 export async function registerAccount(id: string, prevState: RegisterAccountState, formData: FormData) {
   const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
 
@@ -127,24 +125,42 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
   };
 }
 
-export async function createStaff(data: staffType, userId: string) {
-  const supabase = createAdminClient()
-  const { data: staffData, error: staffError } = await insert('staffs', {
-    staff_name: data.staff_name,
-    staff_position: data.staff_position.toUpperCase(),
-  });
+export async function editSTaffForm(id: string, prevState: RegisterAccountState, formData: FormData) {
+  const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
 
-  console.log(staffData)
-  console.log(userId)
+  if (!validatedFields.success) {
+    console.log(validatedFields.error);
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Unable to register account.',
+    };
+  }
+
+  await editSTaff(validatedFields.data, id)
+
+  revalidatePath('/accounts');
+  return {
+    message: null,
+  };
+}
+
+export async function createStaff(data: staffType, userId: string) {
+  const { error: staffError } = await insert('staffs', {
+    staff_position: data.staff_position.toUpperCase(),
+    user_id: userId,
+    staff_id: 'not sure what to do'
+  });
 
   if (staffError) {
     console.log(staffError)
   }
+}
 
-
+export async function editSTaff(data: staffType, userId: string) {
+  const supabase = createClient()
   await supabase
-    .from('users')
-    .update({ staff_id: staffData.staff_id })
+    .from('staffs')
+    .update({ staff_position: data.staff_position.toUpperCase() })
     .eq('user_id', userId)
     .select()
 }
@@ -177,8 +193,8 @@ export async function getUsers() {
     return {
       email: user.email,
       uuid: user.uuid,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      first_name: user.user_first_name,
+      last_name: user.user_last_name,
       id: user.uuid,
       position: user.staff_position && user.staff_position.toLowerCase(),
     };
@@ -196,8 +212,8 @@ export async function getUser(uuid: string) {
   return data?.map(user => {
     return {
       email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      first_name: user.user_first_name,
+      last_name: user.user_last_name,
       position: user.staff_position && user.staff_position.toLowerCase(),
     };
   })[0];
@@ -206,8 +222,8 @@ export async function getUser(uuid: string) {
 
 async function createAccountDb(data: addUserType, userId: string) {
   const { error: userError } = await insert('users', {
-    first_name: data.first_name,
-    last_name: data.last_name,
+    user_first_name: data.first_name,
+    user_last_name: data.last_name,
     user_id: userId,
   });
 
@@ -221,8 +237,8 @@ async function editAccountDb(data: addUserType, uuid: string) {
   const { data: userData, error } = await supabase
     .from('users')
     .update({
-      first_name: data.first_name,
-      last_name: data.last_name,
+      user_first_name: data.first_name,
+      user_last_name: data.last_name,
     })
     .eq('user_id', uuid)
     .select();

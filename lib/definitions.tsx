@@ -55,9 +55,6 @@ export const CategorySchema = z.object({
 
 
 export const StaffSchema = z.object({
-  staff_name: z.string({
-    required_error: 'Please enter Staff name.',
-  }),
   staff_position: z.string({
     required_error: 'Please enter Staff position.',
   }),
