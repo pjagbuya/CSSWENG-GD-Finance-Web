@@ -96,7 +96,7 @@ export async function getExpenseCategoryFromEvent(event_id: any) {
     .from('categories')
     .select()
     .eq('event_id', event_id)
-    .eq('category_type', 'Expense');
+    .eq('category_type', 'expense'); 
 }
 
 // gets Revenue Categories of Event ID
@@ -107,7 +107,7 @@ export async function getRevenueCategoryFromEvent(event_id: any) {
     .from('categories')
     .select()
     .eq('event_id', event_id)
-    .eq('category_type', 'Revenue');
+    .eq('category_type', 'revenue');
 }
 
 // get specific transaction from category

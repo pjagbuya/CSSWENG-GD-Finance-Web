@@ -36,7 +36,7 @@ const GroupList = ({ categories }: CategoryListProps) => {
         categories.map(category => (
           <li className="ml-4 list-disc" key={category}>
             <div className="flex items-center">
-              <Link href={getRedirectLink(category)}>{category}</Link>
+              <Link href={getRedirectLink(category)}>{category.category_name}</Link>
 
               <Button
                 variant="ghost"

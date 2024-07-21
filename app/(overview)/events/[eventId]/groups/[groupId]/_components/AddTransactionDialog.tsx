@@ -10,13 +10,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { createTransactionValidation } from '@/actions/transaction';
 
 type AddTransactionFormProps = {
+  groupId: string;
   onFinish?: () => void;
 };
 
-const AddTransactionDialog = ({ onFinish }: AddTransactionFormProps) => {
+const AddTransactionDialog = ({ groupId, onFinish }: AddTransactionFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
 
-  const [state, action] = useFormState(createTransactionValidation, {
+  const [state, action] = useFormState(createTransactionValidation.bind(null, groupId), {
     errors: {},
   });
 

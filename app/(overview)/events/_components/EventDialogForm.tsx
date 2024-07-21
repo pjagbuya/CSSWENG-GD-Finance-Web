@@ -68,14 +68,14 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
                 }
               />
 
-              <div id="name-error" aria-live="polite" aria-atomic="true">
+              {/* <div id="name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.staff_name &&
                   state.errors.staff_name.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
                     </p>
                   ))}
-              </div>
+              </div> */}
             </div>
           </div>
 

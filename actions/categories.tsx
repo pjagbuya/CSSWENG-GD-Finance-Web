@@ -1,3 +1,5 @@
+'use server';
+
 // INSTRUCTIONS:
 // category -> small case
 // Category -> big case
@@ -8,6 +10,7 @@ import { CategorySchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as transactionListQuery from './transaction_lists';
 
 export type CategoryState = {
   errors?: {
@@ -39,9 +42,34 @@ var categoryFormat = {
   */
 };
 
-var schema = 'Categories'; // replace with table export name
+var schema = 'categories'; // replace with table export name
 
-async function transformData(data: any) {
+async function transformCreateData(data: any, event_id: string, type: 'revenue' | 'expense') {
+
+  var categoryData = await selectAllCategoryValidation()
+  var id_mod = 10000;
+  if(categoryData.data){
+    if(categoryData.data.length > 0){
+      for(let i = 0; i < categoryData.data!.length; i++){
+        var num = parseInt(categoryData.data[i].category_id.slice(6))
+        if(num > id_mod){
+          id_mod = num
+        }
+      }
+      id_mod += 1
+    }
+  }
+
+  return {
+    category_id: `categ_${id_mod}`,
+    category_name: data.get('category_name'),
+    category_type: type,
+    event_id: event_id,
+    transaction_list_id: `trl_${id_mod}`,
+  };
+}
+
+async function transformEditData(data: any) {
   return {
     category_id: data.get('category_id'),
     category_name: data.get('category_name'),
@@ -61,9 +89,10 @@ export async function createCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(formData, eventId, type);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
+  console.log(validatedFields)
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -73,14 +102,21 @@ export async function createCategoryValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+  
+  const transaction_list = {
+    transaction_list_id: data.transaction_list_id
+  }
+  await transactionListQuery.createTransactionList(transaction_list);
+  
   const { error } = await createCategory(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath(`/groups`)
   return {
+  
     hasDuplicateCategory: false,
   } as CategoryState;
 }
@@ -91,7 +127,7 @@ export async function editCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  const transformedData = await transformData(formData);
+  const transformedData = await transformEditData(formData);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -124,7 +160,7 @@ export async function selectWhereCategoryValidation(
 
   //revalidatePath("/")
   return {
-    data: data,
+    data: data!,
   };
 }
 
@@ -142,13 +178,18 @@ export async function selectAllCategoryValidation() {
 }
 
 export async function deleteCategoryValidation(id: string, identifier: string) {
-  // TODO: provide logic
+  const data = await selectWhereCategoryValidation(id, identifier)
+
   const { error } = await deleteCategory(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
+  
+  // TODO: provide logic
+  await transactionListQuery.deleteTransactionList(data.data[0].transaction_list_id, 'transaction_list_id')
 
-  //revalidatePath("/")
+  revalidatePath(`/groups`)
+
   return {
     message: null,
   };

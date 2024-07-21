@@ -6,7 +6,11 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import AddTransactionDialog from './AddTransactionDialog';
 
-const CreateTransactionButton = () => {
+type CreateTransactionButtonProps = {
+  groupId: string;
+};
+
+const CreateTransactionButton = ({groupId}: CreateTransactionButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   return (
@@ -16,7 +20,7 @@ const CreateTransactionButton = () => {
       </Button>
 
       {showDialog && (
-        <AddTransactionDialog onFinish={() => setShowDialog(false)} />
+        <AddTransactionDialog groupId={groupId} onFinish={() => setShowDialog(false)} />
       )}
     </>
   );
