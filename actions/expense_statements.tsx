@@ -84,7 +84,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createExpenseStatementValidation(
+export async function createExpenseStatementValidation(
   prevState: expenseStatementState,
   formData: FormData,
 ) {
@@ -112,7 +112,7 @@ async function createExpenseStatementValidation(
   };
 }
 
-async function editExpenseStatementValidation(
+export async function editExpenseStatementValidation(
   id: string,
   identifier: string,
   prevState: expenseStatementState,
@@ -142,7 +142,7 @@ async function editExpenseStatementValidation(
   };
 }
 
-async function selectWhereExpenseStatementValidation(
+export async function selectWhereExpenseStatementValidation(
   id: string,
   identifier: string,
 ) {
@@ -158,7 +158,7 @@ async function selectWhereExpenseStatementValidation(
   };
 }
 
-async function selectAllExpenseStatementValidation() {
+export async function selectAllExpenseStatementValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllExpenseStatement();
   if (error) {
@@ -171,7 +171,7 @@ async function selectAllExpenseStatementValidation() {
   };
 }
 
-async function deleteExpenseStatementValidation(
+export async function deleteExpenseStatementValidation(
   id: string,
   identifier: string,
 ) {
@@ -187,35 +187,22 @@ async function deleteExpenseStatementValidation(
   };
 }
 
-async function createExpenseStatement(data: any) {
+export async function createExpenseStatement(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editExpenseStatement(data: any, id: string, identifier: string) {
+export async function editExpenseStatement(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteExpenseStatement(id: string, identifier: string) {
+export async function deleteExpenseStatement(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereExpenseStatement(id: string, identifier: string) {
+export async function selectWhereExpenseStatement(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllExpenseStatement() {
+export async function selectAllExpenseStatement() {
   return await query.selectAll(schema);
 }
-
-export const expenseStatementQuery = {
-  createExpenseStatementValidation,
-  createExpenseStatement,
-  editExpenseStatementValidation,
-  editExpenseStatement,
-  deleteExpenseStatementValidation,
-  deleteExpenseStatement,
-  selectWhereExpenseStatementValidation,
-  selectWhereExpenseStatement,
-  selectAllExpenseStatementValidation,
-  selectAllExpenseStatement,
-};

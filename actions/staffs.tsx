@@ -7,7 +7,7 @@
 import { StaffSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type staffState = {
   errors?: {
@@ -60,7 +60,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createStaffValidation(
+export async function createStaffValidation(
   prevState: staffState,
   formData: FormData,
 ) {
@@ -88,7 +88,7 @@ async function createStaffValidation(
   };
 }
 
-async function editStaffValidation(
+export async function editStaffValidation(
   id: string,
   identifier: string,
   prevState: staffState,
@@ -118,7 +118,7 @@ async function editStaffValidation(
   };
 }
 
-async function selectWhereStaffValidation(id: string, identifier: string) {
+export async function selectWhereStaffValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { data, error } = await selectWhereStaff(id, identifier);
   if (error) {
@@ -131,7 +131,7 @@ async function selectWhereStaffValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllStaffValidation() {
+export async function selectAllStaffValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllStaff();
   if (error) {
@@ -144,7 +144,7 @@ async function selectAllStaffValidation() {
   };
 }
 
-async function deleteStaffValidation(id: string, identifier: string) {
+export async function deleteStaffValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteStaff(id, identifier);
   if (error) {
@@ -157,35 +157,23 @@ async function deleteStaffValidation(id: string, identifier: string) {
   };
 }
 
-async function createStaff(data: any) {
+export async function createStaff(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editStaff(data: any, id: string, identifier: string) {
+export async function editStaff(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteStaff(id: string, identifier: string) {
+export async function deleteStaff(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereStaff(id: string, identifier: string) {
+export async function selectWhereStaff(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllStaff() {
+export async function selectAllStaff() {
   return await query.selectAll(schema);
 }
 
-export const staffQuery = {
-  createStaffValidation,
-  createStaff,
-  editStaffValidation,
-  editStaff,
-  deleteStaffValidation,
-  deleteStaff,
-  selectWhereStaffValidation,
-  selectWhereStaff,
-  selectAllStaffValidation,
-  selectAllStaff,
-};

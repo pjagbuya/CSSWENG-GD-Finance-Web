@@ -7,7 +7,7 @@
 import { ItemListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type itemListState = {
   errors?: {
@@ -46,7 +46,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createItemListValidation(
+export async function createItemListValidation(
   prevState: itemListState,
   formData: FormData,
 ) {
@@ -74,7 +74,7 @@ async function createItemListValidation(
   };
 }
 
-async function editItemListValidation(
+export async function editItemListValidation(
   id: string,
   identifier: string,
   prevState: itemListState,
@@ -104,7 +104,7 @@ async function editItemListValidation(
   };
 }
 
-async function selectWhereItemListValidation(id: string, identifier: string) {
+export async function selectWhereItemListValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { data, error } = await selectWhereItemList(id, identifier);
   if (error) {
@@ -117,7 +117,7 @@ async function selectWhereItemListValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllItemListValidation() {
+export async function selectAllItemListValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllItemList();
   if (error) {
@@ -130,7 +130,7 @@ async function selectAllItemListValidation() {
   };
 }
 
-async function deleteItemListValidation(id: string, identifier: string) {
+export async function deleteItemListValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteItemList(id, identifier);
   if (error) {
@@ -143,35 +143,22 @@ async function deleteItemListValidation(id: string, identifier: string) {
   };
 }
 
-async function createItemList(data: any) {
+export async function createItemList(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editItemList(data: any, id: string, identifier: string) {
+export async function editItemList(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteItemList(id: string, identifier: string) {
+export async function deleteItemList(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereItemList(id: string, identifier: string) {
+export async function selectWhereItemList(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllItemList() {
+export async function selectAllItemList() {
   return await query.selectAll(schema);
 }
-
-export const itemListQuery = {
-  createItemListValidation,
-  createItemList,
-  editItemListValidation,
-  editItemList,
-  deleteItemListValidation,
-  deleteItemList,
-  selectWhereItemListValidation,
-  selectWhereItemList,
-  selectAllItemListValidation,
-  selectAllItemList,
-};

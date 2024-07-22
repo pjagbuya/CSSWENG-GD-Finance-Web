@@ -23,6 +23,8 @@ const GroupsPage = async ({ params }: TransactionsPageProps) => {
     params.eventId,
   );
 
+  console.log('expense', expenseGroups, 'revenue', revenueGroups);
+
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">

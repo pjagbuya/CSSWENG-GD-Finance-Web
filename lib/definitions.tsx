@@ -46,7 +46,7 @@ export const CategorySchema = z.object({
   category_name: z
     .string({ required_error: 'Please enter Category name.' })
     .min(1),
-  category_type: z.enum(['Expense', 'Revenue']),
+  category_type: z.enum(['expense', 'revenue']),
   event_id: z.string({ required_error: 'Please enter Event ID.' }).min(1),
   transaction_list_id: z
     .string({ required_error: 'Please enter Transaction list ID.' })
@@ -355,7 +355,7 @@ export const TransactionSchema = z.object({
     .min(1),
 });
 
-export const TransactionLists = z.object({
+export const TransactionListSchema = z.object({
   transaction_list_id: z
     .string({
       required_error: 'Please enter Transaction list ID.',

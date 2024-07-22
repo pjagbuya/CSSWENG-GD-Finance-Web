@@ -7,7 +7,7 @@
 import { ActivityIncomeSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
 
 export type activityIncomeState = {
   errors?: {
@@ -71,7 +71,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createActivityIncomeValidation(
+export async function createActivityIncomeValidation(
   prevState: activityIncomeState,
   formData: FormData,
 ) {
@@ -99,7 +99,7 @@ async function createActivityIncomeValidation(
   };
 }
 
-async function editActivityIncomeValidation(
+export async function editActivityIncomeValidation(
   id: string,
   identifier: string,
   prevState: activityIncomeState,
@@ -129,7 +129,7 @@ async function editActivityIncomeValidation(
   };
 }
 
-async function selectWhereActivityIncomeValidation(
+export async function selectWhereActivityIncomeValidation(
   id: string,
   identifier: string,
 ) {
@@ -145,7 +145,7 @@ async function selectWhereActivityIncomeValidation(
   };
 }
 
-async function selectAllActivityIncomeValidation() {
+export async function selectAllActivityIncomeValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllActivityIncome();
   if (error) {
@@ -158,7 +158,7 @@ async function selectAllActivityIncomeValidation() {
   };
 }
 
-async function deleteActivityIncomeValidation(id: string, identifier: string) {
+export async function deleteActivityIncomeValidation(id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteActivityIncome(id, identifier);
   if (error) {
@@ -171,35 +171,22 @@ async function deleteActivityIncomeValidation(id: string, identifier: string) {
   };
 }
 
-async function createActivityIncome(data: any) {
+export async function createActivityIncome(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editActivityIncome(data: any, id: string, identifier: string) {
+export async function editActivityIncome(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteActivityIncome(id: string, identifier: string) {
+export async function deleteActivityIncome(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereActivityIncome(id: string, identifier: string) {
+export async function selectWhereActivityIncome(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllActivityIncome() {
+export async function selectAllActivityIncome() {
   return await query.selectAll(schema);
 }
-
-export const activityIncomeQuery = {
-  createActivityIncomeValidation,
-  createActivityIncome,
-  editActivityIncomeValidation,
-  editActivityIncome,
-  deleteActivityIncomeValidation,
-  deleteActivityIncome,
-  selectWhereActivityIncomeValidation,
-  selectWhereActivityIncome,
-  selectAllActivityIncomeValidation,
-  selectAllActivityIncome,
-};

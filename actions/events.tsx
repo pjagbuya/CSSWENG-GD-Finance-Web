@@ -8,6 +8,9 @@
 
 import { CreateEventSchema } from '@/lib/definitions';
 import * as query from '@/lib/supabase';
+import * as formListQuery from '@/actions/form_lists';
+import { revalidatePath } from 'next/cache';
+import * as categoryQuery from '@/actions/categories';
 
 export type EventState = {
   errors?: {
@@ -44,28 +47,54 @@ var eventFormat = {
 var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
-export async function transformData(data: FormData) {
-  var eventData = await selectAllEventValidation();
-  var count = 0;
+async function transformCreateData(data: FormData) {
 
-  if (eventData.data) {
-    count = eventData.data!.length;
+  var eventData = await selectAllEventValidation()
+  var id_mod = 10000
+  if(eventData.data){
+    if(eventData.data.length > 0){
+      for(let i = 0; i < eventData.data!.length; i++){
+        var num = parseInt(eventData.data[i].event_id.slice(6));
+        if(num > id_mod){
+          id_mod = num
+        }
+      }
+      id_mod += 1
+    }
   }
 
   // TODO: fill information
   var transformedData = {
-    event_id: `event_${count + 10000}`,
+    event_id: `event_${id_mod}`,
     event_name: data.get('event_name'),
-    ft_form_list_id: `ftl_${count + 10000}`,
-    rs_form_list_id: `rsl_${count + 10000}`,
-    es_form_list_id: `esl_${count + 10000}`,
-    ai_form_list_id: `ail_${count + 10000}`,
+    ft_form_list_id: `ftl_${id_mod}`,
+    rs_form_list_id: `rsl_${id_mod}`,
+    es_form_list_id: `esl_${id_mod}`,
+    ai_form_list_id: `ail_${id_mod}`,
   };
 
   return transformedData;
 }
 
-export async function convertData(data: any) {
+async function transformEditData(id: string, identifier: string, data: FormData) {
+  const eventData = await selectWhereEventValidation(id, identifier)
+
+  // TODO: fill information
+  var transformedData = {
+    event_id: id,
+    event_name: data.get('event_name'),
+    ft_form_list_id: eventData.data[0].ft_form_list_id,
+    rs_form_list_id: eventData.data[0].rs_form_list_id,
+    es_form_list_id: eventData.data[0].es_form_list_id,
+    ai_form_list_id: eventData.data[0].ai_form_list_id,
+  };
+
+  console.log(transformedData)
+
+  return transformedData;
+}
+
+async function convertData(data: any) {
   return data;
 }
 
@@ -73,7 +102,7 @@ export async function createEventValidation(
   prevState: EventState,
   formData: FormData,
 ) {
-  var transformedData = await transformData(formData);
+  var transformedData = await transformCreateData(formData);
   const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -87,11 +116,36 @@ export async function createEventValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
+  const ai_form_list = 
+  {
+    form_list_id: data.ai_form_list_id
+  }
+  await formListQuery.createFormList(ai_form_list)
+
+  const rs_form_list = 
+  {
+    form_list_id: data.rs_form_list_id
+  }
+  await formListQuery.createFormList(rs_form_list)
+
+  const es_form_list = 
+  {
+    form_list_id: data.es_form_list_id
+  }
+  await formListQuery.createFormList(es_form_list)
+
+  const ft_form_list = 
+  {
+    form_list_id: data.ft_form_list_id
+  }
+  await formListQuery.createFormList(ft_form_list)
+
   const { error } = await createEvent(data);
   if (error) {
     throw new Error(error.message);
   }
 
+  revalidatePath('/events');
   return {};
 }
 
@@ -101,7 +155,7 @@ export async function editEventValidation(
   prevState: EventState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  const transformedData = await transformEditData(id, identifier, formData);
   const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -113,16 +167,14 @@ export async function editEventValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editEvent(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  revalidatePath("/events")
+  return {};
 }
 
 export async function selectWhereEventValidation(
@@ -154,15 +206,28 @@ export async function selectAllEventValidation() {
 
 export async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
+  const data = await selectWhereEventValidation(id, 'event_id')
+  const categoryData = await categoryQuery.selectWhereCategoryValidation(id, 'event_id')
+
+  if(categoryData.data){
+    for(let i = 0; i < categoryData.data.length; i++){
+      await categoryQuery.deleteCategoryValidation(categoryData.data[i].category_id, 'category_id');
+    }
+  }
+
   const { error } = await deleteEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  await formListQuery.deleteFormList(data.data[0].ai_form_list_id, 'form_list_id')
+  await formListQuery.deleteFormList(data.data[0].rs_form_list_id, 'form_list_id')
+  await formListQuery.deleteFormList(data.data[0].es_form_list_id, 'form_list_id')
+  await formListQuery.deleteFormList(data.data[0].ft_form_list_id, 'form_list_id')
+
+  revalidatePath("/");
+  
+  return {};
 }
 
 export async function createEvent(data: any) {

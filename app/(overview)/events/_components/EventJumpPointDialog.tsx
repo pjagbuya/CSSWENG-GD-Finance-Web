@@ -1,4 +1,4 @@
-import { eventQuery } from '@/actions/events';
+import * as eventQuery from '@/actions/events';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -24,7 +24,6 @@ const EventJumpPointDialog = ({
   const [event, setEvent] = useState({
     event_name: '',
     date_created: '',
-    date_modified: '',
   });
 
   // TODO: Have to client-side fetch since next does not support putting server-
@@ -55,7 +54,6 @@ const EventJumpPointDialog = ({
 
         <div className="py-4">
           <p>Created On: {event.date_created}</p>
-          <p>Last Modified On: {event.date_modified}</p>
         </div>
 
         <DialogFooter className="grid auto-cols-fr grid-flow-col gap-4">
