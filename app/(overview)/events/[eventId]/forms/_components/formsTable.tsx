@@ -7,9 +7,14 @@ import DataTable, {
   getFormattedDate,
 } from '@/components/DataTable';
 import { useEffect, useState } from 'react';
-import { deleteForm, getFormList } from '@/actions/forms';
 import { toast } from '@/components/ui/use-toast';
 import { usePathname, useRouter } from 'next/navigation';
+import {
+  getESFormFromEvent,
+  getFTFormFromEvent,
+  getRSFormFromEvent,
+} from '@/actions/utils';
+import { deleteExpenseStatement } from '@/actions/expense_statements';
 
 const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
@@ -91,7 +96,23 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     fetchTableData();
 
     async function fetchTableData() {
-      const data = await getFormList(eventId, variant);
+      let formData;
+
+      switch (variant) {
+        case 'expense':
+          formData = await getESFormFromEvent(eventId);
+          break;
+
+        case 'revenue':
+          formData = await getRSFormFromEvent(eventId);
+          break;
+
+        case 'fund_transfer':
+          formData = await getFTFormFromEvent(eventId);
+          break;
+      }
+
+      const data = formData!.data!;
       setTableData(data);
     }
   }, [eventId, variant]);
@@ -100,13 +121,13 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     if (toEditId) {
       router.push(`${pathname}/${toEditId}/edit`);
     }
-  }, [toEditId]);
+  }, [pathname, router, toEditId]);
 
   useEffect(() => {
     if (toViewId) {
       router.push(`${pathname}/${toViewId}`);
     }
-  }, [toViewId]);
+  }, [pathname, router, toViewId]);
 
   function getColumnDefinition() {
     switch (variant) {
@@ -121,22 +142,38 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     }
   }
 
-  async function handleFormDelete() {
-    if (!toDeleteId) {
-      return;
-    }
+  // async function handleFormDelete() {
+  //   if (!toDeleteId) {
+  //     return;
+  //   }
 
-    const data = await deleteForm(eventId, variant, toDeleteId, pathname);
-    setToDeleteId('');
+  //   let formData;
 
-    setTableData(data);
+  //   switch (variant) {
+  //     case 'expense':
+  //       formData = await deleteExpenseStatement(eventId, '');
+  //       break;
 
-    toast({
-      variant: 'destructive',
-      title: 'Form Deleted',
-      description: `Form successfully deleted.`,
-    });
-  }
+  //     case 'revenue':
+  //       formData = await getRSFormFromEvent(eventId);
+  //       break;
+
+  //     case 'fund_transfer':
+  //       formData = await getFTFormFromEvent(eventId);
+  //       break;
+  //   }
+
+  //   const data = await deleteForm(eventId, variant, toDeleteId, pathname);
+  //   setToDeleteId('');
+
+  //   setTableData(data);
+
+  //   toast({
+  //     variant: 'destructive',
+  //     title: 'Form Deleted',
+  //     description: `Form successfully deleted.`,
+  //   });
+  // }
 
   return (
     <>
@@ -153,12 +190,12 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         onRowSelect={(formId: string) => setToViewId(formId)}
       />
 
-      <DeletePopup
+      {/* <DeletePopup
         type="Form"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={handleFormDelete}
-      />
+      /> */}
     </>
   );
 };

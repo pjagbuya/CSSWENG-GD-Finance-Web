@@ -17,21 +17,21 @@ const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
 
   function getFormComponent() {
     switch (variant) {
-      case 'expense':
-        return (
-          <CreateExpenseForm
-            eventId={eventId}
-            onFinish={() => setShowDialog(false)}
-          />
-        );
+      // case 'expense':
+      //   return (
+      //     <CreateExpenseForm
+      //       eventId={eventId}
+      //       onFinish={() => setShowDialog(false)}
+      //     />
+      //   );
 
-      case 'revenue':
-        return (
-          <CreateRevenueForm
-            eventId={eventId}
-            onFinish={() => setShowDialog(false)}
-          />
-        );
+      // case 'revenue':
+      //   return (
+      //     <CreateRevenueForm
+      //       eventId={eventId}
+      //       onFinish={() => setShowDialog(false)}
+      //     />
+      //   );
 
       case 'fund_transfer':
         // TODO

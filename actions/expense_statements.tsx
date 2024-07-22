@@ -66,7 +66,7 @@ var expenseStatementFormat = {
   */
 };
 
-var schema = 'ExpenseStatementSchema'; // replace with table name
+var schema = 'expense_statements'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
@@ -191,7 +191,11 @@ export async function createExpenseStatement(data: any) {
   return await query.insert(schema, data);
 }
 
-export async function editExpenseStatement(data: any, id: string, identifier: string) {
+export async function editExpenseStatement(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
@@ -199,7 +203,10 @@ export async function deleteExpenseStatement(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-export async function selectWhereExpenseStatement(id: string, identifier: string) {
+export async function selectWhereExpenseStatement(
+  id: string,
+  identifier: string,
+) {
   return await query.selectWhere(schema, identifier, id);
 }
 

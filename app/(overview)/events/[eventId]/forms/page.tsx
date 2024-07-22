@@ -1,7 +1,7 @@
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
-import { getEvent } from '@/actions/events';
+import { selectWhereEventValidation } from '@/actions/events';
 
 type FormsPageProps = {
   params: {
@@ -10,7 +10,11 @@ type FormsPageProps = {
 };
 
 const FormsPage = async ({ params }: FormsPageProps) => {
-  const event = await getEvent(params.eventId);
+  const eventData = await selectWhereEventValidation(
+    params.eventId,
+    'event_id',
+  );
+  const event = eventData.data[0];
 
   return (
     <>
@@ -27,7 +31,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
 
           <FormsTable
             eventId={params.eventId}
-            nameFilter="" 
+            nameFilter=""
             variant="expense"
           />
         </div>
