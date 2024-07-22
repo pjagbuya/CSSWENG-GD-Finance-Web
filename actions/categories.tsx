@@ -11,6 +11,8 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as transactionListQuery from './transaction_lists';
+import * as expenseStatementQuery from './expense_statements';
+import * as revenueStatementQuery from './revenue_statements';
 import { StringOrTemplateHeader } from '@tanstack/react-table';
 
 export type CategoryState = {
@@ -118,6 +120,20 @@ export async function createCategoryValidation(
   const { error } = await createCategory(data);
   if (error) {
     throw new Error(error.message);
+  }
+
+  switch(type){
+    case 'revenue':
+      {
+        console.log(type)
+        await revenueStatementQuery.createRevenueStatementValidation(data.category_id)
+      }
+    break;
+    case 'expense':
+      {
+
+      }
+    break;
   }
 
   revalidatePath(`/groups`)

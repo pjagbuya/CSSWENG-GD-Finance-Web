@@ -84,20 +84,28 @@ async function transformCreateData(data: any, transactionId: string) {
   return null
 }
 
-async function transformEditData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+async function transformEditData(data: any, itemId: string) {
 
-  // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  // TODO: provide logic
+  var itemData = await selectWhereItemValidation(itemId, 'item_id')
+
+  if(itemData.data){
+    return {
+      item_id: itemId,
+      item_name: data.get('item_name'),
+      item_units: data.get('item_units'),
+      item_price: data.get('item_price'),
+      item_amount: data.get('item_price'),
+      item_date: data.get('item_date'),
+      item_payment_details: data.get('item_payment_details'),
+      item_list_id: itemData.data[0].item_list_id,
+    };
+  }
+  return null
 }
 
 
 async function convertData(data: any) {
-  // TODO: provide logic
-
-  // JUST IN CASE: needs to do something with other data of validated fields
   return data;
 }
 
@@ -118,23 +126,26 @@ export async function createItemValidation(
   }
 
   // TODO: provide logic
-  var data = await convertData(validatedFields);
+  var data = await convertData(transformedData);
+  
   const { error } = await createItem(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath(`/${transactionId}`);
+  
   return {} as ItemState;
 }
 
 export async function editItemValidation(
+  transactionId: string,
   id: string,
   identifier: string,
   prevState: ItemState,
   formData: FormData,
 ) {
-  var transformedData = transformEditData(formData);
+  var transformedData = await transformEditData(formData, id);
   const validatedFields = ItemSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -146,13 +157,13 @@ export async function editItemValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editItem(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath(`/${transactionId}`);
   return {} as ItemState;
 }
 
@@ -185,14 +196,17 @@ export async function selectAllItemValidation() {
   };
 }
 
-export async function deleteItemValidation(id: string, identifier: string) {
+export async function deleteItemValidation(transactionId: string | null, id: string, identifier: string) {
   // TODO: provide logic
   const { error } = await deleteItem(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  if (transactionId) {
+    revalidatePath(`/${transactionId}`)
+  }
+
   return {
     message: null,
   };

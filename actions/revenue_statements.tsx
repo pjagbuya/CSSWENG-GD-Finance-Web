@@ -8,6 +8,9 @@ import { RevenueStatementSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as categoryQuery from './categories';
+import * as eventQuery from './events';
+import * as staffListQuery from './staff_lists';
 
 export type revenueStatementState = {
   errors?: {
@@ -18,7 +21,6 @@ export type revenueStatementState = {
     rs_to?: string[];
     rs_from?: string[];
     rs_notes?: string[];
-    category_id?: string[];
     prepared_staff_id?: string[];
     certified_staff_id?: string[];
     noted_staff_list_id?: string[];
@@ -35,7 +37,6 @@ var revenueStatementFormat = {
   rs_to: null,
   rs_from: null,
   rs_notes: null,
-  category_id: null,
   prepared_staff_id: null,
   certified_staff_id: null,
   noted_staff_list_id: null,
@@ -68,27 +69,81 @@ var revenueStatementFormat = {
 
 var schema = 'revenue_statements'; // replace with table name
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
+async function transformCreateData(category_id : string) {
   // TODO: provide logic
+  var rsData = await selectAllRevenueStatementValidation()
+  var id_mod = 10000
+  if(rsData.data){
+    if(rsData.data.length > 0){
+      for(let i = 0; i < rsData.data.length; i++){
+        var num = parseInt(rsData.data[i].rs_id.slice(6));
+        if(num > id_mod){
+          id_mod = num
+        }
+      }
+      id_mod += 1
+    }
+  }
+
+  var form_list_id
+  var categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
+  if(categoryData.data){
+    var eventData = await eventQuery.selectWhereEventValidation(categoryData.data[0].event_id, 'event_id')
+    if(eventData.data){
+      form_list_id = eventData.data[0].rs_form_list_id
+    }
+  }
+  // TODO: fill information
+  return{
+    rs_id: `revst_${id_mod}`,
+    rs_name: null,
+    rs_date: null,
+    receipt_link: null,
+    rs_to: null,
+    rs_from: null,
+    rs_notes: null,
+    prepared_staff_id: null,
+    certified_staff_id: null,
+    noted_staff_list_id: null,
+    form_list_id: form_list_id,
+  }
+}
+
+async function transformEditData(data: any, id: string) {
+  
+  // TODO: provide logic
+  var rsData = await selectWhereRevenueStatementValidation(id, 'rs_id')
 
   // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  if(rsData.data){
+    return{
+      rs_id: id,
+      rs_name: data.get('rs_name'),
+      rs_date: data.get('rs_date'),
+      receipt_link: data.get('receipt_link'),
+      rs_to: data.get('rs_to'),
+      rs_from: data.get('rs_from'),
+      rs_notes: data.get('rs_notes'),
+      prepared_staff_id: data.get('prepared_staff_id'),
+      certified_staff_id: data.get('certified_staff_id'),
+      noted_staff_list_id: rsData.data[0].noted_staff_list_id,
+      form_list_id: rsData.data[0].form_list_id,
+    }
+  }
+  return null
 }
 
 async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
 export async function createRevenueStatementValidation(
-  prevState: revenueStatementState,
-  formData: FormData,
+  category_id : any
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(category_id);
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -100,7 +155,10 @@ export async function createRevenueStatementValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+  
+  await staffListQuery.createStaffList({staff_list_id: data.staff_list_id})
+ 
   const { error } = await createRevenueStatement(data);
   if (error) {
     throw new Error(error.message);
@@ -118,7 +176,7 @@ export async function editRevenueStatementValidation(
   prevState: revenueStatementState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformEditData(formData, id);
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -130,7 +188,7 @@ export async function editRevenueStatementValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editRevenueStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);

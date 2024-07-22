@@ -52,20 +52,49 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
       </>
 
       <>
-        <Label htmlFor="item_price">Unit Price/Total Amount</Label>
+        <Label htmlFor="item_price">Unit Price</Label>
         <Input
           type="number"
           id="item_price"
           name="item_price"
-          placeholder="Unit Price/Total Amount"
-          defaultValue={1}
-          min={1}
+          placeholder="Unit Price (0 if none)"
+          defaultValue={0}
+          min={0}
           step="any"
         />
 
         <ErrorDisplay errors={state?.errors?.item_price} />
       </>
       
+      <>
+        <Label htmlFor="item_amount">Total Amount</Label>
+        <Input
+          type="number"
+          id="item_amount"
+          name="item_amount"
+          placeholder="Total Amount (0 if none)"
+          defaultValue={0}
+          min={0}
+          step="any"
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_amount} />
+      </>
+
+      <>
+        <Label htmlFor="item_units">Unit Count</Label>
+        <Input
+          type="number"
+          id="item_units"
+          name="item_units"
+          placeholder="Unit Count (0 if none)"
+          defaultValue={0}
+          min={0}
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_units} />
+      </>
+
       <>
         <Label htmlFor="item_payment_details">Payment Details</Label>
         <Textarea
@@ -76,19 +105,6 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
         />
 
         <ErrorDisplay errors={state.errors?.item_payment_details} />
-      </>
-
-      <>
-        <Label htmlFor="item_units">Unit Count (Optional)</Label>
-        <Input
-          type="number"
-          id="item_units"
-          name="item_units"
-          placeholder="Unit Count (Optional)"
-          min={1}
-        />
-
-        <ErrorDisplay errors={state?.errors?.item_units} />
       </>
     </CreateForm>
   );

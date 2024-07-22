@@ -15,6 +15,7 @@ import EditItemDialog from './EditItemDialog';
 
 type ItemsTableProps = {
   items: any[];
+  transactionId: string;
 };
 
 const COL_DEFN: ColumnDef<unknown, any>[] = [
@@ -34,10 +35,8 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'item_price',
     header: ({ column }) => (
-      <SortableHeader column={column}>Unit/Total Price</SortableHeader>
+      <SortableHeader column={column}>Unit Price</SortableHeader>
     ),
-    cell: ({ row }) =>
-      row.getValue('item_price') || row.getValue('item_amount'),
   },
   {
     accessorKey: 'item_units',
@@ -46,17 +45,23 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    accessorKey: 'item_note',
-    header: ({ column }) => 'Notes',
+    accessorKey: 'item_amount',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Total Amount</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'item_payment_details',
+    header: ({ column }) => 'Payment Details',
   },
 ];
 
-const ItemsTable = ({ items }: ItemsTableProps) => {
+const ItemsTable = ({ items, transactionId }: ItemsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
 
   async function handleItemDelete() {
-    await deleteItemValidation(toDeleteId, 'item_id');
+    await deleteItemValidation(transactionId, toDeleteId, 'item_id');
     setToDeleteId('');
 
     toast({
@@ -74,7 +79,7 @@ const ItemsTable = ({ items }: ItemsTableProps) => {
         data={items}
         idFilter=""
         idColumn=""
-        pkColumn=""
+        pkColumn="item_id"
         onRowDelete={(itemId: string) => setToDeleteId(itemId)}
         onRowEdit={(itemId: string) => setToEditId(itemId)}
       />
@@ -87,6 +92,7 @@ const ItemsTable = ({ items }: ItemsTableProps) => {
       />
 
       <EditItemDialog
+        transactionId={transactionId}
         itemId={toEditId}
         open={!!toEditId}
         onFinish={() => setToEditId('')}

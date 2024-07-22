@@ -72,50 +72,50 @@ export const ExpenseStatementSchema = z.object({
       required_error: 'Please enter Expense statement ID.',
     })
     .min(1),
-  es_name: z
-    .string({
-      required_error: 'Please enter Expense statement name.',
-    })
-    .min(1),
-  es_date: z
-    .string({
-      required_error: 'Please enter Expense statement date.',
-    })
-    .date(),
-  receipt_link: z
-    .string({
-      required_error: 'Please enter Receipt link.',
-    })
-    .min(1),
-  es_to: z
-    .string({
-      required_error: 'Please enter Expense statement to.',
-    })
-    .min(1),
-  es_from: z
-    .string({ required_error: 'Please enter Expense statement from.' })
-    .min(1),
-  es_notes: z.string().optional(),
-  category_id: z
-    .string({
-      required_error: 'Please enter Category ID.',
-    })
-    .min(1),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
+  // es_name: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement name.',
+  //   })
+  //   .min(1),
+  // es_date: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement date.',
+  //   })
+  //   .date(),
+  // receipt_link: z
+  //   .string({
+  //     required_error: 'Please enter Receipt link.',
+  //   })
+  //   .min(1),
+  // es_to: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement to.',
+  //   })
+  //   .min(1),
+  // es_from: z
+  //   .string({ required_error: 'Please enter Expense statement from.' })
+  //   .min(1),
+  // es_notes: z.string().optional(),
+  // category_id: z
+  //   .string({
+  //     required_error: 'Please enter Category ID.',
+  //   })
+  //   .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
+  // certified_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Certified staff ID.',
+  //   })
+  //   .min(1),
+  // noted_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Noted staff ID.',
+  //   })
+  //   .min(1),
   form_list_id: z
     .string({
       required_error: 'Please enter Form list ID.',
@@ -258,7 +258,7 @@ export const ItemSchema = z.object({
       message: 'Item units must be a valid integer.',
     })
     .optional(),
-  item_price: z.string().optional(),
+  item_price: z.coerce.number().optional(),
   item_amount: z.coerce.number().optional(),
   item_date: z
     .string({ required_error: 'Please enter Item date.' })
@@ -277,48 +277,48 @@ export const RevenueStatementSchema = z.object({
       required_error: 'Please enter Revenue statement ID.',
     })
     .min(1),
-  rs_name: z
-    .string({
-      required_error: 'Please enter Revenue statement name.',
-    })
-    .min(1),
-  rs_date: z
-    .string({
-      required_error: 'Please enter Revenue statement date.',
-    })
-    .date(),
-  receipt_link: z
-    .string({
-      required_error: 'Please enter Receipt link.',
-    })
-    .min(1),
-  rs_to: z
-    .string({ required_error: 'Please enter Revenue statement to.' })
-    .min(1),
-  rs_from: z
-    .string({ required_error: 'Please enter Revenue statement from.' })
-    .min(1),
-  rs_notes: z.string().optional(),
-  category_id: z
-    .string({
-      required_error: 'Please enter Category ID.',
-    })
-    .min(1),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
+  // rs_name: z
+  //   .string({
+  //     required_error: 'Please enter Revenue statement name.',
+  //   })
+  //   .min(1),
+  // rs_date: z
+  //   .string({
+  //     required_error: 'Please enter Revenue statement date.',
+  //   })
+  //   .date(),
+  // receipt_link: z
+  //   .string({
+  //     required_error: 'Please enter Receipt link.',
+  //   })
+  //   .min(1),
+  // rs_to: z
+  //   .string({ required_error: 'Please enter Revenue statement to.' })
+  //   .min(1),
+  // rs_from: z
+  //   .string({ required_error: 'Please enter Revenue statement from.' })
+  //   .min(1),
+  // rs_notes: z.string().optional(),
+  // category_id: z
+  //   .string({
+  //     required_error: 'Please enter Category ID.',
+  //   })
+  //   .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
+  // certified_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Certified staff ID.',
+  //   })
+  //   .min(1),
+  // noted_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Noted staff ID.',
+  //   })
+  //   .min(1),
   form_list_id: z
     .string({
       required_error: 'Please enter Form list ID.',

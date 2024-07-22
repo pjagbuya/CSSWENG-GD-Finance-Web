@@ -28,7 +28,7 @@ var staffListFormat = {
   */
 };
 
-var schema = 'StaffListSchema'; // replace with table name
+var schema = 'staff_lists'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());

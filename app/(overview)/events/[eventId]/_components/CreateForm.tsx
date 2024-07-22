@@ -45,7 +45,7 @@ const CreateForm = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
-        <form action={action}>
+        <form action={action} className="flex flex-col flex-wrap">
           <div className="flex flex-col gap-5 py-4">
             {Children.map(children, child => (
               <div className="flex flex-col gap-2">{child}</div>

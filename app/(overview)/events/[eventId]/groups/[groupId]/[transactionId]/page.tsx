@@ -34,7 +34,7 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
       </div>
 
       <div className="mb-8 flex flex-col gap-3">
-        <ItemsTable items={itemsData!.data!} />
+        <ItemsTable transactionId={params.transactionId} items={itemsData!.data!} />
       </div>
     </main>
   );

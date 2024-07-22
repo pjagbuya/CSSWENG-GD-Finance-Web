@@ -1,5 +1,4 @@
-import { getForm } from '@/actions/forms';
-
+import { selectWhereExpenseStatementValidation } from '@/actions/expense_statements';
 import EditExpenseFormPage from './_components/EditExpenseFormPage';
 import EditRevenueFormPage from './_components/EditRevenueFormPage';
 
@@ -11,17 +10,24 @@ type EditFormPageParams = {
 };
 
 const EditFormPage = async ({ params }: EditFormPageParams) => {
-  const { type, data } = await getForm(params.formId);
+  async function getFormPage() {
+    const typeStr = params.formId.slice(0, 5)
 
-  function getFormPage() {
-    switch (type) {
-      case 'expense':
-        return <EditExpenseFormPage formInfo={data} />;
+    switch (typeStr) {
+      case 'expst': {
+        const data = await selectWhereExpenseStatementValidation(params.formId, 'es_id');
+        return <EditExpenseFormPage formInfo={data!.data![0]} />;
+      }
 
-      case 'revenue':
-        return <EditRevenueFormPage formInfo={data} />;
+      case 'revst': {
+        const data = await selectWhereExpenseStatementValidation(params.formId, 'rs_id');
+        return <EditRevenueFormPage formInfo={data!.data![0]} />;
+      }
 
-      case 'fund_transfer':
+      case 'actin':
+        return null;
+  
+      case 'funtr':
         return null;
 
       default:

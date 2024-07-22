@@ -10,6 +10,7 @@ import { ItemListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as itemQuery from '@/actions/items';
 
 export type itemListState = {
   errors?: {
@@ -134,6 +135,14 @@ export async function selectAllItemListValidation() {
 
 export async function deleteItemListValidation(id: string, identifier: string) {
   // TODO: provide logic
+  var itemData = await itemQuery.selectWhereItemValidation(id, identifier);
+
+  if(itemData.data){
+    for(let i = 0; i < itemData.data.length; i++){
+      await itemQuery.deleteItemValidation(null, itemData.data[i].item_id, 'item_id');
+    }
+  }
+
   const { error } = await deleteItemList(id, identifier);
   if (error) {
     throw new Error(error.message);

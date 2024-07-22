@@ -4,27 +4,23 @@
 // replace vals with column names
 // remove comments after
 
-import { ExpenseStatementSchema } from '@/lib/definitions';
+import { ExpenseStatementSchema, UpdateExpenseFormSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as categoryQuery from './categories';
+import * as eventQuery from './events';
+import * as staffListQuery from './staff_lists';
 
-export type expenseStatementState = {
+export type ExpenseStatementState = {
   errors?: {
-    es_id?: string[];
-    es_name?: string[];
-    es_date?: string[];
     receipt_link?: string[];
     es_to?: string[];
     es_from?: string[];
     es_notes?: string[];
-    category_id?: string[];
-    prepared_staff_id?: string[];
     certified_staff_id?: string[];
     noted_staff_list_id?: string[];
-    form_list_id?: string[];
   };
-  message?: string | null;
 };
 
 var expenseStatementFormat = {
@@ -35,7 +31,6 @@ var expenseStatementFormat = {
   es_to: null,
   es_from: null,
   es_notes: null,
-  category_id: null,
   prepared_staff_id: null,
   certified_staff_id: null,
   noted_staff_list_id: null,
@@ -68,27 +63,81 @@ var expenseStatementFormat = {
 
 var schema = 'expense_statements'; // replace with table name
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
+async function transformCreateData(category_id : string) {
   // TODO: provide logic
+  var rsData = await selectAllExpenseStatementValidation()
+  var id_mod = 10000
+  if(rsData.data){
+    if(rsData.data.length > 0){
+      for(let i = 0; i < rsData.data.length; i++){
+        var num = parseInt(rsData.data[i].rs_id.slice(6));
+        if(num > id_mod){
+          id_mod = num
+        }
+      }
+      id_mod += 1
+    }
+  }
+
+  var form_list_id
+  var categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
+  if(categoryData.data){
+    var eventData = await eventQuery.selectWhereEventValidation(categoryData.data[0].event_id, 'event_id')
+    if(eventData.data){
+      form_list_id = eventData.data[0].es_form_list_id
+    }
+  }
+  // TODO: fill information
+  return{
+    es_id: `expst_${id_mod}`,
+    es_name: null,
+    es_date: null,
+    receipt_link: null,
+    es_to: null,
+    es_from: null,
+    es_notes: null,
+    prepared_staff_id: null,
+    certified_staff_id: null,
+    noted_staff_list_id: null,
+    form_list_id: form_list_id,
+  }
+}
+
+async function transformEditData(data: any, id: string) {
+  
+  // TODO: provide logic
+  var esData = await selectWhereExpenseStatementValidation(id, 'es_id')
 
   // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  if(esData.data){
+    return{
+      es_id: id,
+      es_name: data.get('es_name'),
+      es_date: data.get('es_date'),
+      receipt_link: data.get('receipt_link'),
+      es_to: data.get('es_to'),
+      es_from: data.get('es_from'),
+      es_notes: data.get('es_notes'),
+      prepared_staff_id: data.get('prepared_staff_id'),
+      certified_staff_id: data.get('certified_staff_id'),
+      noted_staff_list_id: esData.data[0].noted_staff_list_id,
+      form_list_id: esData.data[0].form_list_id,
+    }
+  }
+  return null
 }
 
 async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
 export async function createExpenseStatementValidation(
-  prevState: expenseStatementState,
-  formData: FormData,
+  category_id : any
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = transformCreateData(category_id);
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -100,7 +149,10 @@ export async function createExpenseStatementValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
+  await staffListQuery.createStaffList({staff_list_id: data.staff_list_id})
+
   const { error } = await createExpenseStatement(data);
   if (error) {
     throw new Error(error.message);
@@ -115,31 +167,28 @@ export async function createExpenseStatementValidation(
 export async function editExpenseStatementValidation(
   id: string,
   identifier: string,
-  prevState: expenseStatementState,
+  prevState: ExpenseStatementState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
-  const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
+  var transformedData = await transformEditData(formData, id);
+  const validatedFields = UpdateExpenseFormSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Unable to edit var.',
     };
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editExpenseStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as ExpenseStatementState;
 }
 
 export async function selectWhereExpenseStatementValidation(

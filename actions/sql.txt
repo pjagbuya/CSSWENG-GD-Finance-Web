@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS activity_incomes CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS gdsc_events CASCADE;
 DROP TABLE IF EXISTS form_lists CASCADE;
+DROP TABLE IF EXISTS staff_instances CASCADE;
 DROP TABLE IF EXISTS staffs CASCADE;
 DROP TABLE IF EXISTS staff_lists CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
@@ -15,10 +16,6 @@ DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS item_lists CASCADE;
 
 -- Create statements for all tables
-
--- Define enums
-DROP TYPE category_type_enum;
-CREATE TYPE category_type_enum AS ENUM ('Revenue', 'Expense');
 
 -- Create tables
 
@@ -72,10 +69,17 @@ CREATE TABLE IF NOT EXISTS staffs
 (
     staff_id VARCHAR(25) PRIMARY KEY,
     user_id uuid,
-    staff_position VARCHAR(55),
+    staff_position VARCHAR(55),   
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS staff_instances
+(
+    staff_instance_id VARCHAR(25) PRIMARY KEY,    
     staff_list_id VARCHAR(25),    
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (staff_list_id) REFERENCES staff_lists(staff_list_id)
+    staff_id VARCHAR(25),    
+    FOREIGN KEY (staff_list_id) REFERENCES staff_lists(staff_list_id),    
+    FOREIGN KEY (staff_id) REFERENCES staffs(staff_id)
 );
 
 CREATE TABLE IF NOT EXISTS form_lists
@@ -102,7 +106,7 @@ CREATE TABLE IF NOT EXISTS categories
 (
     category_id VARCHAR(25) PRIMARY KEY,
     category_name VARCHAR(55),
-    category_type category_type_enum,
+    category_type VARCHAR(25),
     event_id VARCHAR(25),
     transaction_list_id VARCHAR(25),    
     FOREIGN KEY (event_id) REFERENCES gdsc_events(event_id),
