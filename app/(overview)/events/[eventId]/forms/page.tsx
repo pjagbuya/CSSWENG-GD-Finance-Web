@@ -2,6 +2,7 @@ import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 import { selectWhereEventValidation } from '@/actions/events';
+import FundsTransferTable from './_components/FundTransferTable';
 
 type FormsPageProps = {
   params: {
@@ -73,6 +74,11 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             />
           </div>
 
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter=""
+            variant="fund_transfer"
+          />
           {/* <FormsTable nameFilter="" /> */}
         </div>
       </main>
