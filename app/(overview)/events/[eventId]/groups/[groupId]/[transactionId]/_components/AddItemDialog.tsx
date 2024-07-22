@@ -8,13 +8,14 @@ import { useFormState } from 'react-dom';
 import { createItemValidation } from '@/actions/items';
 
 type AddItemFormProps = {
+  transactionId: string;
   onFinish?: () => void;
 };
 
-const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
+const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
 
-  const [state, action] = useFormState(createItemValidation, {
+  const [state, action] = useFormState(createItemValidation.bind(null, transactionId), {
     errors: {},
   });
 
@@ -30,12 +31,12 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="date">Date</Label>
+        <Label htmlFor="item_date">Date</Label>
         <Input
           ref={dateElemRef}
           type="date"
-          id="date"
-          name="date"
+          id="item_date"
+          name="item_date"
           placeholder="Item Date"
           defaultValue={Date.now()}
         />
@@ -64,21 +65,7 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
 
         <ErrorDisplay errors={state?.errors?.item_price} />
       </>
-
-      <>
-        <Label htmlFor="item_units">Unit Count (Optional)</Label>
-        <Input
-          type="number"
-          id="item_units"
-          name="item_units"
-          placeholder="Unit Count (Optional)"
-          defaultValue={1}
-          min={1}
-        />
-
-        <ErrorDisplay errors={state?.errors?.item_units} />
-      </>
-
+      
       <>
         <Label htmlFor="item_payment_details">Payment Details</Label>
         <Textarea
@@ -89,6 +76,19 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
         />
 
         <ErrorDisplay errors={state.errors?.item_payment_details} />
+      </>
+
+      <>
+        <Label htmlFor="item_units">Unit Count (Optional)</Label>
+        <Input
+          type="number"
+          id="item_units"
+          name="item_units"
+          placeholder="Unit Count (Optional)"
+          min={1}
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_units} />
       </>
     </CreateForm>
   );

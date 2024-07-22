@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import CreateForm from '../../../_components/CreateForm';
 import ErrorDisplay from '../../../_components/ErrorDisplay';
 import { Textarea } from '@/components/ui/textarea';
-import { createTransactionValidation } from '@/actions/transaction';
+import { createTransactionValidation } from '@/actions/transactions';
 
 type AddTransactionFormProps = {
   groupId: string;
@@ -33,12 +33,12 @@ const AddTransactionDialog = ({ groupId, onFinish }: AddTransactionFormProps) =>
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="date">Date</Label>
+        <Label htmlFor="transaction_date">Date</Label>
         <Input
           ref={dateElemRef}
           type="date"
-          id="date"
-          name="date"
+          id="transaction_date"
+          name="transaction_date"
           placeholder="Transaction Date"
           defaultValue={Date.now()}
         />
@@ -58,11 +58,11 @@ const AddTransactionDialog = ({ groupId, onFinish }: AddTransactionFormProps) =>
       </>
 
       <>
-        <Label htmlFor="notes">Notes</Label>
+        <Label htmlFor="transaction_note">Notes</Label>
         <Textarea
-          id="notes"
-          name="notes"
-          placeholder="notes"
+          id="transaction_note"
+          name="transaction_note"
+          placeholder="Notes"
           className="resize-none"
         />
 

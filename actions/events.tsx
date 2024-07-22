@@ -64,7 +64,7 @@ async function transformCreateData(data: FormData) {
   }
 
   // TODO: fill information
-  var transformedData = {
+  return {
     event_id: `event_${id_mod}`,
     event_name: data.get('event_name'),
     ft_form_list_id: `ftl_${id_mod}`,
@@ -72,26 +72,23 @@ async function transformCreateData(data: FormData) {
     es_form_list_id: `esl_${id_mod}`,
     ai_form_list_id: `ail_${id_mod}`,
   };
-
-  return transformedData;
 }
 
 async function transformEditData(id: string, identifier: string, data: FormData) {
   const eventData = await selectWhereEventValidation(id, identifier)
 
   // TODO: fill information
-  var transformedData = {
-    event_id: id,
-    event_name: data.get('event_name'),
-    ft_form_list_id: eventData.data[0].ft_form_list_id,
-    rs_form_list_id: eventData.data[0].rs_form_list_id,
-    es_form_list_id: eventData.data[0].es_form_list_id,
-    ai_form_list_id: eventData.data[0].ai_form_list_id,
-  };
-
-  console.log(transformedData)
-
-  return transformedData;
+  if(eventData.data){
+    return {
+      event_id: id,
+      event_name: data.get('event_name'),
+      ft_form_list_id: eventData.data[0].ft_form_list_id,
+      rs_form_list_id: eventData.data[0].rs_form_list_id,
+      es_form_list_id: eventData.data[0].es_form_list_id,
+      ai_form_list_id: eventData.data[0].ai_form_list_id,
+    };
+  }
+  return null
 }
 
 async function convertData(data: any) {
@@ -188,7 +185,7 @@ export async function selectWhereEventValidation(
   }
 
   return {
-    data: data!,
+    data: data,
   };
 }
 
@@ -220,10 +217,12 @@ export async function deleteEventValidation(id: string, identifier: string) {
     throw new Error(error.message);
   }
 
-  await formListQuery.deleteFormList(data.data[0].ai_form_list_id, 'form_list_id')
-  await formListQuery.deleteFormList(data.data[0].rs_form_list_id, 'form_list_id')
-  await formListQuery.deleteFormList(data.data[0].es_form_list_id, 'form_list_id')
-  await formListQuery.deleteFormList(data.data[0].ft_form_list_id, 'form_list_id')
+  if(data.data){
+    await formListQuery.deleteFormListValidation(data.data[0].ai_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].rs_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].es_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].ft_form_list_id, 'form_list_id')
+  }
 
   revalidatePath("/");
   

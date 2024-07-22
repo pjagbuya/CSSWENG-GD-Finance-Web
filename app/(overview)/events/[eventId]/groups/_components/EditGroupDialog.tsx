@@ -8,7 +8,7 @@ import { useFormState } from 'react-dom';
 import {
   editTransactionValidation,
   selectWhereTransactionValidation,
-} from '@/actions/transaction';
+} from '@/actions/transactions';
 import {
   editCategoryValidation,
   selectAllCategoryValidation,
@@ -34,7 +34,7 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
       errors: {},
     },
   );
-
+ 
   useEffect(() => {
     if (!groupId) {
       return;
@@ -45,6 +45,7 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
         groupId,
         'category_id',
       );
+
       setFields(data![0]);
     }
 
@@ -60,13 +61,13 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="transaction_name">Name</Label>
+        <Label htmlFor="category_name">Name</Label>
         <Input
-          id="transaction_name"
-          name="transaction_name"
-          placeholder="Transaction Name"
+          id="category_name"
+          name="category_name"
+          placeholder="Category Name"
           value={fields.category_name}
-          onChange={e => () =>
+          onChange={e => 
             setFields({ ...fields, category_name: e.target.value })
           }
         />

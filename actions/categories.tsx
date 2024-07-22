@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as transactionListQuery from './transaction_lists';
+import { StringOrTemplateHeader } from '@tanstack/react-table';
 
 export type CategoryState = {
   errors?: {
@@ -69,14 +70,19 @@ async function transformCreateData(data: any, event_id: string, type: 'revenue' 
   };
 }
 
-async function transformEditData(data: any) {
-  return {
-    category_id: data.get('category_id'),
-    category_name: data.get('category_name'),
-    category_type: data.get('category_type'),
-    event_id: data.get('event_id'),
-    transaction_list_id: data.get('transaction_list_id'),
-  };
+async function transformEditData(data: any, id: string, identifier: string) {
+  const categoryData = await selectWhereCategoryValidation(id, identifier)
+
+  if(categoryData.data){
+    return {
+      category_id: id,
+      category_name: data.get('category_name'),
+      category_type: categoryData.data[0].category_type,
+      event_id: categoryData.data[0].event_id,
+      transaction_list_id: categoryData.data[0].transaction_list_id,
+    };
+  }
+  return null;
 }
 
 async function convertData(data: any) {
@@ -127,7 +133,7 @@ export async function editCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  const transformedData = await transformEditData(formData);
+  const transformedData = await transformEditData(formData, id, identifier);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -145,6 +151,7 @@ export async function editCategoryValidation(
     throw new Error(error.message);
   }
 
+  revalidatePath('/groups');
   return {} as CategoryState;
 }
 
@@ -160,7 +167,7 @@ export async function selectWhereCategoryValidation(
 
   //revalidatePath("/")
   return {
-    data: data!,
+    data: data,
   };
 }
 
@@ -186,7 +193,9 @@ export async function deleteCategoryValidation(id: string, identifier: string) {
   }
   
   // TODO: provide logic
-  await transactionListQuery.deleteTransactionList(data.data[0].transaction_list_id, 'transaction_list_id')
+  if(data.data){
+    await transactionListQuery.deleteTransactionListValidation(data.data[0].transaction_list_id, 'transaction_list_id')
+  }
 
   revalidatePath(`/groups`)
 

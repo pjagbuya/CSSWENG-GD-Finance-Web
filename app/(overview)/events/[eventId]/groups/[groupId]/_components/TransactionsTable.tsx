@@ -12,9 +12,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { deleteCategoryValidation } from '@/actions/categories';
 import { redirect, usePathname } from 'next/navigation';
 import EditTransactionDialog from './EditTransactionDialog';
-import { deleteTransactionValidation } from '@/actions/transaction';
+import { deleteTransactionValidation } from '@/actions/transactions';
 
 type TransactionsTableProps = {
+  groupId: string;
   transactions: any[];
 };
 
@@ -39,7 +40,7 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
   },
 ];
 
-const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
+const TransactionsTable = ({ groupId, transactions }: TransactionsTableProps) => {
   const pathname = usePathname();
 
   const [toEditId, setToEditId] = useState('');
@@ -53,7 +54,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
   }, [pathname, toSelectId]);
 
   async function handleTransactionDelete() {
-    await deleteTransactionValidation(toDeleteId, 'transaction_id');
+    await deleteTransactionValidation(groupId, toDeleteId, 'transaction_id');
     setToDeleteId('');
 
     toast({
@@ -76,7 +77,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
         data={transactions}
         idFilter=""
         idColumn="transaction_name"
-        pkColumn="transaction_name"
+        pkColumn="transaction_id"
         onRowSelect={(transactionId: string) =>
           handleTransactionSelect(transactionId)
         }
@@ -92,6 +93,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
       />
 
       <EditTransactionDialog
+        groupId={groupId}
         transactionId={toEditId}
         open={!!toEditId}
         onFinish={() => setToEditId('')}

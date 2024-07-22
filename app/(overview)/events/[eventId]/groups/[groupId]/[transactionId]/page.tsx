@@ -1,34 +1,40 @@
-'use client';
-
+import { selectWhereCategoryValidation } from '@/actions/categories';
 import AddItemButton from './_components/AddItemButton';
 import ItemsTable from './_components/ItemsTable';
+import { getItemsFromTransaction, getTransactionsFromCategory } from '@/actions/utils';
+import { selectWhereTransactionValidation } from '@/actions/transactions';
+
+type TransactionsPageProps = {
+  params: {
+    transactionId: string;
+  };
+};
 
 // items in transactions (revenue/expense)
-const TransactionsPage = () => {
-  // const { data: group } = await selectWhereCategoryValidation(
-  //   groupId,
-  //   'category_id',
-  // );
-  // const { data: transactions } = await getTransactionsFromCategory(
-  //   group![0].category_id,
-  // );
-  const items = [{}];
+const TransactionsPage = async ({ params }: TransactionsPageProps) => {
+  const { data: group } = await selectWhereTransactionValidation(
+    params.transactionId,
+    'transaction_id',
+  );
+  const itemsData = await getItemsFromTransaction(
+    params.transactionId,
+  )!;
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">
         <h2 className="text-2xl font-bold">
-          {/* Items for: {group![0].category_name} */}
+          Items for: {group![0].transaction_name}
         </h2>
         <p>Add and edit items per transaction</p>
       </div>
 
       <div className="flex justify-between">
-        <AddItemButton />
+        <AddItemButton transactionId={params.transactionId} />
       </div>
 
       <div className="mb-8 flex flex-col gap-3">
-        <ItemsTable items={items} />
+        <ItemsTable items={itemsData!.data!} />
       </div>
     </main>
   );

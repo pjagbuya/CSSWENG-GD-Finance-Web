@@ -10,7 +10,7 @@ import * as staffQuery from '@/actions/staffs';
 import * as staffListQuery from '@/actions/staff_lists';
 import * as categoryQuery from '@/actions/categories';
 import * as transactionListQuery from '@/actions/transaction_lists';
-import * as transactionQuery from '@/actions/transaction';
+import * as transactionQuery from '@/actions/transactions';
 import * as itemListQuery from '@/actions/item_lists';
 import * as itemQuery from '@/actions/items';
 import * as query from '@/lib/supabase';

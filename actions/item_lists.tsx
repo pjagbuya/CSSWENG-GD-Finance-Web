@@ -1,3 +1,5 @@
+'use server'
+
 // INSTRUCTIONS:
 // itemList -> small case
 // ItemList -> big case
@@ -28,7 +30,7 @@ var itemListFormat = {
   */
 };
 
-var schema = 'ItemListSchema'; // replace with table name
+var schema = 'item_lists'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
@@ -68,7 +70,7 @@ export async function createItemListValidation(
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath("/category")
   return {
     message: null,
   };

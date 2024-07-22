@@ -36,7 +36,7 @@ const GroupsPage = async ({ params: { groupId } }: GroupsPageProps) => {
       </div>
 
       <div className="mb-8 flex flex-col gap-3">
-        <TransactionsTable transactions={transactions} />
+        <TransactionsTable groupId={groupId} transactions={transactions} />
       </div>
     </main>
   );

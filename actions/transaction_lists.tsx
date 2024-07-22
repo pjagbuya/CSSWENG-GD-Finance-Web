@@ -8,6 +8,7 @@ import { TransactionListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as transactionQuery from '@/actions/transactions';
 
 export type transactionListState = {
   errors?: {
@@ -134,7 +135,16 @@ export async function selectAllTransactionListValidation() {
 }
 
 export async function deleteTransactionListValidation(id: string, identifier: string) {
+  
   // TODO: provide logic
+  var transactionData = await transactionQuery.selectWhereTransactionValidation(id, identifier);
+
+  if(transactionData.data){
+    for(let i = 0; i < transactionData.data.length; i++){
+      await transactionQuery.deleteTransactionValidation(null, transactionData.data[i].transaction_id, 'transaction_id');
+    }
+  }
+
   const { error } = await deleteTransactionList(id, identifier);
   if (error) {
     throw new Error(error.message);

@@ -62,15 +62,15 @@ const GroupList = ({ categories }: CategoryListProps) => {
         clickableIdColumn={true}
         data={categories}
         idFilter=""
-        idColumn="transaction_name"
-        pkColumn="transaction_name"
+        idColumn="category_name"
+        pkColumn="category_id"
         onRowSelect={(categoryId: string) => handleCategorySelect(categoryId)}
         onRowEdit={(categoryId: string) => setToEditId(categoryId)}
         onRowDelete={(categoryId: string) => setToDeleteId(categoryId)}
       />
 
       <DeletePopup
-        type="Expense"
+        type="Group"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={handleCategoryDelete}
