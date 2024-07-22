@@ -6,22 +6,42 @@ import { deleteCategoryValidation } from '@/actions/categories';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
+import DataTable, { DeletePopup, SortableHeader } from '@/components/DataTable';
+import { ColumnDef } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
+import EditGroupDialog from './EditGroupDialog';
 
 type CategoryListProps = {
   categories: any[];
 };
 
+const COL_DEFN: ColumnDef<unknown, any>[] = [
+  {
+    accessorKey: 'category_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Name</SortableHeader>
+    ),
+  },
+];
+
 // TODO: Use a modal for category deletion confirmation
 const GroupList = ({ categories }: CategoryListProps) => {
   const pathname = usePathname();
 
-  function getRedirectLink(category: any) {
-    return `${pathname}/${category.category_id}`;
-  }
+  const [toEditId, setToEditId] = useState('');
+  const [toSelectId, setToSelectId] = useState('');
+  const [toDeleteId, setToDeleteId] = useState('');
 
-  async function handleCategoryDelete(category: any) {
-    await deleteCategoryValidation(category.category_id, 'category_id');
+  useEffect(() => {
+    if (toSelectId) {
+      redirect(`${pathname}/${toSelectId}`);
+    }
+  }, [pathname, toSelectId]);
+
+  async function handleCategoryDelete() {
+    await deleteCategoryValidation(toDeleteId, 'category_id');
+    setToDeleteId('');
 
     toast({
       variant: 'success',
@@ -30,28 +50,38 @@ const GroupList = ({ categories }: CategoryListProps) => {
     });
   }
 
-  return (
-    <ol className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] border-2 p-4 hover:bg-gray-50">
-      {categories && categories.length !== 0 ? (
-        categories.map(category => (
-          <li className="ml-4 list-disc" key={category}>
-            <div className="flex items-center">
-              <Link href={getRedirectLink(category)}>{category}</Link>
+  function handleCategorySelect(categoryId: string) {
+    setToSelectId(categoryId);
+  }
 
-              <Button
-                variant="ghost"
-                className="ml-2 h-6 w-6 p-0"
-                onClick={() => handleCategoryDelete(category)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </li>
-        ))
-      ) : (
-        <span className="text-center text-sm">No categories so far.</span>
-      )}
-    </ol>
+  return (
+    <>
+      <DataTable
+        className="border-2"
+        columns={COL_DEFN}
+        clickableIdColumn={true}
+        data={categories}
+        idFilter=""
+        idColumn="transaction_name"
+        pkColumn="transaction_name"
+        onRowSelect={(categoryId: string) => handleCategorySelect(categoryId)}
+        onRowEdit={(categoryId: string) => setToEditId(categoryId)}
+        onRowDelete={(categoryId: string) => setToDeleteId(categoryId)}
+      />
+
+      <DeletePopup
+        type="Expense"
+        open={!!toDeleteId}
+        onCancel={() => setToDeleteId('')}
+        onConfirm={handleCategoryDelete}
+      />
+
+      <EditGroupDialog
+        groupId={toEditId}
+        open={!!toEditId}
+        onFinish={() => setToEditId('')}
+      />
+    </>
   );
 };
 

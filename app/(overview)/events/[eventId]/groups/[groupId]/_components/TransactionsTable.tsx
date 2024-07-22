@@ -12,6 +12,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { deleteCategoryValidation } from '@/actions/categories';
 import { redirect, usePathname } from 'next/navigation';
 import EditTransactionDialog from './EditTransactionDialog';
+import { deleteTransactionValidation } from '@/actions/transaction';
 
 type TransactionsTableProps = {
   transactions: any[];
@@ -52,7 +53,7 @@ const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
   }, [pathname, toSelectId]);
 
   async function handleTransactionDelete() {
-    await deleteCategoryValidation(toDeleteId, 'transaction_id');
+    await deleteTransactionValidation(toDeleteId, 'transaction_id');
     setToDeleteId('');
 
     toast({
