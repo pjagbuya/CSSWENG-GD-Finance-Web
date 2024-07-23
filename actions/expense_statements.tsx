@@ -4,13 +4,14 @@
 // replace vals with column names
 // remove comments after
 
-import { ExpenseStatementSchema, UpdateExpenseFormSchema } from '@/lib/definitions';
+import { ExpenseStatementSchema, StaffInstanceSchema, UpdateExpenseFormSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as categoryQuery from './categories';
 import * as eventQuery from './events';
 import * as staffListQuery from './staff_lists';
+import * as staffInstanceQuery from './staff_instances';
 
 export type ExpenseStatementState = {
   errors?: {
@@ -186,6 +187,15 @@ export async function editExpenseStatementValidation(
   prevState: ExpenseStatementState,
   formData: FormData,
 ) {
+  var arrData = Array.from(formData.entries())
+  
+  const notedList = []
+  for(let i = 0; i < arrData.length; i++){
+    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
+      notedList.push(arrData[i][0].substring(20))
+    }
+  }
+
   var transformedData = await transformEditData(formData, id);
   const validatedFields = UpdateExpenseFormSchema.safeParse(transformedData);
 
@@ -198,6 +208,10 @@ export async function editExpenseStatementValidation(
 
   // TODO: provide logic
   var data = await convertData(transformedData);
+
+  for(let i = 0; i < notedList.length; i++){
+    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+  }
   const { error } = await editExpenseStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);

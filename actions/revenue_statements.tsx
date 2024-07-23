@@ -11,6 +11,7 @@ import * as query from '@/lib/supabase';
 import * as categoryQuery from './categories';
 import * as eventQuery from './events';
 import * as staffListQuery from './staff_lists';
+import * as staffInstanceQuery from './staff_instances';
 
 export type RevenueStatementState = {
   errors?: {
@@ -189,6 +190,14 @@ export async function editRevenueStatementValidation(
   var transformedData = await transformEditData(formData, id);
   const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
 
+  var arrData = Array.from(formData.entries())
+  const notedList = []
+  for(let i = 0; i < arrData.length; i++){
+    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
+      notedList.push(arrData[i][0].substring(21))
+    }
+  }
+
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -199,6 +208,11 @@ export async function editRevenueStatementValidation(
 
   // TODO: provide logic
   var data = await convertData(transformedData);
+
+  for(let i = 0; i < notedList.length; i++){
+    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+  }
+
   const { error } = await editRevenueStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);

@@ -13,6 +13,7 @@ import * as transactionListQuery from '@/actions/transaction_lists';
 import * as transactionQuery from '@/actions/transactions';
 import * as itemListQuery from '@/actions/item_lists';
 import * as itemQuery from '@/actions/items';
+import * as accountQuery from '@/actions/account';
 import * as query from '@/lib/supabase';
 import { createClient } from '@/utils/supabase/server';
 
@@ -181,6 +182,27 @@ export async function getItemsFromCategory(category_id: any) {
     return itemList;
   }
   return null;
+}
+
+// get staff info
+
+export async function getStaffInfos(staffData : any){
+  const staffInfo = []
+  if(staffData.data){
+    for(let i = 0; i < staffData.data.length; i++){
+      var userData = await accountQuery.selectOneAccountDb(staffData.data[i].user_id)
+      if(userData.data){
+        staffInfo.push({
+          staff_id: staffData.data[i].staff_id,
+          user_id: staffData.data[i].user_id,
+          user_first_name: userData.data[0].user_first_name,
+          user_last_name: userData.data[0].user_last_name,
+          staff_position: staffData.data[i].staff_position
+        })
+      }
+    }
+  }
+  return staffInfo
 }
 
 // get specific staff from form
@@ -452,10 +474,15 @@ export async function getRevenueTotalFromEvent(event_id: any) {
 //-------------------------------------------------------------------
 
 // transforms header data
-export async function getFormHeaderData(data: any) {}
+export async function getFormHeaderData(form_id: string) {}
 
 // transforms footer data
-export async function getFormFooterData(data: any) {}
+export async function getFormFooterData(form_id: string) {
+  var formFooter = []
+  var formData = 
+  staffQuery.selectWhereStaffValidation
+
+}
 
 // transforms Activity Income body data
 export async function getAIBodyData(data: any) {}

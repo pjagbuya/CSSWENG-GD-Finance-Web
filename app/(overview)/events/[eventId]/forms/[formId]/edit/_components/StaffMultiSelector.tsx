@@ -1,5 +1,7 @@
 import { getUser } from "@/actions/account";
-import { selectAllStaff } from "@/actions/staffs";
+import { selectWhereStaffInstanceValidation } from "@/actions/staff_instances";
+import { selectAllStaff, selectWhereStaffValidation } from "@/actions/staffs";
+import { getStaffInfos } from "@/actions/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
@@ -8,45 +10,68 @@ type StaffMultiSelectorProps = {
   label: string;
   name: string;
   placeholder: string;
-  value: any[];
-  // label="Noted By"
-  // name="noted_staff_list_ids"
-  // placeholder="Noted By"
-  // value={values.noted_staff_list_ids}
-  // onChange={(v) => setValues({ ...values, noted_staff_list_ids: v })}
+  value: string;
 };
 
 const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
-  const [staffList, setStaffList] = useState<unknown[]>([
-    { staff_name: 'asdfa', user_id: 'adf'},
-    { staff_name: 'asdfab', user_id: 'adg' },
-    { staff_name: 'asdfac', user_id: 'adh' },
-  ]);
+  const [staffList, setStaffList] = useState<unknown[]>([]);
+  const [includedStaffIds, setIncludedStaffIds] = useState<unknown[]>([]);
 
-  // useEffect(() => {
-  //   const fetchStaffList = async () => {
-  //     const response = await selectAllStaff();
-  //     const list = response.data || [];
+  useEffect(() => {
+    const fetchStaffList = async () => {
+      const response = await selectAllStaff();
+      const list = await getStaffInfos(response) || []
+      
+      setStaffList(list);
+    };
 
-  //     const joinedList = await Promise.all(list.map(async (staff: any) => {
-  //       const user = await getUser(staff.user_id);
-  //       return { ...staff, userInfo: user };
-  //     }));
+    fetchStaffList();
+  }, []);
 
-  //     setStaffList(joinedList);
-  //   };
+  useEffect(() => {
+    fetchData();
 
-  //   fetchStaffList();
-  // }, []);
+    async function fetchData() {
+      const data = await selectWhereStaffInstanceValidation(value, 'staff_instance_id');
+      const staffInstances = data!.data!;
+      
+      console.log(staffInstances)
+
+      const result = await Promise.all(staffInstances
+        .filter((staffInstance: any) => staffInstance.staff_list_id === value)
+        .map(async (staffInstance: any) => {
+          const info = await selectWhereStaffValidation(staffInstance.staff_id, 'staff_id');
+          
+          return {
+            ...staffInstance,
+            ...(info.data)
+          };
+        }));
+
+      setIncludedStaffIds(result);
+    }
+  }, [value]);
   
   return (
     <>
       <Label>{label}</Label>
 
       {staffList.map((obj: any) => (
-        <div className="flex gap-2 items-center">
-          <Checkbox checked={value.some((v: any) => v.user_id === obj.user_id)} />
-          {obj.staff_name}
+        <div className="flex gap-2 items-center" key={obj.staff_id}>
+          <Checkbox 
+            checked={includedStaffIds.includes(obj.staff_id)} 
+            name={`noted_staff_list_id-${obj.staff_id}`}
+            onCheckedChange={(v: boolean) => {
+              if (v) {
+                setIncludedStaffIds(includedStaffIds.concat(obj.staff_id));
+                setStaffList(staffList)
+              } else {
+                setIncludedStaffIds(includedStaffIds.filter(x => x !== obj.staff_id));
+                setStaffList(staffList)
+              }
+            }}
+          />
+          {obj.user_first_name} {obj.user_last_name}
         </div>
       ))}
     </>

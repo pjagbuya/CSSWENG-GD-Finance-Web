@@ -13,6 +13,8 @@ import { useEffect, useState } from 'react';
 import { selectWhereStaffListValidation } from '@/actions/staff_lists';
 import { Checkbox } from '@/components/ui/checkbox';
 import StaffMultiSelector from './StaffMultiSelector';
+import { selectWhereStaffValidation } from '@/actions/staffs';
+import { selectWhereStaffInstanceValidation } from '@/actions/staff_instances';
 
 type EditExpenseFormPageProps = {
   formInfo: any;
@@ -25,7 +27,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
     es_from: formInfo.es_from,
     es_notes: formInfo.es_notes,
     certified_staff_id: formInfo.certified_staff_id,
-    noted_staff_list_ids: []
+    noted_staff_list_ids: formInfo.noted_staff_list_ids
   });
     
   const [state, action] = useFormState(
@@ -34,19 +36,6 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
       errors: {}
     }
   );
-
-  // useEffect(() => {
-  //   fetchData();
-
-  //   async function fetchData() {
-  //     const data = await selectWhereStaffListValidation(formInfo.noted_staff_list_id, 'staff_list_id')
-
-  //     setValues(v => ({
-  //       ...v,
-  //       noted_staff_list_ids: data!.data!
-  //     }));
-  //   }
-  // }, [formInfo]);
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -128,9 +117,8 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             name="noted_staff_list_ids"
             placeholder="Noted By"
             value={values.noted_staff_list_ids}
-            onChange={(v) => setValues({ ...values, noted_staff_list_ids: v })}
           />
-          {/* <ErrorDisplay errors={state.errors?.certified_staff_id} /> */}
+          <ErrorDisplay errors={state.errors?.noted_staff_list_ids} />
         </div>
 
         <Button className="self-start" type="submit">

@@ -485,7 +485,7 @@ export const UpdateExpenseFormSchema = z.object({
     required_error: 'Please enter the account transferred to.',
   }),
   certified_staff_id: z.optional(z.string()),
-  noted_staff_id: z.optional(z.string())
+  noted_staff_list_ids: z.optional(z.string())
 });
 
 export const UpdateRevenueFormSchema = z.object({
@@ -502,5 +502,5 @@ export const UpdateRevenueFormSchema = z.object({
     required_error: 'Please enter the account transferred to.',
   }),
   certified_staff_id: z.optional(z.string()),
-  noted_staff_id: z.optional(z.string())
+  noted_staff_list_ids: z.optional(z.string())
 });

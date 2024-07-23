@@ -240,7 +240,7 @@ async function deleteAccountDb(data: addUserType, id: string) {
   return remove('varSchema', 'var_id', id);
 }
 
-async function selectOneAccountDb(uuid: string) {
+export async function selectOneAccountDb(uuid: string) {
   const supabase = createAdminClient();
   let { data, error } = await supabase
     .from('users_view')

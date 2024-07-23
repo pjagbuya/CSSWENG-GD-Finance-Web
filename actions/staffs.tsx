@@ -42,7 +42,7 @@ var staffFormat = {
   */
 };
 
-var schema = 'StaffSchema'; // replace with table name
+var schema = 'staffs'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
