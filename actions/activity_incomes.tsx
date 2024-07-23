@@ -8,6 +8,8 @@ import { ActivityIncomeSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as eventQuery from './events';
+import * as staffListQuery from './staff_lists';
 
 export type activityIncomeState = {
   errors?: {
@@ -53,10 +55,59 @@ var activityIncomeFormat = {
   */
 };
 
-var schema = 'ActivityIncomeSchema'; // replace with table name
+var schema = 'activity_incomes'; // replace with table name
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
+async function transformCreateData(id: string) {
+  // TODO: provide logic
+  var aiData = await selectAllActivityIncomeValidation()
+  var id_mod = 10000
+  if(aiData.data){
+    if(aiData.data.length > 0){
+      for(let i = 0; i < aiData.data.length; i++){
+        var num = parseInt(aiData.data[i].ai_id.slice(6));
+        if(num > id_mod){
+          id_mod = num
+        }
+      }
+      id_mod += 1
+    }
+  }
+
+  var staffListData = await staffListQuery.selectAllStaffListValidation()
+  var id_mod_staff = 10000
+  if(staffListData.data){
+    if(staffListData.data.length > 0){
+      for(let i = 0; i < staffListData.data.length; i++){
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(6));
+        if(num > id_mod_staff){
+          id_mod_staff = num
+        }
+      }
+      id_mod_staff += 1
+    }
+  }
+
+  var form_list_id
+  var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
+  if(eventData.data){
+    form_list_id = eventData.data[0].es_form_list_id
+  }
+
+
+  // TODO: fill information
+  return {
+    ai_id: `actin_${id_mod}`,
+    ai_name: null,
+    ai_date: null,
+    ai_notes: null,
+    prepared_staff_id: null,
+    certified_staff_id: null,
+    noted_staff_list_id: `stl_${id_mod_staff}`,
+    form_list_id: form_list_id,
+  }
+}
+
+async function transformEditData(data: any) {
   // TODO: provide logic
 
   // TODO: fill information
@@ -64,18 +115,18 @@ async function transformData(data: any) {
   return transformedData;
 }
 
-async function convertData(data: any) {
+
+async function convertData(data : any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
 export async function createActivityIncomeValidation(
-  prevState: activityIncomeState,
-  formData: FormData,
+  event_id: string
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(event_id);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -87,7 +138,10 @@ export async function createActivityIncomeValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
+  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
+
   const { error } = await createActivityIncome(data);
   if (error) {
     throw new Error(error.message);
@@ -105,7 +159,7 @@ export async function editActivityIncomeValidation(
   prevState: activityIncomeState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = transformEditData(formData);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -118,6 +172,7 @@ export async function editActivityIncomeValidation(
 
   // TODO: provide logic
   var data = convertData(validatedFields.data);
+  
   const { error } = await editActivityIncome(data, id, identifier);
   if (error) {
     throw new Error(error.message);
@@ -160,11 +215,19 @@ export async function selectAllActivityIncomeValidation() {
 
 export async function deleteActivityIncomeValidation(id: string, identifier: string) {
   // TODO: provide logic
+
+  var data = await selectWhereActivityIncome(id, identifier)
+
+  if(data.data){
+    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'noted_staff_list_id')
+  }
+
   const { error } = await deleteActivityIncome(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
+  
   //revalidatePath("/")
   return {
     message: null,

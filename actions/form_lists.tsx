@@ -8,6 +8,10 @@ import { FormListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as activityIncomeQuery from '@/actions/activity_incomes'
+import * as revenueStatementQuery from '@/actions/revenue_statements'
+import * as expenseStatementQuery from '@/actions/expense_statements'
+import * as fundTransferQuery from '@/actions/fund_transfers'
 
 export type formListState = {
   errors?: {
@@ -130,8 +134,31 @@ export async function selectAllFormListValidation() {
   };
 }
 
-export async function deleteFormListValidation(id: string, identifier: string) {
+export async function deleteFormListValidation(id: string, identifier: string, type : string) {
   // TODO: provide logic
+  switch(type){
+    case 'ai':
+      {
+        await activityIncomeQuery.deleteActivityIncomeValidation(id, identifier)
+      }
+    break; 
+    case 'rs':
+      {
+        await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier)
+      }
+    break; 
+    case 'es':
+      {
+        await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier)
+      }
+    break; 
+    case 'ft':
+      {
+        await fundTransferQuery.deleteFundTransferValidation(id, identifier)
+      }
+    break; 
+  }
+  
   const { error } = await deleteFormList(id, identifier);
   if (error) {
     throw new Error(error.message);

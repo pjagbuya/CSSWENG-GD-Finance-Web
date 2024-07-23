@@ -11,6 +11,7 @@ import * as query from '@/lib/supabase';
 import * as formListQuery from '@/actions/form_lists';
 import { revalidatePath } from 'next/cache';
 import * as categoryQuery from '@/actions/categories';
+import * as activityIncomeQuery from '@/actions/activity_incomes';
 
 export type EventState = {
   errors?: {
@@ -142,6 +143,8 @@ export async function createEventValidation(
     throw new Error(error.message);
   }
 
+  await activityIncomeQuery.createActivityIncomeValidation(data.event_id)
+
   revalidatePath('/events');
   return {};
 }
@@ -218,10 +221,10 @@ export async function deleteEventValidation(id: string, identifier: string) {
   }
 
   if(data.data){
-    await formListQuery.deleteFormListValidation(data.data[0].ai_form_list_id, 'form_list_id')
-    await formListQuery.deleteFormListValidation(data.data[0].rs_form_list_id, 'form_list_id')
-    await formListQuery.deleteFormListValidation(data.data[0].es_form_list_id, 'form_list_id')
-    await formListQuery.deleteFormListValidation(data.data[0].ft_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].ai_form_list_id, 'form_list_id', 'ai')
+    await formListQuery.deleteFormListValidation(data.data[0].rs_form_list_id, 'form_list_id', 'rs')
+    await formListQuery.deleteFormListValidation(data.data[0].es_form_list_id, 'form_list_id', 'es')
+    await formListQuery.deleteFormListValidation(data.data[0].ft_form_list_id, 'form_list_id', 'ft')
   }
 
   revalidatePath("/");
