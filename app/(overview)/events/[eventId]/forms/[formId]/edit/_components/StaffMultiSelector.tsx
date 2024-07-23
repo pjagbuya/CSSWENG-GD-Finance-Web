@@ -35,7 +35,7 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
       const data = await selectWhereStaffInstanceValidation(value, 'staff_instance_id');
       const staffInstances = data!.data!;
       
-      console.log(staffInstances)
+      console.log(value, staffInstances)
 
       const result = await Promise.all(staffInstances
         .filter((staffInstance: any) => staffInstance.staff_list_id === value)

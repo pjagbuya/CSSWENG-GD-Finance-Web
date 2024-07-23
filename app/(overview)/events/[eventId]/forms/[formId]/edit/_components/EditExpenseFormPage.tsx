@@ -27,7 +27,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
     es_from: formInfo.es_from,
     es_notes: formInfo.es_notes,
     certified_staff_id: formInfo.certified_staff_id,
-    noted_staff_list_ids: formInfo.noted_staff_list_ids
+    noted_staff_list_ids: formInfo.noted_staff_list_id
   });
     
   const [state, action] = useFormState(
