@@ -4,7 +4,7 @@
 // replace vals with column names
 // remove comments after
 
-import { RevenueStatementSchema } from '@/lib/definitions';
+import { RevenueStatementSchema, UpdateRevenueFormSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
@@ -12,21 +12,15 @@ import * as categoryQuery from './categories';
 import * as eventQuery from './events';
 import * as staffListQuery from './staff_lists';
 
-export type revenueStatementState = {
+export type RevenueStatementState = {
   errors?: {
-    rs_id?: string[];
-    rs_name?: string[];
-    rs_date?: string[];
     receipt_link?: string[];
     rs_to?: string[];
     rs_from?: string[];
     rs_notes?: string[];
-    prepared_staff_id?: string[];
     certified_staff_id?: string[];
-    noted_staff_list_id?: string[];
-    form_list_id?: string[];
+    noted_staff_id?: string[];
   };
-  message?: string | null;
 };
 
 var revenueStatementFormat = {
@@ -41,6 +35,7 @@ var revenueStatementFormat = {
   certified_staff_id: null,
   noted_staff_list_id: null,
   form_list_id: null,
+  category_id: null
   /*
   CREATE TABLE IF NOT EXISTS revenue_statements
   (
@@ -85,6 +80,20 @@ async function transformCreateData(category_id : string) {
     }
   }
 
+  var staffListData = await staffListQuery.selectAllStaffListValidation()
+  var id_mod_staff = 10000
+  if(staffListData.data){
+    if(staffListData.data.length > 0){
+      for(let i = 0; i < staffListData.data.length; i++){
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(6));
+        if(num > id_mod_staff){
+          id_mod_staff = num
+        }
+      }
+      id_mod_staff += 1
+    }
+  }
+
   var form_list_id
   var categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
   if(categoryData.data){
@@ -104,8 +113,9 @@ async function transformCreateData(category_id : string) {
     rs_notes: null,
     prepared_staff_id: null,
     certified_staff_id: null,
-    noted_staff_list_id: null,
+    noted_staff_list_id: `stl_${id_mod_staff}`,
     form_list_id: form_list_id,
+    category_id: category_id,
   }
 }
 
@@ -128,6 +138,7 @@ async function transformEditData(data: any, id: string) {
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: rsData.data[0].noted_staff_list_id,
       form_list_id: rsData.data[0].form_list_id,
+      category_id: rsData.data[0].category_id,
     }
   }
   return null
@@ -157,7 +168,7 @@ export async function createRevenueStatementValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
   
-  await staffListQuery.createStaffList({staff_list_id: data.staff_list_id})
+  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
  
   const { error } = await createRevenueStatement(data);
   if (error) {
@@ -173,11 +184,11 @@ export async function createRevenueStatementValidation(
 export async function editRevenueStatementValidation(
   id: string,
   identifier: string,
-  prevState: revenueStatementState,
+  prevState: RevenueStatementState,
   formData: FormData,
 ) {
   var transformedData = await transformEditData(formData, id);
-  const validatedFields = RevenueStatementSchema.safeParse(transformedData);
+  const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -195,9 +206,7 @@ export async function editRevenueStatementValidation(
   }
 
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  return {} as RevenueStatementState;
 }
 
 export async function selectWhereRevenueStatementValidation(
@@ -234,6 +243,12 @@ export async function deleteRevenueStatementValidation(
   identifier: string,
 ) {
   // TODO: provide logic
+  var data = await selectWhereRevenueStatement(id, identifier)
+
+  if(data.data){
+    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'noted_staff_list_id')
+  }
+
   const { error } = await deleteRevenueStatement(id, identifier);
   if (error) {
     throw new Error(error.message);

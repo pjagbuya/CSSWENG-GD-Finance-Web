@@ -326,6 +326,14 @@ export const RevenueStatementSchema = z.object({
     .min(1),
 });
 
+export const StaffInstanceSchema = z.object({
+  staff_instance_id: z
+    .string({
+      required_error: 'Please enter Staff list ID.',
+    })
+    .min(1),
+});
+
 export const StaffListSchema = z.object({
   staff_list_id: z
     .string({
@@ -333,6 +341,7 @@ export const StaffListSchema = z.object({
     })
     .min(1),
 });
+
 
 export const TransactionSchema = z.object({
   transaction_id: z
@@ -461,28 +470,43 @@ export const LoginForm = UserFormSchema.pick({
 });
 
 export const UpdateExpenseFormSchema = z.object({
-  receipts_link: z
+  receipt_link: z
     .string({ required_error: 'Receipts Link is required.' })
     .url({ message: 'Please enter a valid URL.' }),
-  notes: z.string(),
-  acc_to: z.string({
+  es_to: z.string({
     required_error: 'Please enter the account transferred to.',
+  }),
+  es_from: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  es_notes: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  certified_staff_id: z.string({
+    required_error: 'Please enter the certified by staff.',
+  }),
+  noted_staff_id: z.string({
+    required_error: 'Please enter the noted by staff.',
   }),
 });
 
 export const UpdateRevenueFormSchema = z.object({
-  receipts_link: z
+  receipt_link: z
     .string({ required_error: 'Receipts Link is required.' })
     .url({ message: 'Please enter a valid URL.' }),
-  notes: z.string(),
-  acc_from: z
-    .string({
-      required_error: 'Please enter the account received from.',
-    })
-    .min(1),
-  acc_to: z
-    .string({
-      required_error: 'Please enter the account transferred to.',
-    })
-    .min(1),
+  rs_to: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  rs_from: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  rs_notes: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  certified_staff_id: z.string({
+    required_error: 'Please enter the certified by staff.',
+  }),
+  noted_staff_id: z.string({
+    required_error: 'Please enter the noted by staff.',
+  }),
 });

@@ -19,7 +19,7 @@ export type ExpenseStatementState = {
     es_from?: string[];
     es_notes?: string[];
     certified_staff_id?: string[];
-    noted_staff_list_id?: string[];
+    noted_staff_id?: string[];
   };
 };
 
@@ -35,6 +35,7 @@ var expenseStatementFormat = {
   certified_staff_id: null,
   noted_staff_list_id: null,
   form_list_id: null,
+  category_id: null,
   /*
   CREATE TABLE IF NOT EXISTS expense_statements
   (
@@ -65,17 +66,31 @@ var schema = 'expense_statements'; // replace with table name
 
 async function transformCreateData(category_id : string) {
   // TODO: provide logic
-  var rsData = await selectAllExpenseStatementValidation()
+  var esData = await selectAllExpenseStatementValidation()
   var id_mod = 10000
-  if(rsData.data){
-    if(rsData.data.length > 0){
-      for(let i = 0; i < rsData.data.length; i++){
-        var num = parseInt(rsData.data[i].rs_id.slice(6));
+  if(esData.data){
+    if(esData.data.length > 0){
+      for(let i = 0; i < esData.data.length; i++){
+        var num = parseInt(esData.data[i].es_id.slice(6));
         if(num > id_mod){
           id_mod = num
         }
       }
       id_mod += 1
+    }
+  }
+
+  var staffListData = await staffListQuery.selectAllStaffListValidation()
+  var id_mod_staff = 10000
+  if(staffListData.data){
+    if(staffListData.data.length > 0){
+      for(let i = 0; i < staffListData.data.length; i++){
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(6));
+        if(num > id_mod_staff){
+          id_mod_staff = num
+        }
+      }
+      id_mod_staff += 1
     }
   }
 
@@ -98,8 +113,9 @@ async function transformCreateData(category_id : string) {
     es_notes: null,
     prepared_staff_id: null,
     certified_staff_id: null,
-    noted_staff_list_id: null,
+    noted_staff_list_id: `stl_${id_mod_staff}`,
     form_list_id: form_list_id,
+    category_id: category_id
   }
 }
 
@@ -122,6 +138,7 @@ async function transformEditData(data: any, id: string) {
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: esData.data[0].noted_staff_list_id,
       form_list_id: esData.data[0].form_list_id,
+      category_id: esData.data[0].category_id
     }
   }
   return null
@@ -137,7 +154,7 @@ async function convertData(data: any) {
 export async function createExpenseStatementValidation(
   category_id : any
 ) {
-  var transformedData = transformCreateData(category_id);
+  var transformedData = await transformCreateData(category_id);
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -151,7 +168,7 @@ export async function createExpenseStatementValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffListQuery.createStaffList({staff_list_id: data.staff_list_id})
+  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
 
   const { error } = await createExpenseStatement(data);
   if (error) {
@@ -225,6 +242,12 @@ export async function deleteExpenseStatementValidation(
   identifier: string,
 ) {
   // TODO: provide logic
+  var data = await selectWhereExpenseStatement(id, identifier)
+
+  if(data.data){
+    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'noted_staff_list_id')
+  }
+  
   const { error } = await deleteExpenseStatement(id, identifier);
   if (error) {
     throw new Error(error.message);

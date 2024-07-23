@@ -125,13 +125,12 @@ export async function createCategoryValidation(
   switch(type){
     case 'revenue':
       {
-        console.log(type)
         await revenueStatementQuery.createRevenueStatementValidation(data.category_id)
       }
     break;
     case 'expense':
       {
-
+        await expenseStatementQuery.createExpenseStatementValidation(data.category_id)
       }
     break;
   }
@@ -211,6 +210,11 @@ export async function deleteCategoryValidation(id: string, identifier: string) {
   // TODO: provide logic
   if(data.data){
     await transactionListQuery.deleteTransactionListValidation(data.data[0].transaction_list_id, 'transaction_list_id')
+    var type = id.substring(0,3)
+    switch(type){
+      case 'exp': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
+      case 'rev': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
+    }
   }
 
   revalidatePath(`/groups`)
