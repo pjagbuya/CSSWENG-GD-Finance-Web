@@ -50,6 +50,7 @@ type DataTableProps = {
   clickableIdColumn?: boolean;
   columns: ColumnDef<unknown, any>[];
   data: any;
+  deletable?: boolean;
   idFilter: string;
   idColumn: string;
   pkColumn: string;
@@ -84,6 +85,7 @@ const DataTable = ({
   clickableIdColumn,
   columns,
   data,
+  deletable,
   idColumn,
   idFilter,
   pkColumn,
@@ -181,13 +183,15 @@ const DataTable = ({
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (onRowDelete) onRowDelete(data[row.id][pkColumn]);
-                        }}
-                      >
-                        Delete
-                      </DropdownMenuItem>
+                      {(deletable === undefined || deletable) &&                     
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (onRowDelete) onRowDelete(data[row.id][pkColumn]);
+                          }}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      }
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

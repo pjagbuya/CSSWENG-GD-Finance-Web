@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS activity_incomes
 (
     ai_id VARCHAR(25) PRIMARY KEY,
     ai_name VARCHAR(55),
-    ai_date DATE,
+    ai_date DATE DEFAULT (now()),
     ai_notes VARCHAR(205),
     prepared_staff_id VARCHAR(25),
     certified_staff_id VARCHAR(25),
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS expense_statements
 (
     es_id VARCHAR(25) PRIMARY KEY,
     es_name VARCHAR(55),
-    es_date DATE,
+    es_date DATE DEFAULT (now()),
     receipt_link VARCHAR(55),    
     es_to VARCHAR(105),    
     es_from VARCHAR(105),
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS revenue_statements
 (
     rs_id VARCHAR(25) PRIMARY KEY,
     rs_name VARCHAR(55),
-    rs_date DATE,
+    rs_date DATE DEFAULT (now()),
     receipt_link VARCHAR(55),    
     rs_to VARCHAR(105),    
     rs_from VARCHAR(105),
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS fund_transfers
 (
     ft_id VARCHAR(25) PRIMARY KEY,
     ft_name VARCHAR(55),
-    ft_date DATE,
+    ft_date DATE DEFAULT (now()),
     ft_reason VARCHAR(105),
     ft_amount VARCHAR(105), 
     ft_to VARCHAR(105),    

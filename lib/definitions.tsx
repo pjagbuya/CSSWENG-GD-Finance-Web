@@ -484,12 +484,8 @@ export const UpdateExpenseFormSchema = z.object({
   es_notes: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  certified_staff_id: z.string({
-    required_error: 'Please enter the certified by staff.',
-  }),
-  noted_staff_id: z.string({
-    required_error: 'Please enter the noted by staff.',
-  }),
+  certified_staff_id: z.optional(z.string()),
+  noted_staff_id: z.optional(z.string())
 });
 
 export const UpdateRevenueFormSchema = z.object({
@@ -505,10 +501,6 @@ export const UpdateRevenueFormSchema = z.object({
   rs_notes: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  certified_staff_id: z.string({
-    required_error: 'Please enter the certified by staff.',
-  }),
-  noted_staff_id: z.string({
-    required_error: 'Please enter the noted by staff.',
-  }),
+  certified_staff_id: z.optional(z.string()),
+  noted_staff_id: z.optional(z.string())
 });

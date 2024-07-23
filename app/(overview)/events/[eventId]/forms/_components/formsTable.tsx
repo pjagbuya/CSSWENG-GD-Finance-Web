@@ -24,25 +24,18 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: @Enzo_ please change to the correct accessor key
     accessorKey: 'es_id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
     ),
   },
   {
-    accessorKey: 'es_category',
-    header: ({ column }) => (
-      <SortableHeader column={column}>Category</SortableHeader>
-    ),
-  },
-  {
-    accessorKey: 'es_date_created',
+    accessorKey: 'es_date',
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
     cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('es_date_created'))),
+      getFormattedDate(new Date(row.getValue('es_date'))),
   },
 ];
 
@@ -54,25 +47,18 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
-    // TODO: @Enzo_ please change to the correct accessor key
     accessorKey: 'rs_id',
     header: ({ column }) => (
       <SortableHeader column={column}>Code</SortableHeader>
     ),
   },
   {
-    accessorKey: 'rs_category',
-    header: ({ column }) => (
-      <SortableHeader column={column}>Category</SortableHeader>
-    ),
-  },
-  {
-    accessorKey: 'rs_date_created',
+    accessorKey: 'rs_date',
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
     cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('rs_date_created'))),
+      getFormattedDate(new Date(row.getValue('rs_date'))),
   },
 ];
 
@@ -182,9 +168,10 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         clickableIdColumn={true}
         columns={getColumnDefinition()}
         data={tableData}
+        deletable={false}
         idFilter={nameFilter}
-        idColumn="es_name"
-        pkColumn="id"
+        idColumn={variant === 'expense' ? 'es_name' : 'rs_name'}
+        pkColumn={variant === 'expense' ? 'es_id' : 'rs_id'}
         onRowEdit={(formId: string) => setToEditId(formId)}
         onRowDelete={(formId: string) => setToDeleteId(formId)}
         onRowSelect={(formId: string) => setToViewId(formId)}

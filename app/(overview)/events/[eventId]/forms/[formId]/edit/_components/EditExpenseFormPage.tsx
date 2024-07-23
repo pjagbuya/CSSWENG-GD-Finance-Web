@@ -10,6 +10,9 @@ import ErrorDisplay from '../../../../_components/ErrorDisplay';
 import StaffSelector from './CertifiedStaffSelector';
 import { editExpenseStatementValidation } from '@/actions/expense_statements';
 import { useEffect, useState } from 'react';
+import { selectWhereStaffListValidation } from '@/actions/staff_lists';
+import { Checkbox } from '@/components/ui/checkbox';
+import StaffMultiSelector from './StaffMultiSelector';
 
 type EditExpenseFormPageProps = {
   formInfo: any;
@@ -17,14 +20,14 @@ type EditExpenseFormPageProps = {
 
 const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
   const [values, setValues] = useState({
-    receipt_link: 'asdf',
-    es_to: 'asd',
-    es_from: 'f',
-    es_notes: 'fds',
-    certified_staff_id: 'sdf',
-    noted_staff_id: 'o'
+    receipt_link: formInfo.receipt_link,
+    es_to: formInfo.es_to,
+    es_from: formInfo.es_from,
+    es_notes: formInfo.es_notes,
+    certified_staff_id: formInfo.certified_staff_id,
+    noted_staff_list_ids: []
   });
-  
+    
   const [state, action] = useFormState(
     editExpenseStatementValidation.bind(null, formInfo.es_id, 'es_id'), 
     {
@@ -32,9 +35,18 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
     }
   );
 
-  useEffect(() => {
-    // 
-  }, [formInfo]);
+  // useEffect(() => {
+  //   fetchData();
+
+  //   async function fetchData() {
+  //     const data = await selectWhereStaffListValidation(formInfo.noted_staff_list_id, 'staff_list_id')
+
+  //     setValues(v => ({
+  //       ...v,
+  //       noted_staff_list_ids: data!.data!
+  //     }));
+  //   }
+  // }, [formInfo]);
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -111,14 +123,14 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <StaffSelector 
+          <StaffMultiSelector
             label="Noted By"
-            name="noted_staff_id" 
+            name="noted_staff_list_ids"
             placeholder="Noted By"
-            value={values.noted_staff_id}
-            onChange={(v) => setValues({ ...values, noted_staff_id: v })}
+            value={values.noted_staff_list_ids}
+            onChange={(v) => setValues({ ...values, noted_staff_list_ids: v })}
           />
-          <ErrorDisplay errors={state.errors?.noted_staff_id} />
+          {/* <ErrorDisplay errors={state.errors?.certified_staff_id} /> */}
         </div>
 
         <Button className="self-start" type="submit">

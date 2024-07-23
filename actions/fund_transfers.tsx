@@ -84,7 +84,7 @@ async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
 export async function createFundTransferValidation(

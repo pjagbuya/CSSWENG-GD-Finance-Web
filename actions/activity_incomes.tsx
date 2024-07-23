@@ -91,20 +91,18 @@ async function transformCreateData(id: string) {
   var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
   if(eventData.data){
     form_list_id = eventData.data[0].ai_form_list_id
+    // TODO: fill information
+    return {
+      ai_id: `actin_${id_mod}`,
+      ai_name: eventData.data[0].name,
+      ai_notes: null,
+      prepared_staff_id: null,
+      certified_staff_id: null,
+      noted_staff_list_id: `stl_${id_mod_staff}`,
+      form_list_id: form_list_id,
+    }
   }
-
-
-  // TODO: fill information
-  return {
-    ai_id: `actin_${id_mod}`,
-    ai_name: null,
-    ai_date: null,
-    ai_notes: null,
-    prepared_staff_id: null,
-    certified_staff_id: null,
-    noted_staff_list_id: `stl_${id_mod_staff}`,
-    form_list_id: form_list_id,
-  }
+  return null
 }
 
 async function transformEditData(data: any) {

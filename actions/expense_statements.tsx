@@ -19,7 +19,7 @@ export type ExpenseStatementState = {
     es_from?: string[];
     es_notes?: string[];
     certified_staff_id?: string[];
-    noted_staff_id?: string[];
+    noted_staff_list_ids?: string[];
   };
 };
 
@@ -64,7 +64,7 @@ var expenseStatementFormat = {
 
 var schema = 'expense_statements'; // replace with table name
 
-async function transformCreateData(category_id : string) {
+async function transformCreateData(category_id : string, category_name : string) {
   // TODO: provide logic
   var esData = await selectAllExpenseStatementValidation()
   var id_mod = 10000
@@ -105,8 +105,7 @@ async function transformCreateData(category_id : string) {
   // TODO: fill information
   return{
     es_id: `expst_${id_mod}`,
-    es_name: null,
-    es_date: null,
+    es_name: category_name,
     receipt_link: null,
     es_to: null,
     es_from: null,
@@ -128,8 +127,7 @@ async function transformEditData(data: any, id: string) {
   if(esData.data){
     return{
       es_id: id,
-      es_name: data.get('es_name'),
-      es_date: data.get('es_date'),
+      es_name: esData.data[0].es_name,
       receipt_link: data.get('receipt_link'),
       es_to: data.get('es_to'),
       es_from: data.get('es_from'),
@@ -152,9 +150,10 @@ async function convertData(data: any) {
 }
 
 export async function createExpenseStatementValidation(
-  category_id : any
+  category_id : any,
+  category_name : string
 ) {
-  var transformedData = await transformCreateData(category_id);
+  var transformedData = await transformCreateData(category_id, category_name);
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {

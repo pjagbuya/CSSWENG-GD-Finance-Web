@@ -64,7 +64,7 @@ var revenueStatementFormat = {
 
 var schema = 'revenue_statements'; // replace with table name
 
-async function transformCreateData(category_id : string) {
+async function transformCreateData(category_id : string, category_name : string) {
   // TODO: provide logic
   var rsData = await selectAllRevenueStatementValidation()
   var id_mod = 10000
@@ -105,8 +105,7 @@ async function transformCreateData(category_id : string) {
   // TODO: fill information
   return{
     rs_id: `revst_${id_mod}`,
-    rs_name: null,
-    rs_date: null,
+    rs_name: category_name,
     receipt_link: null,
     rs_to: null,
     rs_from: null,
@@ -128,8 +127,7 @@ async function transformEditData(data: any, id: string) {
   if(rsData.data){
     return{
       rs_id: id,
-      rs_name: data.get('rs_name'),
-      rs_date: data.get('rs_date'),
+      rs_name: rsData.data[0].rs_name,
       receipt_link: data.get('receipt_link'),
       rs_to: data.get('rs_to'),
       rs_from: data.get('rs_from'),
@@ -152,9 +150,10 @@ async function convertData(data: any) {
 }
 
 export async function createRevenueStatementValidation(
-  category_id : any
+  category_id : any,
+  category_name : string,
 ) {
-  var transformedData = await transformCreateData(category_id);
+  var transformedData = await transformCreateData(category_id, category_name);
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {

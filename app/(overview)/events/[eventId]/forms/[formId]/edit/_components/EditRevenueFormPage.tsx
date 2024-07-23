@@ -17,12 +17,12 @@ type EditRevenueFormPageProps = {
 
 const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
   const [values, setValues] = useState({
-    receipt_link: 'asdf',
-    rs_to: 'asd',
-    rs_from: 'f',
-    rs_notes: 'fds',
-    certified_staff_id: 'sdf',
-    noted_staff_id: 'o'
+    receipt_link: formInfo.receipt_link,
+    rs_to: formInfo.rs_to,
+    rs_from: formInfo.rs_from,
+    rs_notes: formInfo.rs_notes,
+    certified_staff_id: formInfo.certified_staff_id,
+    noted_staff_id: formInfo.noted_staff_id
   });
   
   const [state, action] = useFormState(
