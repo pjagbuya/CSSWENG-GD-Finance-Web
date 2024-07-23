@@ -69,7 +69,7 @@ var fundTransferFormat = {
   */
 };
 
-var schema = 'FundTransferSchema'; // replace with table name
+var schema = 'fund_transfers'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());

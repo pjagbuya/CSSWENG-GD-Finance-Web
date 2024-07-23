@@ -11,7 +11,10 @@ import * as query from '@/lib/supabase';
 import * as formListQuery from '@/actions/form_lists';
 import { revalidatePath } from 'next/cache';
 import * as categoryQuery from '@/actions/categories';
-import * as activityIncomeQuery from '@/actions/activity_incomes';
+import * as activityIncomeQuery from '@/actions/activity_incomes'
+import * as revenueStatementQuery from '@/actions/revenue_statements'
+import * as expenseStatementQuery from '@/actions/expense_statements'
+import * as fundTransferQuery from '@/actions/fund_transfers'
 
 export type EventState = {
   errors?: {
@@ -207,6 +210,34 @@ export async function selectAllEventValidation() {
 export async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
   const data = await selectWhereEventValidation(id, 'event_id')
+
+  if(data.data){
+    var aiData = await activityIncomeQuery.selectWhereActivityIncomeValidation(data.data[0].ai_form_list_id, 'form_list_id')
+    if(aiData.data){
+      for(let i = 0; i < aiData.data.length; i++){
+        await activityIncomeQuery.deleteActivityIncomeValidation(aiData.data[i].ai_id, 'ai_id')
+      }
+    }
+    var rsData = await revenueStatementQuery.selectWhereRevenueStatementValidation(data.data[0].rs_form_list_id, 'form_list_id')
+    if(rsData.data){
+      for(let i = 0; i < rsData.data.length; i++){
+        await revenueStatementQuery.deleteRevenueStatementValidation(rsData.data[i].rs_id, 'rs_id')
+      }
+    }
+    var esData = await expenseStatementQuery.selectWhereExpenseStatementValidation(data.data[0].es_form_list_id, 'form_list_id')
+    if(esData.data){
+      for(let i = 0; i < esData.data.length; i++){
+        await expenseStatementQuery.deleteExpenseStatementValidation(esData.data[i].es_id, 'es_id')
+      }
+    }
+    var ftData = await fundTransferQuery.selectWhereFundTransferValidation(data.data[0].ft_form_list_id, 'form_list_id')
+    if(ftData.data){
+      for(let i = 0; i < ftData.data.length; i++){
+        await fundTransferQuery.deleteFundTransferValidation(ftData.data[i].rs_id, 'ft_id')
+      }
+    }
+  }
+
   const categoryData = await categoryQuery.selectWhereCategoryValidation(id, 'event_id')
 
   if(categoryData.data){
@@ -221,10 +252,10 @@ export async function deleteEventValidation(id: string, identifier: string) {
   }
 
   if(data.data){
-    await formListQuery.deleteFormListValidation(data.data[0].ai_form_list_id, 'form_list_id', 'ai')
-    await formListQuery.deleteFormListValidation(data.data[0].rs_form_list_id, 'form_list_id', 'rs')
-    await formListQuery.deleteFormListValidation(data.data[0].es_form_list_id, 'form_list_id', 'es')
-    await formListQuery.deleteFormListValidation(data.data[0].ft_form_list_id, 'form_list_id', 'ft')
+    await formListQuery.deleteFormListValidation(data.data[0].ai_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].rs_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].es_form_list_id, 'form_list_id')
+    await formListQuery.deleteFormListValidation(data.data[0].ft_form_list_id, 'form_list_id')
   }
 
   revalidatePath("/");

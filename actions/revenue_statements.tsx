@@ -85,7 +85,7 @@ async function transformCreateData(category_id : string) {
   if(staffListData.data){
     if(staffListData.data.length > 0){
       for(let i = 0; i < staffListData.data.length; i++){
-        var num = parseInt(staffListData.data[i].staff_list_id.slice(6));
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
         if(num > id_mod_staff){
           id_mod_staff = num
         }
@@ -245,13 +245,13 @@ export async function deleteRevenueStatementValidation(
   // TODO: provide logic
   var data = await selectWhereRevenueStatement(id, identifier)
 
-  if(data.data){
-    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'noted_staff_list_id')
-  }
-
   const { error } = await deleteRevenueStatement(id, identifier);
   if (error) {
     throw new Error(error.message);
+  }
+
+  if(data.data){
+    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'staff_list_id')
   }
 
   //revalidatePath("/")

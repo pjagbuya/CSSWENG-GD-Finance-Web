@@ -78,7 +78,7 @@ async function transformCreateData(id: string) {
   if(staffListData.data){
     if(staffListData.data.length > 0){
       for(let i = 0; i < staffListData.data.length; i++){
-        var num = parseInt(staffListData.data[i].staff_list_id.slice(6));
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
         if(num > id_mod_staff){
           id_mod_staff = num
         }
@@ -90,7 +90,7 @@ async function transformCreateData(id: string) {
   var form_list_id
   var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
   if(eventData.data){
-    form_list_id = eventData.data[0].es_form_list_id
+    form_list_id = eventData.data[0].ai_form_list_id
   }
 
 
@@ -218,15 +218,14 @@ export async function deleteActivityIncomeValidation(id: string, identifier: str
 
   var data = await selectWhereActivityIncome(id, identifier)
 
-  if(data.data){
-    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'noted_staff_list_id')
-  }
-
   const { error } = await deleteActivityIncome(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
+  if(data.data){
+    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'staff_list_id')
+  }
   
   //revalidatePath("/")
   return {

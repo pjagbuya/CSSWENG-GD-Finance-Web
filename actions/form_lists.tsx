@@ -134,31 +134,9 @@ export async function selectAllFormListValidation() {
   };
 }
 
-export async function deleteFormListValidation(id: string, identifier: string, type : string) {
+export async function deleteFormListValidation(id: string, identifier: string) {
   // TODO: provide logic
-  switch(type){
-    case 'ai':
-      {
-        await activityIncomeQuery.deleteActivityIncomeValidation(id, identifier)
-      }
-    break; 
-    case 'rs':
-      {
-        await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier)
-      }
-    break; 
-    case 'es':
-      {
-        await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier)
-      }
-    break; 
-    case 'ft':
-      {
-        await fundTransferQuery.deleteFundTransferValidation(id, identifier)
-      }
-    break; 
-  }
-  
+
   const { error } = await deleteFormList(id, identifier);
   if (error) {
     throw new Error(error.message);
