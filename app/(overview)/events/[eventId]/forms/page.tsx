@@ -66,7 +66,10 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             <Button className="min-w-24">
               <Link href={`/events/${params.eventId}/forms/${formId}`}>View</Link>
             </Button>
-            <Button className="min-w-24">Edit</Button>
+            <CreateFormButton
+              eventId={params.eventId}
+              variant="aisf"
+            />
           </div>
         </div>
 
