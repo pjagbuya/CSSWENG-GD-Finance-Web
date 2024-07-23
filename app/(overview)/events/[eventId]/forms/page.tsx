@@ -1,8 +1,10 @@
+
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 import { selectWhereEventValidation } from '@/actions/events';
-import FundsTransferTable from './_components/FundTransferTable';
+import { getAIFormFromEvent } from '@/actions/utils';
+import { Link } from 'lucide-react';
 
 type FormsPageProps = {
   params: {
@@ -15,6 +17,10 @@ const FormsPage = async ({ params }: FormsPageProps) => {
     params.eventId,
     'event_id',
   );
+
+  const formId = await getAIFormFromEvent(params.eventId)
+
+  console.log(params)
   const event = eventData.data[0];
 
   return (
@@ -57,7 +63,9 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           <p>Last generated on [DATE].</p>
 
           <div className="mb-8 flex gap-4">
-            <Button className="min-w-24">View</Button>
+            <Button className="min-w-24" asChild>
+              <Link href={`events/${params.eventId}/forms/${formId}`}>Login</Link>
+            </Button>
             <Button className="min-w-24">Edit</Button>
           </div>
         </div>
