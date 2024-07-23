@@ -8,7 +8,7 @@ export const ActivityIncomeSchema = z.object({
       required_error: 'Please enter Activity Income ID.',
     })
     .min(1),
-    /*
+  /*
   ai_name: z
     .string({
       required_error: 'Please enter Activity Income name.',
@@ -54,7 +54,6 @@ export const CategorySchema = z.object({
     .string({ required_error: 'Please enter Transaction list ID.' })
     .min(1),
 });
-
 
 export const StaffSchema = z.object({
   staff_name: z.string({
@@ -344,7 +343,6 @@ export const StaffListSchema = z.object({
     .min(1),
 });
 
-
 export const TransactionSchema = z.object({
   transaction_id: z
     .string({ required_error: 'Please enter Transaction ID.' })
@@ -444,10 +442,10 @@ export const UserFormSchema = z.object({
 });
 
 export const AddUserFormSchema = UserFormSchema.omit({
-  role: true
-})
+  role: true,
+});
 
-export type addUserType = z.infer<typeof AddUserFormSchema>
+export type addUserType = z.infer<typeof AddUserFormSchema>;
 
 export const CreateEventSchema = z.object({
   event_name: z
@@ -485,7 +483,7 @@ export const UpdateExpenseFormSchema = z.object({
     required_error: 'Please enter the account transferred to.',
   }),
   certified_staff_id: z.optional(z.string()),
-  noted_staff_list_ids: z.optional(z.string())
+  noted_staff_list_ids: z.optional(z.string()),
 });
 
 export const UpdateRevenueFormSchema = z.object({
@@ -502,5 +500,5 @@ export const UpdateRevenueFormSchema = z.object({
     required_error: 'Please enter the account transferred to.',
   }),
   certified_staff_id: z.optional(z.string()),
-  noted_staff_list_ids: z.optional(z.string())
+  noted_staff_list_id: z.optional(z.string()),
 });

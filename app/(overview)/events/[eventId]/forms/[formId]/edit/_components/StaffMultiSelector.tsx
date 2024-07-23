@@ -56,8 +56,6 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
       //     }),
       // );
 
-      console.log(result);
-
       setIncludedStaffIds(result);
     }
   }, [value]);

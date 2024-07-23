@@ -4,7 +4,10 @@
 // replace vals with column names
 // remove comments after
 
-import { RevenueStatementSchema, UpdateRevenueFormSchema } from '@/lib/definitions';
+import {
+  RevenueStatementSchema,
+  UpdateRevenueFormSchema,
+} from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
@@ -20,7 +23,7 @@ export type RevenueStatementState = {
     rs_from?: string[];
     rs_notes?: string[];
     certified_staff_id?: string[];
-    noted_staff_id?: string[];
+    noted_staff_list_id?: string[];
   };
 };
 
@@ -36,7 +39,7 @@ var revenueStatementFormat = {
   certified_staff_id: null,
   noted_staff_list_id: null,
   form_list_id: null,
-  category_id: null
+  category_id: null,
   /*
   CREATE TABLE IF NOT EXISTS revenue_statements
   (
@@ -65,46 +68,52 @@ var revenueStatementFormat = {
 
 var schema = 'revenue_statements'; // replace with table name
 
-async function transformCreateData(category_id : string, category_name : string) {
+async function transformCreateData(category_id: string, category_name: string) {
   // TODO: provide logic
-  var rsData = await selectAllRevenueStatementValidation()
-  var id_mod = 10000
-  if(rsData.data){
-    if(rsData.data.length > 0){
-      for(let i = 0; i < rsData.data.length; i++){
+  var rsData = await selectAllRevenueStatementValidation();
+  var id_mod = 10000;
+  if (rsData.data) {
+    if (rsData.data.length > 0) {
+      for (let i = 0; i < rsData.data.length; i++) {
         var num = parseInt(rsData.data[i].rs_id.slice(6));
-        if(num > id_mod){
-          id_mod = num
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
-  var staffListData = await staffListQuery.selectAllStaffListValidation()
-  var id_mod_staff = 10000
-  if(staffListData.data){
-    if(staffListData.data.length > 0){
-      for(let i = 0; i < staffListData.data.length; i++){
+  var staffListData = await staffListQuery.selectAllStaffListValidation();
+  var id_mod_staff = 10000;
+  if (staffListData.data) {
+    if (staffListData.data.length > 0) {
+      for (let i = 0; i < staffListData.data.length; i++) {
         var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
-        if(num > id_mod_staff){
-          id_mod_staff = num
+        if (num > id_mod_staff) {
+          id_mod_staff = num;
         }
       }
-      id_mod_staff += 1
+      id_mod_staff += 1;
     }
   }
 
-  var form_list_id
-  var categoryData = await categoryQuery.selectWhereCategoryValidation(category_id, 'category_id')
-  if(categoryData.data){
-    var eventData = await eventQuery.selectWhereEventValidation(categoryData.data[0].event_id, 'event_id')
-    if(eventData.data){
-      form_list_id = eventData.data[0].rs_form_list_id
+  var form_list_id;
+  var categoryData = await categoryQuery.selectWhereCategoryValidation(
+    category_id,
+    'category_id',
+  );
+  if (categoryData.data) {
+    var eventData = await eventQuery.selectWhereEventValidation(
+      categoryData.data[0].event_id,
+      'event_id',
+    );
+    if (eventData.data) {
+      form_list_id = eventData.data[0].rs_form_list_id;
     }
   }
   // TODO: fill information
-  return{
+  return {
     rs_id: `revst_${id_mod}`,
     rs_name: category_name,
     receipt_link: null,
@@ -116,17 +125,16 @@ async function transformCreateData(category_id : string, category_name : string)
     noted_staff_list_id: `stl_${id_mod_staff}`,
     form_list_id: form_list_id,
     category_id: category_id,
-  }
+  };
 }
 
 async function transformEditData(data: any, id: string) {
-  
   // TODO: provide logic
-  var rsData = await selectWhereRevenueStatementValidation(id, 'rs_id')
+  var rsData = await selectWhereRevenueStatementValidation(id, 'rs_id');
 
   // TODO: fill information
-  if(rsData.data){
-    return{
+  if (rsData.data) {
+    return {
       rs_id: id,
       rs_name: rsData.data[0].rs_name,
       receipt_link: data.get('receipt_link'),
@@ -138,9 +146,9 @@ async function transformEditData(data: any, id: string) {
       noted_staff_list_id: rsData.data[0].noted_staff_list_id,
       form_list_id: rsData.data[0].form_list_id,
       category_id: rsData.data[0].category_id,
-    }
+    };
   }
-  return null
+  return null;
 }
 
 async function convertData(data: any) {
@@ -151,8 +159,8 @@ async function convertData(data: any) {
 }
 
 export async function createRevenueStatementValidation(
-  category_id : any,
-  category_name : string,
+  category_id: any,
+  category_name: string,
 ) {
   var transformedData = await transformCreateData(category_id, category_name);
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
@@ -167,9 +175,11 @@ export async function createRevenueStatementValidation(
 
   // TODO: provide logic
   var data = await convertData(transformedData);
-  
-  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
- 
+
+  await staffListQuery.createStaffList({
+    staff_list_id: data.noted_staff_list_id,
+  });
+
   const { error } = await createRevenueStatement(data);
   if (error) {
     throw new Error(error.message);
@@ -190,11 +200,11 @@ export async function editRevenueStatementValidation(
   var transformedData = await transformEditData(formData, id);
   const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
 
-  var arrData = Array.from(formData.entries())
-  const notedList = []
-  for(let i = 0; i < arrData.length; i++){
-    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
-      notedList.push(arrData[i][0].substring(21))
+  var arrData = Array.from(formData.entries());
+  const notedList = [];
+  for (let i = 0; i < arrData.length; i++) {
+    if (arrData[i][0].substring(0, 20) === 'noted_staff_list_id-') {
+      notedList.push(arrData[i][0].substring(21));
     }
   }
 
@@ -209,8 +219,11 @@ export async function editRevenueStatementValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  for(let i = 0; i < notedList.length; i++){
-    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+  for (let i = 0; i < notedList.length; i++) {
+    await staffInstanceQuery.createStaffInstanceValidation(
+      data.noted_staff_list_id,
+      notedList[i],
+    );
   }
 
   const { error } = await editRevenueStatement(data, id, identifier);
@@ -256,15 +269,18 @@ export async function deleteRevenueStatementValidation(
   identifier: string,
 ) {
   // TODO: provide logic
-  var data = await selectWhereRevenueStatement(id, identifier)
+  var data = await selectWhereRevenueStatement(id, identifier);
 
   const { error } = await deleteRevenueStatement(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  if(data.data){
-    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'staff_list_id')
+  if (data.data) {
+    await staffListQuery.deleteStaffListValidation(
+      data.data[0].noted_staff_list_id,
+      'staff_list_id',
+    );
   }
 
   //revalidatePath("/")
