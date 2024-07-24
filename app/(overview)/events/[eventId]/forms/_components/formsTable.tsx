@@ -15,6 +15,7 @@ import {
   getRSFormFromEvent,
 } from '@/actions/utils';
 import { deleteExpenseStatement } from '@/actions/expense_statements';
+import FormViewPDF, { generatePdf } from '../[formId]/_components/FormViewPDF';
 
 const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
@@ -144,6 +145,7 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
   }, [pathname, router, toEditId]);
 
   useEffect(() => {
+    // generatePdf(<FormViewPDF formId='' />, 'download.pdf')
     if (toViewId) {
       router.push(`${pathname}/${toViewId}`);
     }

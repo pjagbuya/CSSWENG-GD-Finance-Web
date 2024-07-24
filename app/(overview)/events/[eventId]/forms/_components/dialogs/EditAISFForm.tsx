@@ -31,7 +31,8 @@ const EditAISFForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
     errors: {},
     message: null,
   };
-  const [state, action] = useFormState(editActivityIncomeValidation, initialState);
+  const formAction = editActivityIncomeValidation.bind(eventId, '')
+  const [state, action] = useFormState(formAction, initialState);
 
   useEffect(() => {
     fetchCategories();
@@ -61,30 +62,22 @@ const EditAISFForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="id">Id</Label>
-        <Input id="id" name="ai_id" placeholder="Id" />
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
 
-        <ErrorDisplay errors={state.errors?.ft_id} />
-      </>
-      <>
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" name="ai_name" placeholder="Name" />
-
-        <ErrorDisplay errors={state.errors?.ft_name} />
-      </>
-
-      <>
-        <Label htmlFor="date">Date</Label>
-        {/* <DatePicker name='fr_date' /> */}
-        <input name='ai_date' type='date' id='date' />
-
-        <ErrorDisplay errors={state.errors?.ft_date} />
+        <ErrorDisplay errors={state.errors?.ai_id} />
       </>
       <>
         <Label htmlFor="notes">Notes</Label>
         <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
 
-        <ErrorDisplay errors={state.errors?.ft_reason} />
+        <ErrorDisplay errors={state.errors?.ai_id} />
+      </>
+      <>
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
+
+        <ErrorDisplay errors={state.errors?.ai_id} />
       </>
     </CreateForm>
   );
