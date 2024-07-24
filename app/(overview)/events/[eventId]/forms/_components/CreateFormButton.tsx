@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
 import CreateExpenseForm from './dialogs/CreateExpenseForm';
 import CreateRevenueForm from './dialogs/CreateRevenueForm';
+import CreateFundTransferForm from './dialogs/CreateFundTransferForm';
+import EditAISFForm from './dialogs/EditAISFForm';
 
 type CreateFormButtonProps = {
   eventId: string;
-  variant: 'expense' | 'revenue' | 'fund_transfer';
+  variant: 'expense' | 'revenue' | 'fund_transfer' | 'aisf';
 };
 
 const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
@@ -34,8 +36,21 @@ const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
       //   );
 
       case 'fund_transfer':
-        // TODO
-        return null;
+        return (
+          <CreateFundTransferForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
+
+      case 'aisf':
+        return (
+          <EditAISFForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
+
 
       default:
         throw new Error('Invalid form variant given.');

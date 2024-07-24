@@ -1,7 +1,10 @@
+
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 import { selectWhereEventValidation } from '@/actions/events';
+import { getAIFormFromEvent } from '@/actions/utils';
+import Link from 'next/link';
 
 type FormsPageProps = {
   params: {
@@ -14,6 +17,10 @@ const FormsPage = async ({ params }: FormsPageProps) => {
     params.eventId,
     'event_id',
   );
+
+  const formId = (await getAIFormFromEvent(params.eventId))?.data[0].form_list_id
+
+  console.log(params)
   const event = eventData.data[0];
 
   return (
@@ -56,8 +63,13 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           <p>Last generated on [DATE].</p>
 
           <div className="mb-8 flex gap-4">
-            <Button className="min-w-24">View</Button>
-            <Button className="min-w-24">Edit</Button>
+            <Button className="min-w-24">
+              <Link href={`/events/${params.eventId}/forms/${formId}`}>View</Link>
+            </Button>
+            <CreateFormButton
+              eventId={params.eventId}
+              variant="aisf"
+            />
           </div>
         </div>
 
@@ -73,6 +85,11 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             />
           </div>
 
+          <FormsTable
+            eventId={params.eventId}
+            nameFilter=""
+            variant="fund_transfer"
+          />
           {/* <FormsTable nameFilter="" /> */}
         </div>
       </main>

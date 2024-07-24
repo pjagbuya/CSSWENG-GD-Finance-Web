@@ -1,3 +1,4 @@
+'use server'
 // INSTRUCTIONS:
 // fundTransfer -> small case
 // FundTransfer -> big case
@@ -8,6 +9,7 @@ import { FundTransferSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import { date } from 'zod';
 
 export type fundTransferState = {
   errors?: {
@@ -20,10 +22,10 @@ export type fundTransferState = {
     ft_from?: string[];
     fr_on?: string[];
     receipt_link?: string[];
-    prepared_staff_id?: string[];
-    certified_staff_id?: string[];
-    noted_staff_list_id?: string[];
-    form_list_id?: string[];
+    // prepared_staff_id?: string[];
+    // certified_staff_id?: string[];
+    // noted_staff_list_id?: string[];
+    // form_list_id?: string[];
   };
   message?: string | null;
 };
@@ -72,12 +74,15 @@ var fundTransferFormat = {
 var schema = 'fund_transfers'; // replace with table name
 
 async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+  // var arrayData = Array.from(data.entries());
+  // // TODO: provide logic
+  //
+  // // TODO: fill information
+  // var transformedData = {};
+  // return transformedData;
+  return Object.fromEntries(data.entries())
 
-  // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+
 }
 
 async function convertData(data: any) {
@@ -91,7 +96,7 @@ export async function createFundTransferValidation(
   prevState: fundTransferState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformData(formData);
   const validatedFields = FundTransferSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -103,10 +108,11 @@ export async function createFundTransferValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(validatedFields);
   const { error } = await createFundTransfer(data);
   if (error) {
-    throw new Error(error.message);
+    console.log(error.message)
+    // throw new Error(error.message);
   }
 
   //revalidatePath("/")
@@ -188,6 +194,7 @@ export async function deleteFundTransferValidation(id: string, identifier: strin
 }
 
 export async function createFundTransfer(data: any) {
+  console.log(data)
   return await query.insert(schema, data);
 }
 

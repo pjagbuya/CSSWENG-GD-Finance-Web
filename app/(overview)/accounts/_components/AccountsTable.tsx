@@ -43,10 +43,13 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     ),
     cell: ({ row }) => {
       const id = row.getValue('id') as string
+      const position = row.getValue('position') as string
       return (
         <div className='flex gap-2'>
-          <RegisterAccountButton id={id} />
-          <EditStaffButton id={id} />
+          {!position ?
+            <RegisterAccountButton id={id} /> :
+            <EditStaffButton id={id} />
+          }
         </div>
       )
     }
