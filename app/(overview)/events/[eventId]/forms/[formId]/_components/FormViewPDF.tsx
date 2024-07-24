@@ -1,8 +1,8 @@
 import * as utility from '@/actions/utils';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
-import htmlToPdfmake from 'html-to-pdfmake';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import pdfMake from 'pdfmake/build/pdfmake';
+// import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -119,13 +119,17 @@ const styles: any = {
 
 
 export const generatePdf = (reactElement: React.ReactElement, filename: string) => {
-  const htmlString = renderToStaticMarkup(reactElement);
+  // const htmlString = renderToStaticMarkup(reactElement);
 
-  const pdfDoc = htmlToPdfmake(htmlString);
+  // const elem = document.createElement('div');
+  // elem.innerHTML = htmlString;
 
-  const documentDefinition = { content: pdfDoc };
+  // generatePdf(() => elem, {});
+  // const pdfDoc = htmlToPdfmake(htmlString);
 
-  pdfMake.createPdf(documentDefinition).download(filename);
+  // const documentDefinition = { content: pdfDoc };
+
+  // pdfMake.createPdf(documentDefinition).download(filename);
 };
 
 const FormViewPDF = ({
@@ -199,7 +203,7 @@ const FormViewPDF = ({
 ]
 
   return (
-    <div className="form" style={styles.form}>
+    <div id="form-proper" className="form" style={styles.form}>
       <div className="form-header" style={styles.formHeader}>
         <div className="form-logo" style={styles.formLogo}>
           {/* <img className="logo" src="/icons/Logo.png" /> */}
