@@ -8,6 +8,7 @@ import * as revenueStatementQuery from '@/actions/revenue_statements';
 import * as activityIncomeQuery from '@/actions/activity_incomes';
 import * as staffQuery from '@/actions/staffs';
 import * as staffListQuery from '@/actions/staff_lists';
+import * as staffInstanceQuery from '@/actions/staff_instances';
 import * as categoryQuery from '@/actions/categories';
 import * as transactionListQuery from '@/actions/transaction_lists';
 import * as transactionQuery from '@/actions/transactions';
@@ -348,7 +349,7 @@ export async function getNotedStaffFromEvent(form_id: any, form_type: string) {
       );
       if (formData.data) {
         let staff_list_id = formData.data[0].noted_staff_list_id;
-        return await staffQuery.selectWhereStaffValidation(
+        return await staffInstanceQuery.selectWhereStaffInstanceValidation(
           staff_list_id,
           'staff_list_id',
         );
@@ -362,7 +363,7 @@ export async function getNotedStaffFromEvent(form_id: any, form_type: string) {
         );
       if (formData.data) {
         let staff_list_id = formData.data[0].noted_staff_list_id;
-        return await staffQuery.selectWhereStaffValidation(
+        return await staffInstanceQuery.selectWhereStaffInstanceValidation(
           staff_list_id,
           'staff_list_id',
         );
@@ -376,7 +377,7 @@ export async function getNotedStaffFromEvent(form_id: any, form_type: string) {
         );
       if (formData.data) {
         let staff_list_id = formData.data[0].noted_staff_list_id;
-        return await staffQuery.selectWhereStaffValidation(
+        return await staffInstanceQuery.selectWhereStaffInstanceValidation(
           staff_list_id,
           'staff_list_id',
         );
@@ -389,7 +390,7 @@ export async function getNotedStaffFromEvent(form_id: any, form_type: string) {
       );
       if (formData.data) {
         let staff_list_id = formData.data[0].noted_staff_list_id;
-        return await staffQuery.selectWhereStaffValidation(
+        return await staffInstanceQuery.selectWhereStaffInstanceValidation(
           staff_list_id,
           'staff_list_id',
         );

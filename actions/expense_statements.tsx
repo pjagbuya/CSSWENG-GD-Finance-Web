@@ -209,9 +209,12 @@ export async function editExpenseStatementValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
+  await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
+
   for(let i = 0; i < notedList.length; i++){
     await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
   }
+  
   const { error } = await editExpenseStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);
