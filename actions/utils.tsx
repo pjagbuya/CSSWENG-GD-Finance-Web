@@ -98,7 +98,7 @@ export async function getExpenseCategoryFromEvent(event_id: any) {
     .from('categories')
     .select()
     .eq('event_id', event_id)
-    .eq('category_type', 'expense'); 
+    .eq('category_type', 'expense');
 }
 
 // gets Revenue Categories of Event ID
@@ -187,12 +187,12 @@ export async function getItemsFromCategory(category_id: any) {
 
 // get staff info
 
-export async function getStaffInfos(staffData : any){
+export async function getStaffInfos(staffData: any) {
   const staffInfo = []
-  if(staffData.data){
-    for(let i = 0; i < staffData.data.length; i++){
+  if (staffData.data) {
+    for (let i = 0; i < staffData.data.length; i++) {
       var userData = await accountQuery.selectOneAccountDb(staffData.data[i].user_id)
-      if(userData.data){
+      if (userData.data) {
         staffInfo.push({
           staff_id: staffData.data[i].staff_id,
           user_id: staffData.data[i].user_id,
@@ -206,17 +206,17 @@ export async function getStaffInfos(staffData : any){
   return staffInfo
 }
 
-export async function getStaffInfo(staffData : any){
+export async function getStaffInfo(staffData: any) {
 
-  if(staffData.data){
+  if (staffData.data) {
     var userData = await accountQuery.selectOneAccountDb(staffData.data[0].user_id)
-    if(userData.data){
+    if (userData.data) {
       return {
-      staff_id: staffData.data[0].staff_id,
-      user_id: staffData.data[0].user_id,
-      user_first_name: userData.data[0].user_first_name,
-      user_last_name: userData.data[0].user_last_name,
-      staff_position: staffData.data[0].staff_position
+        staff_id: staffData.data[0].staff_id,
+        user_id: staffData.data[0].user_id,
+        user_first_name: userData.data[0].user_first_name,
+        user_last_name: userData.data[0].user_last_name,
+        staff_position: staffData.data[0].staff_position
       }
     }
   }
@@ -492,43 +492,43 @@ export async function getRevenueTotalFromEvent(event_id: any) {
 //-------------------------------------------------------------------
 
 // transforms header data
-export async function getFormHeaderData(form_id: string) {}
+export async function getFormHeaderData(form_id: string) { }
 
 // transforms footer data
 export async function getFormFooterData(form_id: string) {
   var formFooter = []
-  switch(form_id.substring(0,5)){
+  switch (form_id.substring(0, 5)) {
     case 'expst':
       {
         var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
-        if(formData.data){
+        if (formData.data) {
           var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
           var preparedData = await getStaffInfo(preparedStaff)
 
           formFooter.push({
-            
+
           })
 
           var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
           var certifiedData = await getStaffInfo(certifiedStaff)
 
           var notedStaff = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
-          
+
         }
       }
-    break
+      break
   }
 
 }
 
 // transforms Activity Income body data
-export async function getAIBodyData(data: any) {}
+export async function getAIBodyData(data: any) { }
 
 // transforms Expense Statement body data
-export async function getESBodyData(data: any) {}
+export async function getESBodyData(data: any) { }
 
 // transforms Revenue Statement body data
-export async function getRSBodyData(data: any) {}
+export async function getRSBodyData(data: any) { }
 
 // transforms Fund Transfer body data
-export async function getFTBodyData(data: any) {}
+export async function getFTBodyData(data: any) { }

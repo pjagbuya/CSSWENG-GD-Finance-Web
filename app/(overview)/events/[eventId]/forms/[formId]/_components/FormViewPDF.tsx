@@ -1,7 +1,24 @@
 import * as utility from '@/actions/utils';
+import { renderToString } from 'react-dom/server'
+import htmlToPdfmake from 'html-to-pdfmake';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type FormViewPageProps = {
   formId: string;
+};
+
+export const generatePdf = (reactElement: React.ReactElement, filename: string) => {
+  var pdfMake = require("pdfmake/build/pdfmake");
+  const htmlString = renderToString(reactElement);
+
+  const pdfDoc = htmlToPdfmake(htmlString);
+
+  const documentDefinition = { content: pdfDoc };
+
+  pdfMake.createPdf(documentDefinition).download(filename);
 };
 
 const FormViewPDF = async ({
