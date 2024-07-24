@@ -18,8 +18,10 @@ const FormsPage = async ({ params }: FormsPageProps) => {
     'event_id',
   );
 
-  const formId = (await getAIFormFromEvent(params.eventId))?.data![0].form_list_id!;
-  const event = eventData!.data![0];
+  const formId = (await getAIFormFromEvent(params.eventId))?.data[0].form_list_id
+  const ai_date = (await getAIFormFromEvent(params.eventId))?.data[0]!.ai_date
+
+  const event = eventData.data[0];
 
   return (
     <>
@@ -58,7 +60,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             AISF Form
           </h3>
 
-          <p>Last generated on [DATE].</p>
+          <p> {ai_date ? `Last generated on ${ai_date}` : "LOADING"}.</p>
 
           <div className="mb-8 flex gap-4">
             <Button className="min-w-24">
