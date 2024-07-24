@@ -9,9 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import ErrorDisplay from '../../../../_components/ErrorDisplay';
 import StaffSelector from './CertifiedStaffSelector';
 import { editExpenseStatementValidation } from '@/actions/expense_statements';
-import { useEffect, useState } from 'react';
-import { selectWhereStaffListValidation } from '@/actions/staff_lists';
-import { Checkbox } from '@/components/ui/checkbox';
+import { useState } from 'react';
 import StaffMultiSelector from './StaffMultiSelector';
 
 type EditExpenseFormPageProps = {
@@ -25,28 +23,15 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
     es_from: formInfo.es_from,
     es_notes: formInfo.es_notes,
     certified_staff_id: formInfo.certified_staff_id,
-    noted_staff_list_ids: []
+    noted_staff_list_ids: formInfo.noted_staff_list_id,
   });
-    
+
   const [state, action] = useFormState(
-    editExpenseStatementValidation.bind(null, formInfo.es_id, 'es_id'), 
+    editExpenseStatementValidation.bind(null, formInfo.es_id, 'es_id'),
     {
-      errors: {}
-    }
+      errors: {},
+    },
   );
-
-  // useEffect(() => {
-  //   fetchData();
-
-  //   async function fetchData() {
-  //     const data = await selectWhereStaffListValidation(formInfo.noted_staff_list_id, 'staff_list_id')
-
-  //     setValues(v => ({
-  //       ...v,
-  //       noted_staff_list_ids: data!.data!
-  //     }));
-  //   }
-  // }, [formInfo]);
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -65,7 +50,9 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             name="receipt_link"
             placeholder="Receipts Link"
             value={values.receipt_link}
-            onChange={(e) => setValues({ ...values, receipt_link: e.target.value })}
+            onChange={e =>
+              setValues({ ...values, receipt_link: e.target.value })
+            }
           />
 
           <ErrorDisplay errors={state.errors?.receipt_link} />
@@ -78,7 +65,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             name="es_to"
             placeholder="Account Transferred To"
             value={values.es_to}
-            onChange={(e) => setValues({ ...values, es_to: e.target.value })}
+            onChange={e => setValues({ ...values, es_to: e.target.value })}
           />
 
           <ErrorDisplay errors={state?.errors?.es_to} />
@@ -91,7 +78,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             name="es_from"
             placeholder="Account Transferred To"
             value={values.es_from}
-            onChange={(e) => setValues({ ...values, es_from: e.target.value })}
+            onChange={e => setValues({ ...values, es_from: e.target.value })}
           />
 
           <ErrorDisplay errors={state?.errors?.es_from} />
@@ -105,19 +92,19 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             placeholder="Notes"
             className="resize-none"
             value={values.es_notes}
-            onChange={(e) => setValues({ ...values, es_notes: e.target.value })}
+            onChange={e => setValues({ ...values, es_notes: e.target.value })}
           />
 
           <ErrorDisplay errors={state.errors?.es_notes} />
         </div>
 
         <div className="flex flex-col gap-3">
-          <StaffSelector 
+          <StaffSelector
             label="Certified By"
-            name="certified_staff_id" 
+            name="certified_staff_id"
             placeholder="Certified By"
             value={values.certified_staff_id}
-            onChange={(v) => setValues({ ...values, certified_staff_id: v })}
+            onChange={v => setValues({ ...values, certified_staff_id: v })}
           />
           <ErrorDisplay errors={state.errors?.certified_staff_id} />
         </div>
@@ -128,9 +115,8 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
             name="noted_staff_list_ids"
             placeholder="Noted By"
             value={values.noted_staff_list_ids}
-            onChange={(v) => setValues({ ...values, noted_staff_list_ids: v })}
           />
-          {/* <ErrorDisplay errors={state.errors?.certified_staff_id} /> */}
+          <ErrorDisplay errors={state.errors?.noted_staff_list_ids} />
         </div>
 
         <Button className="self-start" type="submit">

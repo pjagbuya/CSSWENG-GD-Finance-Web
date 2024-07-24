@@ -10,6 +10,7 @@ import ErrorDisplay from '../../../../_components/ErrorDisplay';
 import StaffSelector from './CertifiedStaffSelector';
 import { editRevenueStatementValidation } from '@/actions/revenue_statements';
 import { useEffect, useState } from 'react';
+import StaffMultiSelector from './StaffMultiSelector';
 
 type EditRevenueFormPageProps = {
   formInfo: any;
@@ -22,18 +23,18 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
     rs_from: formInfo.rs_from,
     rs_notes: formInfo.rs_notes,
     certified_staff_id: formInfo.certified_staff_id,
-    noted_staff_id: formInfo.noted_staff_id
+    noted_staff_list_ids: formInfo.noted_staff_id,
   });
-  
+
   const [state, action] = useFormState(
-    editRevenueStatementValidation.bind(null, formInfo.rs_id, 'rs_id'), 
+    editRevenueStatementValidation.bind(null, formInfo.rs_id, 'rs_id'),
     {
-      errors: {}
-    }
+      errors: {},
+    },
   );
 
   useEffect(() => {
-    // 
+    //
   }, [formInfo]);
 
   return (
@@ -53,7 +54,9 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
             name="receipt_link"
             placeholder="Receipts Link"
             value={values.receipt_link}
-            onChange={(e) => setValues({ ...values, receipt_link: e.target.value })}
+            onChange={e =>
+              setValues({ ...values, receipt_link: e.target.value })
+            }
           />
 
           <ErrorDisplay errors={state.errors?.receipt_link} />
@@ -66,7 +69,7 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
             name="es_to"
             placeholder="Account Transferred To"
             value={values.rs_to}
-            onChange={(e) => setValues({ ...values, rs_to: e.target.value })}
+            onChange={e => setValues({ ...values, rs_to: e.target.value })}
           />
 
           <ErrorDisplay errors={state?.errors?.rs_to} />
@@ -79,7 +82,7 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
             name="es_from"
             placeholder="Account Transfer Date"
             value={values.rs_from}
-            onChange={(e) => setValues({ ...values, rs_from: e.target.value })}
+            onChange={e => setValues({ ...values, rs_from: e.target.value })}
           />
 
           <ErrorDisplay errors={state?.errors?.rs_from} />
@@ -93,32 +96,31 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
             placeholder="Notes"
             className="resize-none"
             value={values.rs_notes}
-            onChange={(e) => setValues({ ...values, rs_notes: e.target.value })}
+            onChange={e => setValues({ ...values, rs_notes: e.target.value })}
           />
 
           <ErrorDisplay errors={state.errors?.rs_notes} />
         </div>
 
         <div className="flex flex-col gap-3">
-          <StaffSelector 
+          <StaffSelector
             label="Certified By"
-            name="certified_staff_id" 
+            name="certified_staff_id"
             placeholder="Certified By"
             value={values.certified_staff_id}
-            onChange={(v) => setValues({ ...values, certified_staff_id: v })}
+            onChange={v => setValues({ ...values, certified_staff_id: v })}
           />
           <ErrorDisplay errors={state.errors?.certified_staff_id} />
         </div>
 
         <div className="flex flex-col gap-3">
-          <StaffSelector 
+          <StaffMultiSelector
             label="Noted By"
-            name="noted_staff_id" 
+            name="noted_staff_list_ids"
             placeholder="Noted By"
-            value={values.noted_staff_id}
-            onChange={(v) => setValues({ ...values, noted_staff_id: v })}
+            value={values.noted_staff_list_ids}
           />
-          <ErrorDisplay errors={state.errors?.noted_staff_id} />
+          <ErrorDisplay errors={state.errors?.noted_staff_list_id} />
         </div>
 
         <Button className="self-start" type="submit">
