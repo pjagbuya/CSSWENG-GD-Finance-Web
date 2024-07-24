@@ -3,6 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { renderToStaticMarkup } from "react-dom/server"
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import jsPDF from 'jspdf';
+import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 
 type FormViewPageProps = {
   formId: string;
@@ -97,12 +98,12 @@ const FormViewPDF = ({
   ]
 
   return (
-    <div className="form">
-      <div className="form-header">
-        <div className="form-logo">
+    <div id="form-proper" className="form" style={styles.form}>
+      <div className="form-header" style={styles.formHeader}>
+        <div className="form-logo" style={styles.formLogo}>
           {/* <img className="logo" src="/icons/Logo.png" /> */}
         </div>
-        <div className="form-details">
+        <div className="form-details" style={styles.formDetails}>
           <table>
             <tbody>
               <tr>
@@ -122,7 +123,7 @@ const FormViewPDF = ({
               </tr>
               <tr>
                 <td>
-
+                  {/* Additional form details */}
                 </td>
               </tr>
               <tr>
@@ -150,17 +151,16 @@ const FormViewPDF = ({
           </table>
         </div>
       </div>
-      <line />
-      <div className="form-main">
-
+      <hr style={styles.line} />
+      <div className="form-main" style={styles.formMain}>
+        {/* Main form content */}
       </div>
-      <line />
-      <div className="form-footer">
+      <hr style={styles.line} />
+      <div className="form-footer" style={styles.formFooter}>
         {staffData.map(staff => (
           <div className="staff-signature" key={staff.id}>
             {staff.message}
-            <div className="signature-line">
-            </div>
+            <div className="signature-line" style={styles.signatureLine}></div>
             <div className="staff-details">
               <b>{staff.name}</b>
               <br />
