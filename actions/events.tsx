@@ -218,6 +218,7 @@ export async function deleteEventValidation(id: string, identifier: string) {
         await activityIncomeQuery.deleteActivityIncomeValidation(aiData.data[i].ai_id, 'ai_id')
       }
     }
+    /*
     var rsData = await revenueStatementQuery.selectWhereRevenueStatementValidation(data.data[0].rs_form_list_id, 'form_list_id')
     if(rsData.data){
       for(let i = 0; i < rsData.data.length; i++){
@@ -230,6 +231,7 @@ export async function deleteEventValidation(id: string, identifier: string) {
         await expenseStatementQuery.deleteExpenseStatementValidation(esData.data[i].es_id, 'es_id')
       }
     }
+    */
     var ftData = await fundTransferQuery.selectWhereFundTransferValidation(data.data[0].ft_form_list_id, 'form_list_id')
     if(ftData.data){
       for(let i = 0; i < ftData.data.length; i++){

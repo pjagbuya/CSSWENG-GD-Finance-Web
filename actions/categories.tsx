@@ -208,11 +208,12 @@ export async function selectAllCategoryValidation() {
 export async function deleteCategoryValidation(id: string, identifier: string) {
   const data = await selectWhereCategoryValidation(id, identifier)
 
-  var type = id.substring(0,3)
-    switch(type){
-      case 'exp': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
-      case 'rev': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
+  if(data.data){
+    switch(data.data[0].category_type){
+      case 'expense': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
+      case 'revenue': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
     }
+  }
 
   const { error } = await deleteCategory(id, identifier);
   if (error) {
