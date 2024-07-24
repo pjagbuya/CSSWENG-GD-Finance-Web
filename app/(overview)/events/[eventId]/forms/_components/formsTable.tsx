@@ -15,7 +15,7 @@ import {
   getRSFormFromEvent,
 } from '@/actions/utils';
 import { deleteExpenseStatement } from '@/actions/expense_statements';
-import FormViewPDF, { generatePdf } from '../[formId]/_components/FormViewPDF';
+import FormViewPDF, { pdfGenerate } from '../[formId]/_components/FormViewPDF';
 
 const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
@@ -146,7 +146,8 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
 
   useEffect(() => {
     if (toViewId) {
-      generatePdf(<FormViewPDF formId={toViewId} />, `${toViewId}.pdf`);
+      pdfGenerate(<FormViewPDF formId={toViewId} />, `${toViewId}.pdf`);
+
       setToViewId('');
     }
   }, [toViewId]);

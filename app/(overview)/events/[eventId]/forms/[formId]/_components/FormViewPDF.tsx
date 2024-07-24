@@ -1,135 +1,30 @@
 import * as utility from '@/actions/utils';
+import { renderToString } from 'react-dom/server'
+import { renderToStaticMarkup } from "react-dom/server"
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import jsPDF from 'jspdf';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
-// import htmlToPdfmake from 'html-to-pdfmake';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type FormViewPageProps = {
   formId: string;
 };
 
-const styles: any = {
-  form: {
-    display: 'flex',
-    width: '1920px',
-    flexDirection: 'column',
-  },
-  formHeader: {
-    display: 'flex',
-    width: '1920px',
-    height: '480px',
-    flexDirection: 'row',
-  },
-  formLogo: {
-    height: '480px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: '1050px',
-    height: '400px',
-  },
-  formDetails: {
-    height: '480px',
-    justifyContent: 'center',
-    alignContent: 'center',
-    fontSize: '36px',
-  },
-  formDetailsTable: {
-    width: '870px',
-  },
-  formDetailsTableRow: {
-    height: '60px',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  formDetailsTableCell: {
-    width: '50%',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  formMain: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '1920px',
-    fontSize: '36px',
-  },
-  formMainInfo: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '1900px',
-    marginLeft: '10px',
-    marginRight: '10px',
-    marginTop: '30px',
-    marginBottom: '30px',
-  },
-  formMainInfoTitle: {
-    margin: '5px',
-    width: '390px',
-  },
-  formMainInfoDescription: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    margin: '5px',
-    width: '1490px',
-  },
-  formFooter: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '1920px',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-  },
-  staffSignature: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '860px',
-    fontSize: '36px',
-    marginTop: '30px',
-    marginBottom: '30px',
-  },
-  staffDetails: {
-    textAlign: 'center',
-  },
-  signatureLine: {
-    display: 'block',
-    height: '200px',
-    border: '0',
-    borderBottom: '1px solid black',
-  },
-  line: {
-    display: 'block',
-    height: '5px',
-    border: '0',
-    borderTop: '5px solid black',
-    margin: '1em 0',
-    padding: '0',
-  },
-  underline: {
-    borderBottom: '3px solid black',
-    width: '100%',
-    top: '-10px',
-    display: 'block',
-    position: 'relative',
-  },
-};
+export const pdfGenerate = (reactElement: React.ReactElement, filename: string) => {
+  const htmlString = renderToString(reactElement);
+  // Function to generate PDF
+  const generatePDF = (html: string) => {
+    const doc = new jsPDF();
+    doc.html(html, {
+      callback: function (doc) {
+        doc.save(filename);
+      },
+      x: 10,
+      y: 10
+    });
+  };
 
-
-export const generatePdf = (reactElement: React.ReactElement, filename: string) => {
-  // const htmlString = renderToStaticMarkup(reactElement);
-
-  // const elem = document.createElement('div');
-  // elem.innerHTML = htmlString;
-
-  // generatePdf(() => elem, {});
-  // const pdfDoc = htmlToPdfmake(htmlString);
-
-  // const documentDefinition = { content: pdfDoc };
-
-  // pdfMake.createPdf(documentDefinition).download(filename);
+  // Generate and download PDF
+  generatePDF(htmlString);
 };
 
 const FormViewPDF = ({
@@ -171,36 +66,36 @@ const FormViewPDF = ({
   ]
   var staffData = [
     {
-        id: 1,
-        message: 'Prepared By:',
-        name: "Dr. Kal'tsit",
-        position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
+      id: 1,
+      message: 'Prepared By:',
+      name: "Dr. Kal'tsit",
+      position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
     },
     {
-        id: 2,
-        message: 'Certified By:',
-        name: 'Dokutah',
-        position: 'Rhodes Island Pharmaceuticals Strategist In Command'
+      id: 2,
+      message: 'Certified By:',
+      name: 'Dokutah',
+      position: 'Rhodes Island Pharmaceuticals Strategist In Command'
     },
     {
-        id: 3,
-        message: 'Noted By:',
-        name: 'Amiya',
-        position: 'Rhodes Island Pharmaceuticals Leader'
+      id: 3,
+      message: 'Noted By:',
+      name: 'Amiya',
+      position: 'Rhodes Island Pharmaceuticals Leader'
     },
     {
-        id: 4,
-        message: 'Noted By:',
-        name: 'Logos',
-        position: 'Rhodes Island Pharmaceuticals Elite Operator'
+      id: 4,
+      message: 'Noted By:',
+      name: 'Logos',
+      position: 'Rhodes Island Pharmaceuticals Elite Operator'
     },
     {
-        id: 5,
-        message: 'Noted By:',
-        name: 'Rosmontis',
-        position: 'Rhodes Island Pharmaceuticals Elite Operator'
+      id: 5,
+      message: 'Noted By:',
+      name: 'Rosmontis',
+      position: 'Rhodes Island Pharmaceuticals Elite Operator'
     }
-]
+  ]
 
   return (
     <div id="form-proper" className="form" style={styles.form}>
