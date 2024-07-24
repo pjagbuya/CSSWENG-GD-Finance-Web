@@ -14,6 +14,7 @@ import * as transactionListQuery from './transaction_lists';
 import * as expenseStatementQuery from './expense_statements';
 import * as revenueStatementQuery from './revenue_statements';
 import { StringOrTemplateHeader } from '@tanstack/react-table';
+import { createClient } from '@/utils/supabase/server';
 
 export type CategoryState = {
   errors?: {
@@ -97,6 +98,11 @@ export async function createCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
+  const supabase = createClient()
+  const currentUser = (await supabase.auth.getUser()).data.user;
+
+  console.log(12345, currentUser);
+
   var transformedData = await transformCreateData(formData, eventId, type);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
@@ -130,7 +136,7 @@ export async function createCategoryValidation(
     break;
     case 'expense':
       {
-        await expenseStatementQuery.createExpenseStatementValidation(data.category_id, data.category_name)
+        await expenseStatementQuery.createExpenseStatementValidation(data.category_id, data.category_name, currentUser?.id!)
       }
     break;
   }
@@ -202,6 +208,12 @@ export async function selectAllCategoryValidation() {
 export async function deleteCategoryValidation(id: string, identifier: string) {
   const data = await selectWhereCategoryValidation(id, identifier)
 
+  var type = id.substring(0,3)
+    switch(type){
+      case 'exp': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
+      case 'rev': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
+    }
+
   const { error } = await deleteCategory(id, identifier);
   if (error) {
     throw new Error(error.message);
@@ -210,11 +222,6 @@ export async function deleteCategoryValidation(id: string, identifier: string) {
   // TODO: provide logic
   if(data.data){
     await transactionListQuery.deleteTransactionListValidation(data.data[0].transaction_list_id, 'transaction_list_id')
-    var type = id.substring(0,3)
-    switch(type){
-      case 'exp': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
-      case 'rev': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
-    }
   }
 
   revalidatePath(`/groups`)

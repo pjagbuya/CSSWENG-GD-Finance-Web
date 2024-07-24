@@ -10,6 +10,7 @@ import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as categoryQuery from './categories';
 import * as eventQuery from './events';
+import * as staffQuery from './staffs';
 import * as staffListQuery from './staff_lists';
 import * as staffInstanceQuery from './staff_instances';
 
@@ -65,7 +66,7 @@ var expenseStatementFormat = {
 
 var schema = 'expense_statements'; // replace with table name
 
-async function transformCreateData(category_id : string, category_name : string) {
+async function transformCreateData(category_id : string, category_name : string, user_id: string) {
   // TODO: provide logic
   var esData = await selectAllExpenseStatementValidation()
   var id_mod = 10000
@@ -103,20 +104,26 @@ async function transformCreateData(category_id : string, category_name : string)
       form_list_id = eventData.data[0].es_form_list_id
     }
   }
+
+  console.log(user_id)
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(user_id, 'user_id')
   // TODO: fill information
-  return{
-    es_id: `expst_${id_mod}`,
-    es_name: category_name,
-    receipt_link: null,
-    es_to: null,
-    es_from: null,
-    es_notes: null,
-    prepared_staff_id: null,
-    certified_staff_id: null,
-    noted_staff_list_id: `stl_${id_mod_staff}`,
-    form_list_id: form_list_id,
-    category_id: category_id
+  if(preparedStaff.data){
+    return{
+      es_id: `expst_${id_mod}`,
+      es_name: category_name,
+      receipt_link: null,
+      es_to: null,
+      es_from: null,
+      es_notes: null,
+      prepared_staff_id: preparedStaff.data[0].staff_id,
+      certified_staff_id: null,
+      noted_staff_list_id: `stl_${id_mod_staff}`,
+      form_list_id: form_list_id,
+      category_id: category_id
+    }
   }
+  return null
 }
 
 async function transformEditData(data: any, id: string) {
@@ -152,9 +159,10 @@ async function convertData(data: any) {
 
 export async function createExpenseStatementValidation(
   category_id : any,
-  category_name : string
+  category_name : string,
+  user_id: string,
 ) {
-  var transformedData = await transformCreateData(category_id, category_name);
+  var transformedData = await transformCreateData(category_id, category_name, user_id);
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {

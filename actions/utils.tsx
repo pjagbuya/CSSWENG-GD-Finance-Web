@@ -504,15 +504,16 @@ export async function getFormFooterData(form_id: string) {
           var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
           if (formData.data) {
             var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
+            console.log(preparedStaff)
             var preparedData = await getStaffInfo(preparedStaff)
   
             if(preparedData){
-              formFooter.push({
-                id: formData.data[0].prepared_staff_id,
-                message: 'Prepared By:',
-                name: preparedData.user_first_name + " " + preparedData.user_last_name,
-                position: preparedData.staff_position
-              })
+             formFooter.push({
+              id: formData.data[0].prepared_staff_id,
+               message: 'Prepared By:',
+               name: preparedData.user_first_name + " " + preparedData.user_last_name,
+               position: preparedData.staff_position
+             })
             }
 
             var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')

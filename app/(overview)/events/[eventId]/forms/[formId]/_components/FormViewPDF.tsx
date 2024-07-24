@@ -3,11 +3,78 @@ import { renderToString } from 'react-dom/server'
 import { renderToStaticMarkup } from "react-dom/server"
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import jsPDF from 'jspdf';
-import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 
 type FormViewPageProps = {
   formId: string;
 };
+
+const scale = 1
+const styles: any = {
+  form: {
+    display: 'flex',
+    width: `${1920 / scale}px`,
+    flexDirection: 'column',
+  },
+  formHeader: {
+    display: 'flex',
+    width: `${1920 / scale}px`,
+    height: `${480 / scale}px`,
+    flexDirection: 'row',
+  },
+  formLogo: {
+    height: `${480 / scale}px`,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  formDetails: {
+    marginLeft: `${10 / scale}px`,
+    fontSize: `${36 / scale}px`,
+  },
+  formMain: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: `${1920 / scale}px`,
+    fontSize: `${36 / scale}px`,
+  },
+  formFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: `${1920 / scale}px`,
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  staffSignature: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: `${860 / scale}px`,
+    fontSize: `${36 / scale}px`,
+    marginTop: `${30 / scale}px`,
+    marginBottom: `${30 / scale}px`,
+  },
+  signatureLine: {
+    display: 'block',
+    height: `${200 / scale}px`,
+    border: '0',
+    borderBottom: '1px solid black',
+  },
+  line: {
+    display: 'block',
+    height: `${5 / scale}px`,
+    border: '0',
+    borderTop: `${5 / scale}px solid black`,
+    margin: `${1 / scale}em 0`,
+    padding: '0',
+  },
+  underline: {
+    borderBottom: `${3 / scale}px solid black`, // No need to divide by 3, it remains the same
+    width: '33%',
+    top: '-10px',
+    display: 'block',
+    position: 'relative',
+  },
+};
+
 
 export const pdfGenerate = (reactElement: React.ReactElement, filename: string) => {
   const htmlString = renderToString(reactElement);
@@ -19,8 +86,11 @@ export const pdfGenerate = (reactElement: React.ReactElement, filename: string) 
         doc.save(filename);
       },
       x: 10,
-      y: 10
+      y: 10,
+      width: 190, // Adjust width according to your page
+      windowWidth: 500 // Adjust based on the actual width of your content
     });
+    format: "a4"
   };
 
   // Generate and download PDF
@@ -101,7 +171,7 @@ const FormViewPDF = ({
     <div id="form-proper" className="form" style={styles.form}>
       <div className="form-header" style={styles.formHeader}>
         <div className="form-logo" style={styles.formLogo}>
-          {/* <img className="logo" src="/icons/Logo.png" /> */}
+          <img className="logo" src="/icons/Logo.png" />
         </div>
         <div className="form-details" style={styles.formDetails}>
           <table>

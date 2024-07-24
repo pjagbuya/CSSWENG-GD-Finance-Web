@@ -1,12 +1,18 @@
 import * as utility from '@/actions/utils';
 
 type FormViewPageProps = {
+  params: {
     formId: string;
+  }
 };
 
 const FormViewPage = async ({
-    formId
+params: {formId}
 }: FormViewPageProps) => {
+
+    console.log(123, formId)
+
+
   // TODO: Put PDF code here.
   var formDetail =
     {
@@ -42,7 +48,6 @@ const FormViewPage = async ({
         }
     ]
 
-    console.log(formId)
     var staffData = await utility.getFormFooterData(formId)
   
     return (

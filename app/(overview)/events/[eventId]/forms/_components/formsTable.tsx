@@ -145,10 +145,14 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
   }, [pathname, router, toEditId]);
 
   useEffect(() => {
-    if (toViewId) {
-      pdfGenerate(<FormViewPDF formId={toViewId} />, `${toViewId}.pdf`);
+    // if (toViewId) {
+    //   pdfGenerate(<FormViewPDF formId={toViewId} />, `${toViewId}.pdf`);
 
-      setToViewId('');
+    //   setToViewId('');
+    // }
+
+    if (toViewId) {
+      router.push(`${pathname}/${toViewId}/`);
     }
   }, [toViewId]);
 
