@@ -18,10 +18,10 @@ export type activityIncomeState = {
     ai_name?: string[];
     ai_date?: string[];
     ai_notes?: string[];
-    prepared_staff_id?: string[];
-    certified_staff_id?: string[];
-    noted_staff_list_id?: string[];
-    form_list_id?: string[];
+    // prepared_staff_id?: string[];
+    // certified_staff_id?: string[];
+    // noted_staff_list_id?: string[];
+    // form_list_id?: string[];
   };
   message?: string | null;
 };
@@ -62,11 +62,11 @@ async function transformCreateData(id: string) {
   // TODO: provide logic
   var aiData = await selectAllActivityIncomeValidation()
   var id_mod = 10000
-  if(aiData.data){
-    if(aiData.data.length > 0){
-      for(let i = 0; i < aiData.data.length; i++){
+  if (aiData.data) {
+    if (aiData.data.length > 0) {
+      for (let i = 0; i < aiData.data.length; i++) {
         var num = parseInt(aiData.data[i].ai_id.slice(6));
-        if(num > id_mod){
+        if (num > id_mod) {
           id_mod = num
         }
       }
@@ -76,11 +76,11 @@ async function transformCreateData(id: string) {
 
   var staffListData = await staffListQuery.selectAllStaffListValidation()
   var id_mod_staff = 10000
-  if(staffListData.data){
-    if(staffListData.data.length > 0){
-      for(let i = 0; i < staffListData.data.length; i++){
+  if (staffListData.data) {
+    if (staffListData.data.length > 0) {
+      for (let i = 0; i < staffListData.data.length; i++) {
         var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
-        if(num > id_mod_staff){
+        if (num > id_mod_staff) {
           id_mod_staff = num
         }
       }
@@ -90,7 +90,7 @@ async function transformCreateData(id: string) {
 
   var form_list_id
   var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
-  if(eventData.data){
+  if (eventData.data) {
     form_list_id = eventData.data[0].ai_form_list_id
     // TODO: fill information
     return {
@@ -126,7 +126,7 @@ async function transformEditData(data: any, id: string) {
   return null
 }
 
-async function convertData(data : any) {
+async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
@@ -150,7 +150,7 @@ export async function createActivityIncomeValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
+  await staffListQuery.createStaffList({ staff_list_id: data.noted_staff_list_id })
 
   const { error } = await createActivityIncome(data);
   if (error) {
@@ -190,7 +190,7 @@ export async function editActivityIncomeValidation(
   }
 
   // TODO: provide logic
-  var data = await convertData(transformedData);
+  var data = convertData(validatedFields.data);
   
   for(let i = 0; i < notedList.length; i++){
     await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
@@ -246,10 +246,10 @@ export async function deleteActivityIncomeValidation(id: string, identifier: str
     throw new Error(error.message);
   }
 
-  if(data.data){
+  if (data.data) {
     await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'staff_list_id')
   }
-  
+
   //revalidatePath("/")
   return {
     message: null,

@@ -62,6 +62,40 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
   },
 ];
 
+const FUND_TRANSFER_COL_DEF: ColumnDef<unknown, any>[] = [
+  {
+    accessorKey: 'ft_id',
+    header: ({ column }) => (
+      <SortableHeader column={column}>ID</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'ft_name',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Name</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'ft_date',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date</SortableHeader>
+    ),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('date'))),
+  },
+  {
+    accessorKey: 'ft_from',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Transfered From</SortableHeader>
+    ),
+  },
+  {
+    accessorKey: 'ft_to',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Transfered To</SortableHeader>
+    ),
+  },
+];
+
 type FormsTableProps = {
   eventId: string;
   nameFilter: string;
@@ -122,6 +156,9 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
 
       case 'revenue':
         return REVENUE_COL_DEF;
+
+      case 'fund_transfer':
+        return FUND_TRANSFER_COL_DEF;
 
       default:
         throw new Error('Invalid form variant provided.');
