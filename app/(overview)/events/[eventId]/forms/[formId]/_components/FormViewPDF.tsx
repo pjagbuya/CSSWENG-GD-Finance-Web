@@ -11,7 +11,6 @@ type FormViewPageProps = {
 };
 
 export const generatePdf = (reactElement: React.ReactElement, filename: string) => {
-  var pdfMake = require("pdfmake/build/pdfmake");
   const htmlString = renderToString(reactElement);
 
   const pdfDoc = htmlToPdfmake(htmlString);
@@ -21,7 +20,7 @@ export const generatePdf = (reactElement: React.ReactElement, filename: string) 
   pdfMake.createPdf(documentDefinition).download(filename);
 };
 
-const FormViewPDF = async ({
+const FormViewPDF = ({
   formId
 }: FormViewPageProps) => {
   // TODO: Put PDF code here.
@@ -58,29 +57,33 @@ const FormViewPDF = async ({
       description: 'https://docs.google.com/spreadsheets/d/1zYc2JU46X0XWmV7s1503bN4feRdOMa1eehrTQ2jGaiE/edit?pli=1#gid=890953453'
     }
   ]
-
   var staffData = [
     {
+        id: 1,
         message: 'Prepared By:',
         name: "Dr. Kal'tsit",
         position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
     },
     {
+        id: 2,
         message: 'Certified By:',
         name: 'Dokutah',
         position: 'Rhodes Island Pharmaceuticals Strategist In Command'
     },
     {
+        id: 3,
         message: 'Noted By:',
         name: 'Amiya',
         position: 'Rhodes Island Pharmaceuticals Leader'
     },
     {
+        id: 4,
         message: 'Noted By:',
         name: 'Logos',
         position: 'Rhodes Island Pharmaceuticals Elite Operator'
     },
     {
+        id: 5,
         message: 'Noted By:',
         name: 'Rosmontis',
         position: 'Rhodes Island Pharmaceuticals Elite Operator'
@@ -91,7 +94,7 @@ const FormViewPDF = async ({
     <div className="form">
       <div className="form-header">
         <div className="form-logo">
-          <img className="logo" src="/icons/Logo.png" />
+          {/* <img className="logo" src="/icons/Logo.png" /> */}
         </div>
         <div className="form-details">
           <table>
@@ -148,7 +151,7 @@ const FormViewPDF = async ({
       <line />
       <div className="form-footer">
         {staffData.map(staff => (
-          <div className="staff-signature">
+          <div className="staff-signature" key={staff.id}>
             {staff.message}
             <div className="signature-line">
             </div>

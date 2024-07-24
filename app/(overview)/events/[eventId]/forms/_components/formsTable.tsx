@@ -145,11 +145,11 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
   }, [pathname, router, toEditId]);
 
   useEffect(() => {
-    // generatePdf(<FormViewPDF formId='' />, 'download.pdf')
     if (toViewId) {
-      router.push(`${pathname}/${toViewId}`);
+      generatePdf(<FormViewPDF formId={toViewId} />, `${toViewId}.pdf`);
+      setToViewId('');
     }
-  }, [pathname, router, toViewId]);
+  }, [toViewId]);
 
   function getColumnDefinition() {
     switch (variant) {

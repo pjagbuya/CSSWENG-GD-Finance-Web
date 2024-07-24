@@ -497,28 +497,57 @@ export async function getFormHeaderData(form_id: string) { }
 // transforms footer data
 export async function getFormFooterData(form_id: string) {
   var formFooter = []
-  switch (form_id.substring(0, 5)) {
-    case 'expst':
-      {
-        var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
-        if (formData.data) {
-          var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
-          var preparedData = await getStaffInfo(preparedStaff)
+  if(form_id){
+    switch (form_id.substring(0, 5)) {
+      case 'expst':
+        {
+          var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+          if (formData.data) {
+            var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
+            var preparedData = await getStaffInfo(preparedStaff)
+  
+            if(preparedData){
+              formFooter.push({
+                id: formData.data[0].prepared_staff_id,
+                message: 'Prepared By:',
+                name: preparedData.user_first_name + " " + preparedData.user_last_name,
+                position: preparedData.staff_position
+              })
+            }
 
-          formFooter.push({
+            var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
+            var certifiedData = await getStaffInfo(certifiedStaff)
 
-          })
-
-          var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
-          var certifiedData = await getStaffInfo(certifiedStaff)
-
-          var notedStaff = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
-
+            if(certifiedData){
+              formFooter.push({
+                id: formData.data[0].certified_staff_id,
+                message: 'Certified By:',
+                name: certifiedData.user_first_name + " " + certifiedData.user_last_name,
+                position: certifiedData.staff_position
+              })
+            }
+  
+            var notedStaffList = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
+            if(notedStaffList.data){
+              for(let i = 0; i< notedStaffList.data.length; i++){
+                var notedStaff = await staffQuery.selectWhereStaffValidation(notedStaffList.data[i].staff_id, 'staff_id')
+                var notedData = await getStaffInfo(notedStaff)
+                if(notedData){
+                  formFooter.push({
+                    id: notedStaffList.data[i].staff_id,
+                    message: 'Noted By:',
+                    name: notedData.user_first_name + " " + notedData.user_last_name,
+                    position: notedData.staff_position
+                  })
+                }
+              }
+            }
+          }
         }
-      }
-      break
+        break
+    }
   }
-
+  return formFooter
 }
 
 // transforms Activity Income body data
