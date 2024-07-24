@@ -14,13 +14,13 @@ import * as staffInstanceQuery from './staff_instances';
 
 export type activityIncomeState = {
   errors?: {
-    ai_id?: string[];
-    ai_name?: string[];
+    // ai_id?: string[];
+    // ai_name?: string[];
     ai_date?: string[];
     ai_notes?: string[];
     // prepared_staff_id?: string[];
-    // certified_staff_id?: string[];
-    // noted_staff_list_id?: string[];
+    certified_staff_id?: string[];
+    noted_staff_list_id?: string[];
     // form_list_id?: string[];
   };
   message?: string | null;
@@ -107,13 +107,13 @@ async function transformCreateData(id: string) {
 }
 
 async function transformEditData(data: any, id: string) {
-  
+
   // TODO: provide logic
   var aiData = await selectWhereActivityIncomeValidation(id, 'ai_id')
 
   // TODO: fill information
-  if(aiData.data){
-    return{
+  if (aiData.data) {
+    return {
       ai_id: id,
       ai_name: aiData.data[0].es_name,
       ai_notes: data.get('ai_notes'),
@@ -171,8 +171,8 @@ export async function editActivityIncomeValidation(
 ) {
   var arrData = Array.from(formData.entries())
   const notedList = []
-  for(let i = 0; i < arrData.length; i++){
-    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
+  for (let i = 0; i < arrData.length; i++) {
+    if (arrData[i][0].substring(0, 20) === "noted_staff_list_id-") {
       notedList.push(arrData[i][0].substring(21))
     }
   }
@@ -180,7 +180,7 @@ export async function editActivityIncomeValidation(
   var transformedData = await transformEditData(formData, id);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
-  
+
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -193,11 +193,11 @@ export async function editActivityIncomeValidation(
   var data = await convertData(transformedData);
 
   await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
-  
-  for(let i = 0; i < notedList.length; i++){
+
+  for (let i = 0; i < notedList.length; i++) {
     await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
   }
-  
+
   const { error } = await editActivityIncome(data, id, identifier);
   if (error) {
     throw new Error(error.message);

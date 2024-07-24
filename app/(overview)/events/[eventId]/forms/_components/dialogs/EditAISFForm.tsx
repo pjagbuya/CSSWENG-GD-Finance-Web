@@ -18,6 +18,8 @@ import { createFundTransferValidation, fundTransferState } from '@/actions/fund_
 import { DatePicker } from '@/components/ui/date-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { activityIncomeState, editActivityIncomeValidation } from '@/actions/activity_incomes';
+import StaffSelector from '../../[formId]/edit/_components/CertifiedStaffSelector';
+import StaffMultiSelector from '../../[formId]/edit/_components/StaffMultiSelector';
 
 type CreateRevenueFormProps = {
   eventId: string;
@@ -61,24 +63,42 @@ const EditAISFForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
       title="Edit AISF Form"
       onFinish={onFinish}
     >
+      <div className="flex flex-col gap-3">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          name="ai_name"
+          placeholder="Enter Name"
+        />
+
+        <ErrorDisplay errors={state?.errors?.ai_name} />
+      </div>
       <>
         <Label htmlFor="notes">Notes</Label>
         <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
 
-        <ErrorDisplay errors={state.errors?.ai_id} />
+        <ErrorDisplay errors={state.errors?.ai_notes} />
       </>
-      <>
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
+      <div className="flex flex-col gap-3">
+        <StaffSelector
+          label="Prepared by"
+          name="prepared_staff_id"
+          placeholder="Prepared By"
+        // value={values.certified_staff_id}
+        // onChange={v => setValues({ ...values, certified_staff_id: v })}
+        />
+        <ErrorDisplay errors={state.errors?.prepared_staff_id} />
+      </div>
 
-        <ErrorDisplay errors={state.errors?.ai_id} />
-      </>
-      <>
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
-
-        <ErrorDisplay errors={state.errors?.ai_id} />
-      </>
+      <div className="flex flex-col gap-3">
+        <StaffMultiSelector
+          label="Certified By"
+          name="certified_staff_id"
+          placeholder="Certified By"
+          value={/*values.noted_staff_list_ids*/ ''}
+        />
+        <ErrorDisplay errors={state.errors?.certified_staff_id} />
+      </div>
     </CreateForm>
   );
 };
