@@ -42,6 +42,7 @@ const FormViewPage = async ({
         }
     ]
 
+    console.log(formId)
     var staffData = await utility.getFormFooterData(formId)
   
     return (
