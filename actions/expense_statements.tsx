@@ -140,7 +140,7 @@ async function transformEditData(data: any, id: string) {
       es_to: data.get('es_to'),
       es_from: data.get('es_from'),
       es_notes: data.get('es_notes'),
-      prepared_staff_id: data.get('prepared_staff_id'),
+      prepared_staff_id: esData.data[0].prepared_staff_id,
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: esData.data[0].noted_staff_list_id,
       form_list_id: esData.data[0].form_list_id,
