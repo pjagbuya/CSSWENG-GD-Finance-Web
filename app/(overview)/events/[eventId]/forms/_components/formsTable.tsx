@@ -145,7 +145,7 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
   }, [pathname, router, toEditId]);
 
   useEffect(() => {
-    generatePdf(<FormViewPDF formId='' />, 'download.pdf')
+    // generatePdf(<FormViewPDF formId='' />, 'download.pdf')
     if (toViewId) {
       router.push(`${pathname}/${toViewId}`);
     }
