@@ -497,7 +497,7 @@ export async function getFormHeaderData(form_id: string) {}
 // transforms footer data
 export async function getFormFooterData(form_id: string) {
   var formFooter = []
-  switch(form_id.substring(0,5)){
+  switch(form_id.substr(0,5)){
     case 'expst':
       {
         var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
@@ -506,7 +506,7 @@ export async function getFormFooterData(form_id: string) {
           var preparedData = await getStaffInfo(preparedStaff)
 
           formFooter.push({
-            
+
           })
 
           var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
