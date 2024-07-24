@@ -13,10 +13,11 @@ import { useEffect, useState } from 'react';
 import StaffMultiSelector from './StaffMultiSelector';
 
 type EditRevenueFormPageProps = {
+  eventId: string;
   formInfo: any;
 };
 
-const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
+const EditRevenueFormPage = ({ eventId, formInfo }: EditRevenueFormPageProps) => {
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     rs_to: formInfo.rs_to,
@@ -27,15 +28,11 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
   });
 
   const [state, action] = useFormState(
-    editRevenueStatementValidation.bind(null, formInfo.rs_id, 'rs_id'),
+    editRevenueStatementValidation.bind(null, eventId, formInfo.rs_id, 'rs_id'),
     {
       errors: {},
     },
   );
-
-  useEffect(() => {
-    //
-  }, [formInfo]);
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -63,10 +60,10 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="es_to">Account Transferred To</Label>
+          <Label htmlFor="rs_to">Account Transferred To</Label>
           <Input
-            id="es_to"
-            name="es_to"
+            id="rs_to"
+            name="rs_to"
             placeholder="Account Transferred To"
             value={values.rs_to}
             onChange={e => setValues({ ...values, rs_to: e.target.value })}
@@ -76,10 +73,10 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="es_from">Account Transfer Date</Label>
+          <Label htmlFor="rs_from">Account Transfer From</Label>
           <Input
-            id="es_from"
-            name="es_from"
+            id="rs_from"
+            name="rs_from"
             placeholder="Account Transfer Date"
             value={values.rs_from}
             onChange={e => setValues({ ...values, rs_from: e.target.value })}
@@ -89,10 +86,10 @@ const EditRevenueFormPage = ({ formInfo }: EditRevenueFormPageProps) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="es_notes">Notes</Label>
+          <Label htmlFor="rs_notes">Notes</Label>
           <Textarea
-            id="es_notes"
-            name="es_notes"
+            id="rs_notes"
+            name="rs_notes"
             placeholder="Notes"
             className="resize-none"
             value={values.rs_notes}

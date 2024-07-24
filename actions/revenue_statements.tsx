@@ -192,6 +192,7 @@ export async function createRevenueStatementValidation(
 }
 
 export async function editRevenueStatementValidation(
+  eventId: string,
   id: string,
   identifier: string,
   prevState: RevenueStatementState,
@@ -230,8 +231,9 @@ export async function editRevenueStatementValidation(
     throw new Error(error.message);
   }
 
+  redirect(`/events/${eventId}/forms`);
   //revalidatePath("/")
-  return {} as RevenueStatementState;
+  // return {} as RevenueStatementState;
 }
 
 export async function selectWhereRevenueStatementValidation(

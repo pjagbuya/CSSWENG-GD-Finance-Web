@@ -206,6 +206,23 @@ export async function getStaffInfos(staffData : any){
   return staffInfo
 }
 
+export async function getStaffInfo(staffData : any){
+
+  if(staffData.data){
+    var userData = await accountQuery.selectOneAccountDb(staffData.data[0].user_id)
+    if(userData.data){
+      return {
+      staff_id: staffData.data[0].staff_id,
+      user_id: staffData.data[0].user_id,
+      user_first_name: userData.data[0].user_first_name,
+      user_last_name: userData.data[0].user_last_name,
+      staff_position: staffData.data[0].staff_position
+      }
+    }
+  }
+  return null
+}
+
 // get specific staff from form
 
 // get Prepared Staff from Form Id
@@ -480,8 +497,27 @@ export async function getFormHeaderData(form_id: string) {}
 // transforms footer data
 export async function getFormFooterData(form_id: string) {
   var formFooter = []
-  var formData = 
-  staffQuery.selectWhereStaffValidation
+  switch(form_id.substring(0,5)){
+    case 'expst':
+      {
+        var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+        if(formData.data){
+          var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
+          var preparedData = await getStaffInfo(preparedStaff)
+
+          formFooter.push({
+            
+          })
+
+          var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
+          var certifiedData = await getStaffInfo(certifiedStaff)
+
+          var notedStaff = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
+          
+        }
+      }
+    break
+  }
 
 }
 

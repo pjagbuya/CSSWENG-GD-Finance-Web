@@ -17,12 +17,12 @@ const EditFormPage = async ({ params }: EditFormPageParams) => {
     switch (typeStr) {
       case 'expst': {
         const data = await selectWhereExpenseStatementValidation(params.formId, 'es_id');
-        return <EditExpenseFormPage formInfo={data!.data![0]} />;
+        return <EditExpenseFormPage eventId={params.eventId} formInfo={data!.data![0]} />;
       }
 
       case 'revst': {
         const data = await selectWhereRevenueStatementValidation(params.formId, 'rs_id');
-        return <EditRevenueFormPage formInfo={data!.data![0]} />;
+        return <EditRevenueFormPage eventId={params.eventId} formInfo={data!.data![0]} />;
       }
 
       case 'actin':

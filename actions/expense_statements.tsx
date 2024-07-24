@@ -182,6 +182,7 @@ export async function createExpenseStatementValidation(
 }
 
 export async function editExpenseStatementValidation(
+  eventId: string,
   id: string,
   identifier: string,
   prevState: ExpenseStatementState,
@@ -220,8 +221,9 @@ export async function editExpenseStatementValidation(
     throw new Error(error.message);
   }
 
+  redirect(`/events/${eventId}/forms`);
   //revalidatePath("/")
-  return {} as ExpenseStatementState;
+  // return {} as ExpenseStatementState;
 }
 
 export async function selectWhereExpenseStatementValidation(

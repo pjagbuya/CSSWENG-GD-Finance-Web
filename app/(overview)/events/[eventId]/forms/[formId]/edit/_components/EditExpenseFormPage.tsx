@@ -13,10 +13,11 @@ import { useState } from 'react';
 import StaffMultiSelector from './StaffMultiSelector';
 
 type EditExpenseFormPageProps = {
+  eventId: string;
   formInfo: any;
 };
 
-const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
+const EditExpenseFormPage = ({ eventId, formInfo }: EditExpenseFormPageProps) => {
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     es_to: formInfo.es_to,
@@ -27,7 +28,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
   });
 
   const [state, action] = useFormState(
-    editExpenseStatementValidation.bind(null, formInfo.es_id, 'es_id'),
+    editExpenseStatementValidation.bind(null, eventId, formInfo.es_id, 'es_id'),
     {
       errors: {},
     },
@@ -72,7 +73,7 @@ const EditExpenseFormPage = ({ formInfo }: EditExpenseFormPageProps) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="es_from">Account Transfer Date</Label>
+          <Label htmlFor="es_from">Account Transfer From</Label>
           <Input
             id="es_from"
             name="es_from"
