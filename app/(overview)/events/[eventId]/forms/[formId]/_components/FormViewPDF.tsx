@@ -1,23 +1,29 @@
 import * as utility from '@/actions/utils';
 import { renderToString } from 'react-dom/server'
-import htmlToPdfmake from 'html-to-pdfmake';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { renderToStaticMarkup } from "react-dom/server"
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import jsPDF from 'jspdf';
 
 type FormViewPageProps = {
   formId: string;
 };
 
-export const generatePdf = (reactElement: React.ReactElement, filename: string) => {
+export const pdfGenerate = (reactElement: React.ReactElement, filename: string) => {
   const htmlString = renderToString(reactElement);
+  // Function to generate PDF
+  const generatePDF = (html: string) => {
+    const doc = new jsPDF();
+    doc.html(html, {
+      callback: function (doc) {
+        doc.save(filename);
+      },
+      x: 10,
+      y: 10
+    });
+  };
 
-  const pdfDoc = htmlToPdfmake(htmlString);
-
-  const documentDefinition = { content: pdfDoc };
-
-  pdfMake.createPdf(documentDefinition).download(filename);
+  // Generate and download PDF
+  generatePDF(htmlString);
 };
 
 const FormViewPDF = ({
@@ -59,36 +65,36 @@ const FormViewPDF = ({
   ]
   var staffData = [
     {
-        id: 1,
-        message: 'Prepared By:',
-        name: "Dr. Kal'tsit",
-        position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
+      id: 1,
+      message: 'Prepared By:',
+      name: "Dr. Kal'tsit",
+      position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
     },
     {
-        id: 2,
-        message: 'Certified By:',
-        name: 'Dokutah',
-        position: 'Rhodes Island Pharmaceuticals Strategist In Command'
+      id: 2,
+      message: 'Certified By:',
+      name: 'Dokutah',
+      position: 'Rhodes Island Pharmaceuticals Strategist In Command'
     },
     {
-        id: 3,
-        message: 'Noted By:',
-        name: 'Amiya',
-        position: 'Rhodes Island Pharmaceuticals Leader'
+      id: 3,
+      message: 'Noted By:',
+      name: 'Amiya',
+      position: 'Rhodes Island Pharmaceuticals Leader'
     },
     {
-        id: 4,
-        message: 'Noted By:',
-        name: 'Logos',
-        position: 'Rhodes Island Pharmaceuticals Elite Operator'
+      id: 4,
+      message: 'Noted By:',
+      name: 'Logos',
+      position: 'Rhodes Island Pharmaceuticals Elite Operator'
     },
     {
-        id: 5,
-        message: 'Noted By:',
-        name: 'Rosmontis',
-        position: 'Rhodes Island Pharmaceuticals Elite Operator'
+      id: 5,
+      message: 'Noted By:',
+      name: 'Rosmontis',
+      position: 'Rhodes Island Pharmaceuticals Elite Operator'
     }
-]
+  ]
 
   return (
     <div className="form">
