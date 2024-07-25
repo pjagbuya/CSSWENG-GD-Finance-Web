@@ -60,6 +60,8 @@ const CreateFundTransferForm = ({ eventId, onFinish }: CreateRevenueFormProps) =
       onFinish={onFinish}
       width={500}
     >
+      <div className='grid grid-cols-2 gap-4'>
+      <div>
       <>
         <Label htmlFor="id">Id</Label>
         <Input id="id" name="ft_id" placeholder="Id" />
@@ -86,7 +88,6 @@ const CreateFundTransferForm = ({ eventId, onFinish }: CreateRevenueFormProps) =
 
         <ErrorDisplay errors={state.errors?.ft_reason} />
       </>
-      <div className='grid grid-cols-2 gap-4'>
         <div>
           <Label htmlFor="amount">Amount</Label>
           <Input id="amount" name="ft_amount" placeholder="Amount" />

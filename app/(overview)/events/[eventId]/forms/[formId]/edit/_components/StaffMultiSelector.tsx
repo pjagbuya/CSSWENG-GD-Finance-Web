@@ -62,7 +62,7 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
   }, [value]);
 
   return (
-    <>
+    <div className='max-h-[550px] overflow-auto'>
       <Label>{label}</Label>
 
       {staffList.map((obj: any) => (
@@ -85,7 +85,7 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
           {obj.user_first_name} {obj.user_last_name}
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

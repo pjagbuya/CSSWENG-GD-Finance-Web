@@ -1,3 +1,5 @@
+'use server'
+
 // INSTRUCTIONS:
 // activityIncome -> small case
 // ActivityIncome -> big case
@@ -9,6 +11,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as eventQuery from './events';
+import * as staffQuery from './staffs';
 import * as staffListQuery from './staff_lists';
 import * as staffInstanceQuery from './staff_instances';
 import { createClient } from '@/utils/supabase/server';
@@ -92,20 +95,24 @@ async function transformCreateData(id: string) {
     }
   }
 
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(currentUser?.id!, 'user_id')
+
   var form_list_id
   var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
   if (eventData.data) {
     form_list_id = eventData.data[0].ai_form_list_id
     // TODO: fill information
-    return {
-      ai_id: `actin_${id_mod}`,
-      ai_name: eventData.data[0].event_name,
-      ai_date: eventData.data[0].event_date,
-      ai_notes: null,
-      prepared_staff_id: currentUser?.id!,
-      certified_staff_id: null,
-      noted_staff_list_id: `stl_${id_mod_staff}`,
-      form_list_id: form_list_id,
+    if(preparedStaff.data){
+      return {
+        ai_id: `actin_${id_mod}`,
+        ai_name: eventData.data[0].event_name,
+        ai_date: eventData.data[0].event_date,
+        ai_notes: null,
+        prepared_staff_id: preparedStaff.data[0].staff_id,
+        certified_staff_id: null,
+        noted_staff_list_id: `stl_${id_mod_staff}`,
+        form_list_id: form_list_id,
+      }
     }
   }
   return null
