@@ -15,6 +15,7 @@ type CreateFormProps = {
   state: { errors?: {}; message?: string | null };
   title: string;
   open?: boolean;
+  width?: number;
   onFinish?: () => void;
 };
 
@@ -24,6 +25,7 @@ const CreateForm = ({
   state,
   title,
   onFinish,
+  width,
   open,
 }: CreateFormProps) => {
   useEffect(() => {
@@ -38,9 +40,10 @@ const CreateForm = ({
     }
   }, [state]);
 
+  let size: string = `${width ? width : 425}`
   return (
     <Dialog open={open === undefined ? true : open} onOpenChange={onFinish}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={`sm:max-w-[${size}px]`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

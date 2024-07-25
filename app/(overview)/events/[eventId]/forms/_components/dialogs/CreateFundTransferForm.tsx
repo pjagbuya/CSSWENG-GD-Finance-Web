@@ -58,6 +58,7 @@ const CreateFundTransferForm = ({ eventId, onFinish }: CreateRevenueFormProps) =
       state={state}
       title="Create Fund Transfer Form"
       onFinish={onFinish}
+      width={500}
     >
       <>
         <Label htmlFor="id">Id</Label>
@@ -85,36 +86,38 @@ const CreateFundTransferForm = ({ eventId, onFinish }: CreateRevenueFormProps) =
 
         <ErrorDisplay errors={state.errors?.ft_reason} />
       </>
-      <>
-        <Label htmlFor="amount">Amount</Label>
-        <Input id="amount" name="ft_amount" placeholder="Amount" />
+      <div className='grid grid-cols-2 gap-4'>
+        <div>
+          <Label htmlFor="amount">Amount</Label>
+          <Input id="amount" name="ft_amount" placeholder="Amount" />
 
-        <ErrorDisplay errors={state.errors?.ft_amount} />
-      </>
-      <>
-        <Label htmlFor="to">Transfer To</Label>
-        <Input id="to" name="ft_to" placeholder="Transfer to" />
+          <ErrorDisplay errors={state.errors?.ft_amount} />
+        </div>
+        <div>
+          <Label htmlFor="to">Transfer To</Label>
+          <Input id="to" name="ft_to" placeholder="Transfer to" />
 
-        <ErrorDisplay errors={state.errors?.ft_to} />
-      </>
-      <>
-        <Label htmlFor="from">Transfer From</Label>
-        <Input id="from" name="ft_from" placeholder="Transfer From" />
+          <ErrorDisplay errors={state.errors?.ft_to} />
+        </div>
+        <div>
+          <Label htmlFor="from">Transfer From</Label>
+          <Input id="from" name="ft_from" placeholder="Transfer From" />
 
-        <ErrorDisplay errors={state.errors?.ft_from} />
-      </>
-      <>
-        <Label htmlFor="on">Transfer On</Label>
-        <Input id="on" name="ft_on" placeholder="Transfer On" />
+          <ErrorDisplay errors={state.errors?.ft_from} />
+        </div>
+        <div>
+          <Label htmlFor="on">Transfer On</Label>
+          <Input id="on" name="ft_on" placeholder="Transfer On" />
 
-        <ErrorDisplay errors={state.errors?.ft_on} />
-      </>
-      <>
+          <ErrorDisplay errors={state.errors?.ft_on} />
+        </div>
+      </div>
+      <div>
         <Label htmlFor="name">Receipt Link</Label>
         <Input id="name" name="receipt_link" placeholder="Receipt Link" />
 
         <ErrorDisplay errors={state.errors?.receipt_link} />
-      </>
+      </div>
     </CreateForm>
   );
 };
