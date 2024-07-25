@@ -8,7 +8,7 @@ import { StaffListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
-import * as staffInstanceQuery from '@/actions/staff_instances'
+import * as staffInstanceQuery from '@/actions/staff_instances';
 
 export type staffListState = {
   errors?: {
@@ -105,7 +105,10 @@ export async function editStaffListValidation(
   };
 }
 
-export async function selectWhereStaffListValidation(id: string, identifier: string) {
+export async function selectWhereStaffListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereStaffList(id, identifier);
   if (error) {
@@ -131,10 +134,13 @@ export async function selectAllStaffListValidation() {
   };
 }
 
-export async function deleteStaffListValidation(id: string, identifier: string) {
+export async function deleteStaffListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
 
-  await staffInstanceQuery.deleteStaffInstanceValidation(id, identifier)
+  await staffInstanceQuery.deleteStaffInstanceValidation(id, identifier);
   const { error } = await deleteStaffList(id, identifier);
   if (error) {
     throw new Error(error.message);

@@ -1,4 +1,3 @@
-
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
@@ -59,15 +58,19 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             AISF Form
           </h3>
 
-          <p> {ai_date ? `Last generated on ${ai_date}` : "LOADING"}.</p>
+          <p> {ai_date ? `Last generated on ${ai_date}` : 'LOADING'}.</p>
 
           <div className="mb-8 flex gap-4">
             <Button className="min-w-24" asChild>
-              <Link href={`/events/${params.eventId}/forms/${formId}`}>View</Link>
+              <Link href={`/events/${params.eventId}/forms/${formId}`}>
+                View
+              </Link>
             </Button>
 
             <Button className="min-w-24" asChild>
-              <Link href={`/events/${params.eventId}/forms/${formId}/edit`}>Edit</Link>
+              <Link href={`/events/${params.eventId}/forms/${formId}/edit`}>
+                Edit
+              </Link>
             </Button>
 
             {/* <CreateFormButton

@@ -32,6 +32,10 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
     fetchData();
 
     async function fetchData() {
+      if (!value) {
+        return;
+      }
+
       const data = await selectWhereStaffInstanceValidation(
         value,
         'staff_list_id',
@@ -62,7 +66,7 @@ const StaffMultiSelector = ({ label, value }: StaffMultiSelectorProps) => {
   }, [value]);
 
   return (
-    <div className='max-h-[550px] overflow-auto'>
+    <div className="max-h-[550px] overflow-auto">
       <Label>{label}</Label>
 
       {staffList.map((obj: any) => (

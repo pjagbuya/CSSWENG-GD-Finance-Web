@@ -15,9 +15,12 @@ type AddItemFormProps = {
 const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
 
-  const [state, action] = useFormState(createItemValidation.bind(null, transactionId), {
-    errors: {},
-  });
+  const [state, action] = useFormState(
+    createItemValidation.bind(null, transactionId),
+    {
+      errors: {},
+    },
+  );
 
   useEffect(() => {
     dateElemRef.current!.value = new Date().toISOString().substring(0, 10);
@@ -65,7 +68,7 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
 
         <ErrorDisplay errors={state?.errors?.item_price} />
       </>
-      
+
       <>
         <Label htmlFor="item_units">Unit Count</Label>
         <Input
@@ -79,7 +82,7 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
 
         <ErrorDisplay errors={state?.errors?.item_units} />
       </>
-      
+
       <>
         <Label htmlFor="item_amount">Total Amount</Label>
         <Input

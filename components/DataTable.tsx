@@ -183,15 +183,16 @@ const DataTable = ({
                         Edit
                       </DropdownMenuItem>
 
-                      {(deletable === undefined || deletable) &&                     
+                      {(deletable === undefined || deletable) && (
                         <DropdownMenuItem
                           onClick={() => {
-                            if (onRowDelete) onRowDelete(data[row.id][pkColumn]);
+                            if (onRowDelete)
+                              onRowDelete(data[row.id][pkColumn]);
                           }}
                         >
                           Delete
                         </DropdownMenuItem>
-                      }
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

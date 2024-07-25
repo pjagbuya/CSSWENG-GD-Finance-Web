@@ -33,28 +33,31 @@ var staffInstanceFormat = {
 var schema = 'staff_instances'; // replace with table name
 
 export async function createStaffInstanceValidation(
-  staff_list_id: any, staff_id: any
+  staff_list_id: any,
+  staff_id: any,
 ) {
-  var staffInstanceData = await selectAllStaffInstanceValidation()
+  var staffInstanceData = await selectAllStaffInstanceValidation();
   var id_mod = 10000;
-  if(staffInstanceData.data){
-    if(staffInstanceData.data.length > 0){
-      for(let i = 0; i < staffInstanceData.data!.length; i++){
-        var num = parseInt(staffInstanceData.data[i].staff_instance_id.slice(6))
-        if(num > id_mod){
-          id_mod = num
+  if (staffInstanceData.data) {
+    if (staffInstanceData.data.length > 0) {
+      for (let i = 0; i < staffInstanceData.data!.length; i++) {
+        var num = parseInt(
+          staffInstanceData.data[i].staff_instance_id.slice(6),
+        );
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
   var data = {
     staff_instance_id: `stain_${id_mod}`,
     staff_id: staff_id,
-    staff_list_id: staff_list_id
-  }
-  console.log(data)
+    staff_list_id: staff_list_id,
+  };
+  console.log(data);
 
   const { error } = await createStaffInstance(data);
   if (error) {
@@ -67,8 +70,10 @@ export async function createStaffInstanceValidation(
   };
 }
 
-
-export async function selectWhereStaffInstanceValidation(id: string, identifier: string) {
+export async function selectWhereStaffInstanceValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereStaffInstance(id, identifier);
   if (error) {
@@ -94,7 +99,10 @@ export async function selectAllStaffInstanceValidation() {
   };
 }
 
-export async function deleteStaffInstanceValidation(id: string, identifier: string) {
+export async function deleteStaffInstanceValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { error } = await deleteStaffInstance(id, identifier);
   if (error) {
@@ -111,7 +119,11 @@ export async function createStaffInstance(data: any) {
   return await query.insert(schema, data);
 }
 
-export async function editStaffInstance(data: any, id: string, identifier: string) {
+export async function editStaffInstance(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 

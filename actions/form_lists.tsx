@@ -8,10 +8,10 @@ import { FormListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
-import * as activityIncomeQuery from '@/actions/activity_incomes'
-import * as revenueStatementQuery from '@/actions/revenue_statements'
-import * as expenseStatementQuery from '@/actions/expense_statements'
-import * as fundTransferQuery from '@/actions/fund_transfers'
+import * as activityIncomeQuery from '@/actions/activity_incomes';
+import * as revenueStatementQuery from '@/actions/revenue_statements';
+import * as expenseStatementQuery from '@/actions/expense_statements';
+import * as fundTransferQuery from '@/actions/fund_transfers';
 
 export type formListState = {
   errors?: {
@@ -108,7 +108,10 @@ export async function editFormListValidation(
   };
 }
 
-export async function selectWhereFormListValidation(id: string, identifier: string) {
+export async function selectWhereFormListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereFormList(id, identifier);
   if (error) {

@@ -42,17 +42,18 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
       <SortableHeader column={column}>Register</SortableHeader>
     ),
     cell: ({ row }) => {
-      const id = row.getValue('id') as string
-      const position = row.getValue('position') as string
+      const id = row.getValue('id') as string;
+      const position = row.getValue('position') as string;
       return (
-        <div className='flex gap-2'>
-          {!position ?
-            <RegisterAccountButton id={id} /> :
+        <div className="flex gap-2">
+          {!position ? (
+            <RegisterAccountButton id={id} />
+          ) : (
             <EditStaffButton id={id} />
-          }
+          )}
         </div>
-      )
-    }
+      );
+    },
   },
   {
     accessorKey: 'position',
@@ -108,8 +109,8 @@ const AccountsTable = ({
           userInfos && setToEditId(userInfos[Number(id)].uuid);
         }}
         onRowDelete={id => {
-          console.log(userInfos)
-          console.log(id)
+          console.log(userInfos);
+          console.log(id);
           userInfos && setToDeleteId(userInfos[Number(id)].uuid);
         }}
       />

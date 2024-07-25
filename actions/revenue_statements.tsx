@@ -69,7 +69,11 @@ var revenueStatementFormat = {
 
 var schema = 'revenue_statements'; // replace with table name
 
-async function transformCreateData(category_id: string, category_name: string, user_id: string) {
+async function transformCreateData(
+  category_id: string,
+  category_name: string,
+  user_id: string,
+) {
   // TODO: provide logic
   var rsData = await selectAllRevenueStatementValidation();
   var id_mod = 10000;
@@ -114,9 +118,12 @@ async function transformCreateData(category_id: string, category_name: string, u
     }
   }
 
-  var preparedStaff = await staffQuery.selectWhereStaffValidation(user_id, 'user_id')
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(
+    user_id,
+    'user_id',
+  );
   // TODO: fill information
-  if(preparedStaff.data){
+  if (preparedStaff.data) {
     return {
       rs_id: `revst_${id_mod}`,
       rs_name: category_name,
@@ -168,7 +175,11 @@ export async function createRevenueStatementValidation(
   category_name: string,
   user_id: string,
 ) {
-  var transformedData = await transformCreateData(category_id, category_name, user_id);
+  var transformedData = await transformCreateData(
+    category_id,
+    category_name,
+    user_id,
+  );
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -204,7 +215,6 @@ export async function editRevenueStatementValidation(
   prevState: RevenueStatementState,
   formData: FormData,
 ) {
-
   var arrData = Array.from(formData.entries());
 
   const notedList = [];
@@ -216,7 +226,7 @@ export async function editRevenueStatementValidation(
 
   var transformedData = await transformEditData(formData, id);
   const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
-  
+
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -228,12 +238,18 @@ export async function editRevenueStatementValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
+  await staffInstanceQuery.deleteStaffInstanceValidation(
+    data.noted_staff_list_id,
+    'staff_list_id',
+  );
 
-  console.log(notedList)
+  console.log(notedList);
 
   for (let i = 0; i < notedList.length; i++) {
-    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+    await staffInstanceQuery.createStaffInstanceValidation(
+      data.noted_staff_list_id,
+      notedList[i],
+    );
   }
 
   const { error } = await editRevenueStatement(data, id, identifier);

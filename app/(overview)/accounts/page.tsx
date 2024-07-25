@@ -1,12 +1,11 @@
-import AccountForm from "./_components/AccountForm";
-import { varQuery } from "@/actions/format";
+import AccountForm from './_components/AccountForm';
+import { varQuery } from '@/actions/format';
 
 type AccountsPageProps = {
   searchParams?: { query?: string };
 };
 
 const AccountsPage = async ({ searchParams }: AccountsPageProps) => {
-
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
       <div className="mb-1">
@@ -15,7 +14,6 @@ const AccountsPage = async ({ searchParams }: AccountsPageProps) => {
       </div>
 
       <AccountForm searchParams={searchParams} />
-
     </main>
   );
 };

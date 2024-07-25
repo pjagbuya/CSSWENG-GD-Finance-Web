@@ -51,24 +51,27 @@ var schema = 'transactions'; // replace with table name
 export async function transformCreateData(data: any, groupId: string) {
   // TODO: provide logic
 
-  var categoryData = await categoryQuery.selectWhereCategoryValidation(groupId, 'category_id')
+  var categoryData = await categoryQuery.selectWhereCategoryValidation(
+    groupId,
+    'category_id',
+  );
 
   // TODO: fill information
-  var transactionData = await selectAllTransactionValidation()
+  var transactionData = await selectAllTransactionValidation();
   var id_mod = 10000;
-  if(transactionData.data){
-    if(transactionData.data.length > 0){
-      for(let i = 0; i < transactionData.data!.length; i++){
-        var num = parseInt(transactionData.data[i].transaction_id.slice(6))
-        if(num > id_mod){
-          id_mod = num
+  if (transactionData.data) {
+    if (transactionData.data.length > 0) {
+      for (let i = 0; i < transactionData.data!.length; i++) {
+        var num = parseInt(transactionData.data[i].transaction_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
-  if(categoryData.data){
+  if (categoryData.data) {
     return {
       transaction_id: `trans_${id_mod}`,
       transaction_name: data.get('transaction_name'),
@@ -78,15 +81,18 @@ export async function transformCreateData(data: any, groupId: string) {
       item_list_id: `itl_${id_mod}`,
     };
   }
-  return null
+  return null;
 }
 
 export async function transformEditData(data: any, transactionId: string) {
   // TODO: provide logic
 
-  var transactionData = await selectWhereTransactionValidation(transactionId, 'transaction_id')
+  var transactionData = await selectWhereTransactionValidation(
+    transactionId,
+    'transaction_id',
+  );
 
-  if(transactionData.data){
+  if (transactionData.data) {
     return {
       transaction_id: transactionId,
       transaction_name: data.get('transaction_name'),
@@ -96,7 +102,7 @@ export async function transformEditData(data: any, transactionId: string) {
       item_list_id: transactionData.data[0].item_list_id,
     };
   }
-  return null
+  return null;
 }
 
 export async function convertData(data: any) {
@@ -104,7 +110,7 @@ export async function convertData(data: any) {
 }
 
 export async function createTransactionValidation(
-  groupId: string, 
+  groupId: string,
   prevState: TransactionState,
   formData: FormData,
 ) {
@@ -123,8 +129,8 @@ export async function createTransactionValidation(
   var data = await convertData(transformedData);
 
   const transaction_list = {
-    item_list_id: data.item_list_id
-  }
+    item_list_id: data.item_list_id,
+  };
   await itemListQuery.createItemList(transaction_list);
 
   const { error } = await createTransaction(data);
@@ -207,10 +213,10 @@ export async function deleteTransactionValidation(
     throw new Error(error.message);
   }
 
-  if(data.data){
+  if (data.data) {
     await deleteItemListValidation(data.data[0].item_list_id, 'item_list_id');
   }
-  
+
   if (groupId) {
     revalidatePath(`groups/${id}`);
   }

@@ -1,21 +1,26 @@
-'use client'
+'use client';
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { login, type LoginState } from "@/actions/login"
-import { useFormState } from "react-dom"
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { login, type LoginState } from '@/actions/login';
+import { useFormState } from 'react-dom';
 
 const LoginForm = () => {
-  const initialState: LoginState = { message: null, errors: {} }
-  const [state, formAction] = useFormState(login, initialState)
+  const initialState: LoginState = { message: null, errors: {} };
+  const [state, formAction] = useFormState(login, initialState);
   return (
-    <form action={formAction} className="flex justify-center w-full">
-      <div className="max-w-96 flex-1 flex flex-col gap-7">
+    <form action={formAction} className="flex w-full justify-center">
+      <div className="flex max-w-96 flex-1 flex-col gap-7">
         <div className="flex flex-col gap-6">
-          <div className='flex flex-col gap-1'>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="email">Email</Label>
-            <Input type="email" name="email" placeholder="Email" aria-describedby="email-error" />
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email"
+              aria-describedby="email-error"
+            />
             {/* Login error message */}
             <div id="email-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
@@ -26,9 +31,14 @@ const LoginForm = () => {
                 ))}
             </div>
           </div>
-          <div className='flex flex-col gap-1'>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="email">Password</Label>
-            <Input type="password" name="password" placeholder="Password" aria-describedby="password-error" />
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              aria-describedby="password-error"
+            />
             <div id="password-error" aria-live="polite" aria-atomic="true">
               {state.errors?.password &&
                 state.errors.password.map((error: string) => (
@@ -39,13 +49,11 @@ const LoginForm = () => {
             </div>
           </div>
         </div>
-        <div className='w-full'>
+        <div className="w-full">
           <div>
-            <p className="my-4 text-sm text-red-500">
-              {state.message}
-            </p>
+            <p className="my-4 text-sm text-red-500">{state.message}</p>
           </div>
-          <Button className='w-full'>Sign In with Email</Button>
+          <Button className="w-full">Sign In with Email</Button>
         </div>
 
         {/* <div className="flex items-center gap-2">
@@ -59,7 +67,7 @@ const LoginForm = () => {
               </div> */}
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

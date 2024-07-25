@@ -17,7 +17,10 @@ type EditRevenueFormPageProps = {
   formInfo: any;
 };
 
-const EditRevenueFormPage = ({ eventId, formInfo }: EditRevenueFormPageProps) => {
+const EditRevenueFormPage = ({
+  eventId,
+  formInfo,
+}: EditRevenueFormPageProps) => {
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     rs_to: formInfo.rs_to,

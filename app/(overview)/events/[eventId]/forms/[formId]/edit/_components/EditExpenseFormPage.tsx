@@ -17,7 +17,10 @@ type EditExpenseFormPageProps = {
   formInfo: any;
 };
 
-const EditExpenseFormPage = ({ eventId, formInfo }: EditExpenseFormPageProps) => {
+const EditExpenseFormPage = ({
+  eventId,
+  formInfo,
+}: EditExpenseFormPageProps) => {
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     es_to: formInfo.es_to,

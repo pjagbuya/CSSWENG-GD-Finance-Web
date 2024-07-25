@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   AccountState,
@@ -37,7 +37,6 @@ const EditAccountDialog = ({
     last_name: '',
     position: '',
   });
-
 
   useEffect(() => {
     async function getUserInfo() {
@@ -83,6 +82,5 @@ const EditAccountDialog = ({
     />
   );
 };
-
 
 export default EditAccountDialog;

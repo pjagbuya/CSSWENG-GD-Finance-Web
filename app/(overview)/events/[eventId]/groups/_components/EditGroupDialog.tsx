@@ -34,7 +34,7 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
       errors: {},
     },
   );
- 
+
   useEffect(() => {
     if (!groupId) {
       return;
@@ -67,7 +67,7 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
           name="category_name"
           placeholder="Category Name"
           value={fields.category_name}
-          onChange={e => 
+          onChange={e =>
             setFields({ ...fields, category_name: e.target.value })
           }
         />

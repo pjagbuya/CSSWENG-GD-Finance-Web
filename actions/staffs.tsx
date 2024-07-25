@@ -118,7 +118,10 @@ export async function editStaffValidation(
   };
 }
 
-export async function selectWhereStaffValidation(id: string, identifier: string) {
+export async function selectWhereStaffValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereStaff(id, identifier);
   if (error) {
@@ -176,4 +179,3 @@ export async function selectWhereStaff(id: string, identifier: string) {
 export async function selectAllStaff() {
   return await query.selectAll(schema);
 }
-

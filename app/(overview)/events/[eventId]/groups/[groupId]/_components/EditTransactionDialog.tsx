@@ -32,7 +32,12 @@ const EditTransactionDialog = ({
   });
 
   const [state, action] = useFormState(
-    editTransactionValidation.bind(null, groupId, transactionId, 'transaction_id'),
+    editTransactionValidation.bind(
+      null,
+      groupId,
+      transactionId,
+      'transaction_id',
+    ),
     {
       errors: {},
     },
@@ -86,7 +91,7 @@ const EditTransactionDialog = ({
           name="transaction_name"
           placeholder="Transaction Name"
           value={fields.transaction_name}
-          onChange={e => 
+          onChange={e =>
             setFields({ ...fields, transaction_name: e.target.value })
           }
         />
@@ -102,7 +107,7 @@ const EditTransactionDialog = ({
           placeholder="Notes"
           className="resize-none"
           value={fields.transaction_note}
-          onChange={e => 
+          onChange={e =>
             setFields({ ...fields, transaction_note: e.target.value })
           }
         />

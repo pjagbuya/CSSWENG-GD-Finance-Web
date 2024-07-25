@@ -15,7 +15,11 @@ type CreateFormButtonProps = {
   variant: 'expense' | 'revenue' | 'fund_transfer' | 'aisf';
 };
 
-const CreateFormButton = ({ eventId, isEditing, variant }: CreateFormButtonProps) => {
+const CreateFormButton = ({
+  eventId,
+  isEditing,
+  variant,
+}: CreateFormButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   function getFormComponent() {
@@ -52,7 +56,6 @@ const CreateFormButton = ({ eventId, isEditing, variant }: CreateFormButtonProps
           />
         );
 
-
       default:
         throw new Error('Invalid form variant given.');
     }
@@ -61,16 +64,13 @@ const CreateFormButton = ({ eventId, isEditing, variant }: CreateFormButtonProps
   return (
     <>
       <Button onClick={() => setShowDialog(true)}>
-
-        {(isEditing === undefined || !isEditing) ? 
-        
-        <>
-        <CirclePlus className="mr-2 w-4" /> Create Form
-        </>
-        
-      :
-      'Edit Form'
-      }
+        {isEditing === undefined || !isEditing ? (
+          <>
+            <CirclePlus className="mr-2 w-4" /> Create Form
+          </>
+        ) : (
+          'Edit Form'
+        )}
       </Button>
 
       {showDialog && getFormComponent()}

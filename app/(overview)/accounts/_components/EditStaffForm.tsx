@@ -10,7 +10,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select';
 import { ToastAction } from '@/components/ui/toast';
 import { toast } from '@/components/ui/use-toast';
 import { SelectValue } from '@radix-ui/react-select';
@@ -59,7 +64,13 @@ const EditStaffForm: React.FC<EventDialogFormProps> = ({
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select name='staff_position' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
+              <Select
+                name="staff_position"
+                value={fields?.position}
+                onValueChange={e =>
+                  onFieldsChange?.({ ...fields, position: e })
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>

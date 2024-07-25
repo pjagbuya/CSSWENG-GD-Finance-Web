@@ -8,13 +8,16 @@ type EditEventDialogProps = {
   id: string;
 };
 
-const RegisterAccountDialog = ({ open, onFinish, id }: EditEventDialogProps) => {
+const RegisterAccountDialog = ({
+  open,
+  onFinish,
+  id,
+}: EditEventDialogProps) => {
   const initialState: RegisterAccountState = {
     message: null,
-    errors: {
-    }
+    errors: {},
   };
-  const registerAction = registerAccount.bind(null, id)
+  const registerAction = registerAccount.bind(null, id);
   const [state, formAction] = useFormState(registerAction, initialState);
 
   return (

@@ -35,8 +35,7 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
-    cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('es_date'))),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('es_date'))),
   },
 ];
 
@@ -58,17 +57,14 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
-    cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('rs_date'))),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('rs_date'))),
   },
 ];
 
 const FUND_TRANSFER_COL_DEF: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'ft_id',
-    header: ({ column }) => (
-      <SortableHeader column={column}>ID</SortableHeader>
-    ),
+    header: ({ column }) => <SortableHeader column={column}>ID</SortableHeader>,
   },
   {
     accessorKey: 'ft_name',
@@ -216,8 +212,20 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         data={tableData}
         deletable={false}
         idFilter={nameFilter}
-        idColumn={variant === 'expense' ? 'es_name' : variant === 'fund_transfer' ? 'ft_name' : 'rs_name'}
-        pkColumn={variant === 'expense' ? 'es_id' : variant === 'fund_transfer' ? 'ft_id' : 'rs_id'}
+        idColumn={
+          variant === 'expense'
+            ? 'es_name'
+            : variant === 'fund_transfer'
+              ? 'ft_name'
+              : 'rs_name'
+        }
+        pkColumn={
+          variant === 'expense'
+            ? 'es_id'
+            : variant === 'fund_transfer'
+              ? 'ft_id'
+              : 'rs_id'
+        }
         onRowEdit={(formId: string) => setToEditId(formId)}
         onRowDelete={(formId: string) => setToDeleteId(formId)}
         onRowSelect={(formId: string) => setToViewId(formId)}

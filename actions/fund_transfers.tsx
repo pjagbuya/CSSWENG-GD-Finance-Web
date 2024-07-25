@@ -1,4 +1,4 @@
-'use server'
+'use server';
 // INSTRUCTIONS:
 // fundTransfer -> small case
 // FundTransfer -> big case
@@ -29,8 +29,8 @@ export type fundTransferState = {
     fr_on?: string[];
     receipt_link?: string[];
     // prepared_staff_id?: string[];
-    // certified_staff_id?: string[];
-    // noted_staff_list_id?: string[];
+    certified_staff_id?: string[];
+    noted_staff_list_id?: string[];
     // form_list_id?: string[];
   };
   message?: string | null;
@@ -59,7 +59,7 @@ var fundTransferFormat = {
       ft_date DATE,
       ft_reason VARCHAR(105),
       ft_amount VARCHAR(105),
-      ft_to VARCHAR(105), 
+      ft_to VARCHAR(105),
       ft_from VARCHAR(105),
       fr_on VARCHAR(105),
       receipt_link VARCHAR(55),
@@ -79,52 +79,58 @@ var fundTransferFormat = {
 
 var schema = 'fund_transfers'; // replace with table name
 
-async function transformCreateData(data: any, event_id : string) {
+async function transformCreateData(data: any, event_id: string) {
   // TODO: provide logic
 
-  const supabase = createClient()
+  const supabase = createClient();
   const currentUser = (await supabase.auth.getUser()).data.user;
 
-  var ftData = await selectAllFundTransferValidation()
-  var id_mod = 10000
-  if(ftData.data){
-    if(ftData.data.length > 0){
-      for(let i = 0; i < ftData.data.length; i++){
+  var ftData = await selectAllFundTransferValidation();
+  var id_mod = 10000;
+  if (ftData.data) {
+    if (ftData.data.length > 0) {
+      for (let i = 0; i < ftData.data.length; i++) {
         var num = parseInt(ftData.data[i].ft_id.slice(6));
-        if(num > id_mod){
-          id_mod = num
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
-  var staffListData = await staffListQuery.selectAllStaffListValidation()
-  var id_mod_staff = 10000
-  if(staffListData.data){
-    if(staffListData.data.length > 0){
-      for(let i = 0; i < staffListData.data.length; i++){
+  var staffListData = await staffListQuery.selectAllStaffListValidation();
+  var id_mod_staff = 10000;
+  if (staffListData.data) {
+    if (staffListData.data.length > 0) {
+      for (let i = 0; i < staffListData.data.length; i++) {
         var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
-        if(num > id_mod_staff){
-          id_mod_staff = num
+        if (num > id_mod_staff) {
+          id_mod_staff = num;
         }
       }
-      id_mod_staff += 1
+      id_mod_staff += 1;
     }
   }
 
-  var form_list_id
+  var form_list_id;
 
-  var eventData = await eventQuery.selectWhereEventValidation(event_id, 'event_id')
-  if(eventData.data){
-    form_list_id = eventData.data[0].ft_form_list_id
+  var eventData = await eventQuery.selectWhereEventValidation(
+    event_id,
+    'event_id',
+  );
+  if (eventData.data) {
+    form_list_id = eventData.data[0].ft_form_list_id;
   }
 
-  var preparedStaff = await staffQuery.selectWhereStaffValidation(currentUser?.id!, 'user_id')
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(
+    currentUser?.id!,
+    'user_id',
+  );
 
   // TODO: fill information
-  if(preparedStaff.data){
-    return{
+  if (preparedStaff.data) {
+    return {
       ft_id: `funtr_${id_mod}`,
       ft_name: data.get('ft_name'),
       ft_date: data.get('ft_date'),
@@ -138,19 +144,18 @@ async function transformCreateData(data: any, event_id : string) {
       certified_staff_id: null,
       noted_staff_list_id: `stl_${id_mod_staff}`,
       form_list_id: form_list_id,
-    }
+    };
   }
-  return null
+  return null;
 }
 
 async function transformEditData(data: any, id: string) {
-  
   // TODO: provide logic
-  var ftData = await selectWhereFundTransferValidation(id, 'ft_id')
+  var ftData = await selectWhereFundTransferValidation(id, 'ft_id');
 
   // TODO: fill information
-  if(ftData.data){
-    return{
+  if (ftData.data) {
+    return {
       ft_id: ftData.data[0].ft_id,
       ft_name: data.get('ft_name'),
       ft_date: data.get('ft_date'),
@@ -164,9 +169,9 @@ async function transformEditData(data: any, id: string) {
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: ftData.data[0].noted_staff_list_id,
       form_list_id: ftData.data[0].form_list_id,
-    }
+    };
   }
-  return null
+  return null;
 }
 
 async function convertData(data: any) {
@@ -179,7 +184,7 @@ async function convertData(data: any) {
 export async function createFundTransferValidation(
   prevState: fundTransferState,
   formData: FormData,
-  event_id: string
+  event_id: string,
 ) {
   var transformedData = await transformCreateData(formData, event_id);
   const validatedFields = FundTransferSchema.safeParse(transformedData);
@@ -195,15 +200,17 @@ export async function createFundTransferValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffListQuery.createStaffList({staff_list_id: data.noted_staff_list_id})
+  await staffListQuery.createStaffList({
+    staff_list_id: data.noted_staff_list_id,
+  });
 
   const { error } = await createFundTransfer(data);
   if (error) {
-    console.log(error.message)
+    console.log(error.message);
     // throw new Error(error.message);
   }
 
-  revalidatePath(`/events/${event_id}/forms`)
+  revalidatePath(`/events/${event_id}/forms`);
   return {
     message: null,
   };
@@ -216,12 +223,12 @@ export async function editFundTransferValidation(
   prevState: fundTransferState,
   formData: FormData,
 ) {
-  var arrData = Array.from(formData.entries())
-  
-  const notedList = []
-  for(let i = 0; i < arrData.length; i++){
-    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
-      notedList.push(arrData[i][0].substring(20))
+  var arrData = Array.from(formData.entries());
+
+  const notedList = [];
+  for (let i = 0; i < arrData.length; i++) {
+    if (arrData[i][0].substring(0, 20) === 'noted_staff_list_id-') {
+      notedList.push(arrData[i][0].substring(20));
     }
   }
 
@@ -239,10 +246,16 @@ export async function editFundTransferValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
+  await staffInstanceQuery.deleteStaffInstanceValidation(
+    data.noted_staff_list_id,
+    'staff_list_id',
+  );
 
-  for(let i = 0; i < notedList.length; i++){
-    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+  for (let i = 0; i < notedList.length; i++) {
+    await staffInstanceQuery.createStaffInstanceValidation(
+      data.noted_staff_list_id,
+      notedList[i],
+    );
   }
 
   const { error } = await editFundTransfer(data, id, identifier);
@@ -285,7 +298,10 @@ export async function selectAllFundTransferValidation() {
   };
 }
 
-export async function deleteFundTransferValidation(id: string, identifier: string) {
+export async function deleteFundTransferValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { error } = await deleteFundTransfer(id, identifier);
   if (error) {
@@ -299,11 +315,15 @@ export async function deleteFundTransferValidation(id: string, identifier: strin
 }
 
 export async function createFundTransfer(data: any) {
-  console.log(data)
+  console.log(data);
   return await query.insert(schema, data);
 }
 
-export async function editFundTransfer(data: any, id: string, identifier: string) {
+export async function editFundTransfer(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 

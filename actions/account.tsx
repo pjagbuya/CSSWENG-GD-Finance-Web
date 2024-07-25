@@ -1,10 +1,17 @@
 'use server';
 
-import { StaffSchema, UserFormSchema, EditUserFormSchema, staffType, addUserType, AddUserFormSchema } from "@/lib/definitions";
-import { revalidatePath } from "next/cache";
-import { createAdminClient, createClient } from "@/utils/supabase/server";
-import { unstable_noStore as noStore } from "next/cache";
-import { insert, remove } from "@/lib/supabase";
+import {
+  StaffSchema,
+  UserFormSchema,
+  EditUserFormSchema,
+  staffType,
+  addUserType,
+  AddUserFormSchema,
+} from '@/lib/definitions';
+import { revalidatePath } from 'next/cache';
+import { createAdminClient, createClient } from '@/utils/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
+import { insert, remove } from '@/lib/supabase';
 
 export type AccountState = {
   errors?: {
@@ -88,7 +95,6 @@ export async function editAccount(
     id,
   );
 
-
   revalidatePath('/accounts');
   return {
     message: null,
@@ -106,8 +112,14 @@ export async function deleteAccount(id: string) {
   revalidatePath('/accounts');
 }
 
-export async function registerAccount(id: string, prevState: RegisterAccountState, formData: FormData) {
-  const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
+export async function registerAccount(
+  id: string,
+  prevState: RegisterAccountState,
+  formData: FormData,
+) {
+  const validatedFields = StaffSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -117,7 +129,7 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
     };
   }
 
-  await createStaff(validatedFields.data, id)
+  await createStaff(validatedFields.data, id);
 
   revalidatePath('/accounts');
   return {
@@ -125,8 +137,14 @@ export async function registerAccount(id: string, prevState: RegisterAccountStat
   };
 }
 
-export async function editSTaffForm(id: string, prevState: RegisterAccountState, formData: FormData) {
-  const validatedFields = StaffSchema.safeParse(Object.fromEntries(formData.entries()))
+export async function editSTaffForm(
+  id: string,
+  prevState: RegisterAccountState,
+  formData: FormData,
+) {
+  const validatedFields = StaffSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -136,7 +154,7 @@ export async function editSTaffForm(id: string, prevState: RegisterAccountState,
     };
   }
 
-  await editSTaff(validatedFields.data, id)
+  await editSTaff(validatedFields.data, id);
 
   revalidatePath('/accounts');
   return {
@@ -148,21 +166,21 @@ export async function createStaff(data: staffType, userId: string) {
   const { error: staffError } = await insert('staffs', {
     staff_position: data.staff_position.toUpperCase(),
     user_id: userId,
-    staff_id: 'not sure what to do'
+    staff_id: 'not sure what to do',
   });
 
   if (staffError) {
-    console.log(staffError)
+    console.log(staffError);
   }
 }
 
 export async function editSTaff(data: staffType, userId: string) {
-  const supabase = createClient()
+  const supabase = createClient();
   await supabase
     .from('staffs')
     .update({ staff_position: data.staff_position.toUpperCase() })
     .eq('user_id', userId)
-    .select()
+    .select();
 }
 
 export async function getUserStaff(uuid: string) {
@@ -218,7 +236,6 @@ export async function getUser(uuid: string) {
     };
   })[0];
 }
-
 
 async function createAccountDb(data: addUserType, userId: string) {
   const { error: userError } = await insert('users', {

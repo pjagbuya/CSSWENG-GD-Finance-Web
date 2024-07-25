@@ -14,12 +14,18 @@ type AddTransactionFormProps = {
   onFinish?: () => void;
 };
 
-const AddTransactionDialog = ({ groupId, onFinish }: AddTransactionFormProps) => {
+const AddTransactionDialog = ({
+  groupId,
+  onFinish,
+}: AddTransactionFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
 
-  const [state, action] = useFormState(createTransactionValidation.bind(null, groupId), {
-    errors: {},
-  });
+  const [state, action] = useFormState(
+    createTransactionValidation.bind(null, groupId),
+    {
+      errors: {},
+    },
+  );
 
   useEffect(() => {
     dateElemRef.current!.value = new Date().toISOString().substring(0, 10);

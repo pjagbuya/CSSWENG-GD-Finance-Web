@@ -40,7 +40,10 @@ const COL_DEFN: ColumnDef<unknown, any>[] = [
   },
 ];
 
-const TransactionsTable = ({ groupId, transactions }: TransactionsTableProps) => {
+const TransactionsTable = ({
+  groupId,
+  transactions,
+}: TransactionsTableProps) => {
   const pathname = usePathname();
 
   const [toEditId, setToEditId] = useState('');

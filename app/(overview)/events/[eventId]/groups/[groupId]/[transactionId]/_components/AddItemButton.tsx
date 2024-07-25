@@ -19,7 +19,12 @@ const AddItemButton = ({ transactionId }: AddItemButtonProps) => {
         <CirclePlus className="mr-2 w-4" /> Add Item
       </Button>
 
-      {showDialog && <AddItemDialog transactionId={transactionId} onFinish={() => setShowDialog(false)} />}
+      {showDialog && (
+        <AddItemDialog
+          transactionId={transactionId}
+          onFinish={() => setShowDialog(false)}
+        />
+      )}
     </>
   );
 };

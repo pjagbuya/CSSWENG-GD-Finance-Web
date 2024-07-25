@@ -175,16 +175,16 @@ export const FundTransferSchema = z.object({
   //     required_error: 'Please enter Prepared staff ID.',
   //   })
   //   .min(1),
-  // certified_staff_id: z
-  //   .string({
-  //     required_error: 'Please enter Certified staff ID.',
-  //   })
-  //   .min(1),
-  // noted_staff_id: z
-  //   .string({
-  //     required_error: 'Please enter Noted staff ID.',
-  //   })
-  //   .min(1),
+  certified_staff_id: z
+    .string({
+      required_error: 'Please enter Certified staff ID.',
+    })
+    .min(1),
+  noted_staff_id: z
+    .string({
+      required_error: 'Please enter Noted staff ID.',
+    })
+    .min(1),
   // form_list_id: z
   //   .string({
   //     required_error: 'Please enter Form list ID.',
@@ -477,12 +477,16 @@ export const UpdateExpenseFormSchema = z.object({
   es_to: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  es_on: z.string({
-    required_error: 'Please enter the account transferred on.',
-  }).date(),
-  es_notes: z.string({
-    required_error: 'Please enter notes.',
-  }).optional(),
+  es_on: z
+    .string({
+      required_error: 'Please enter the account transferred on.',
+    })
+    .date(),
+  es_notes: z
+    .string({
+      required_error: 'Please enter notes.',
+    })
+    .optional(),
   certified_staff_id: z.optional(z.string()),
   noted_staff_list_ids: z.optional(z.string()),
 });
@@ -494,12 +498,16 @@ export const UpdateRevenueFormSchema = z.object({
   rs_to: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  rs_on: z.string({
-    required_error: 'Please enter the account transferred on.',
-  }).date(),
-  rs_notes: z.string({
-    required_error: 'Please enter notes.',
-  }).optional(),
+  rs_on: z
+    .string({
+      required_error: 'Please enter the account transferred on.',
+    })
+    .date(),
+  rs_notes: z
+    .string({
+      required_error: 'Please enter notes.',
+    })
+    .optional(),
   certified_staff_id: z.optional(z.string()),
   noted_staff_list_id: z.optional(z.string()),
 });
