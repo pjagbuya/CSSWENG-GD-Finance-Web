@@ -88,6 +88,7 @@ const CreateFundTransferForm = ({ eventId, onFinish }: CreateRevenueFormProps) =
 
         <ErrorDisplay errors={state.errors?.ft_reason} />
       </>
+      <div/>
         <div>
           <Label htmlFor="amount">Amount</Label>
           <Input id="amount" name="ft_amount" placeholder="Amount" />
