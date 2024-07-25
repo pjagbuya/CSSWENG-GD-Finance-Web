@@ -78,6 +78,7 @@ export async function getFTFormFromEvent(event_id: any) {
     event_id,
     'event_id',
   );
+  console.log(eventData)
   if (eventData.data) {
     let form_list_id = eventData.data[0].ft_form_list_id;
     return await fundTransferQuery.selectWhereFundTransferValidation(
@@ -492,34 +493,34 @@ export async function getRevenueTotalFromEvent(event_id: any) {
 //-------------------------------------------------------------------
 
 // transforms header data
-export async function getFormHeaderData(form_id: string) { 
+export async function getFormHeaderData(form_id: string) {
 
   var formType
-  switch(form_id.substring(0,5)){
+  switch (form_id.substring(0, 5)) {
     case 'actin':
       formType = "Activity Income"
-    break
+      break
     case 'expst':
       formType = "Expense Statement"
-    break
+      break
     case 'revst':
       formType = "Revenue Statement"
-    break
+      break
     case 'funtr':
       formType = "Fund Transfer"
-    break
+      break
   }
 
   var academicYear
-  if(new Date().getMonth() < 8){
-    academicYear = `YEAR${new Date().getFullYear()}-${new Date().getFullYear()+1}`
+  if (new Date().getMonth() < 8) {
+    academicYear = `YEAR${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
   }
-  else{
-    academicYear = `YEAR${new Date().getFullYear()-1}-${new Date().getFullYear()}`
+  else {
+    academicYear = `YEAR${new Date().getFullYear() - 1}-${new Date().getFullYear()}`
   }
 
   return {
-    academicYear: academicYear ,
+    academicYear: academicYear,
     formType: formType,
     formCode: form_id,
   }
@@ -530,38 +531,38 @@ export async function getFormHeaderData(form_id: string) {
 export async function getFormFooterData(form_id: string) {
   var formFooter = []
   var formData
-  if(form_id){
+  if (form_id) {
     switch (form_id.substring(0, 5)) {
       case 'expst':
         {
           formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
         }
-      break
+        break
       case 'revst':
         {
           formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
         }
-      break
+        break
     }
-    if(formData){
+    if (formData) {
       if (formData.data) {
         var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
         console.log(preparedStaff)
         var preparedData = await getStaffInfo(preparedStaff)
-  
-        if(preparedData){
-         formFooter.push({
-          id: formData.data[0].prepared_staff_id,
-           message: 'Prepared By:',
-           name: preparedData.user_first_name + " " + preparedData.user_last_name,
-           position: preparedData.staff_position
-         })
+
+        if (preparedData) {
+          formFooter.push({
+            id: formData.data[0].prepared_staff_id,
+            message: 'Prepared By:',
+            name: preparedData.user_first_name + " " + preparedData.user_last_name,
+            position: preparedData.staff_position
+          })
         }
-  
+
         var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
         var certifiedData = await getStaffInfo(certifiedStaff)
-  
-        if(certifiedData){
+
+        if (certifiedData) {
           formFooter.push({
             id: formData.data[0].certified_staff_id,
             message: 'Certified By:',
@@ -569,13 +570,13 @@ export async function getFormFooterData(form_id: string) {
             position: certifiedData.staff_position
           })
         }
-  
+
         var notedStaffList = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
-        if(notedStaffList.data){
-          for(let i = 0; i< notedStaffList.data.length; i++){
+        if (notedStaffList.data) {
+          for (let i = 0; i < notedStaffList.data.length; i++) {
             var notedStaff = await staffQuery.selectWhereStaffValidation(notedStaffList.data[i].staff_id, 'staff_id')
             var notedData = await getStaffInfo(notedStaff)
-            if(notedData){
+            if (notedData) {
               formFooter.push({
                 id: notedStaffList.data[i].staff_id,
                 message: 'Noted By:',
@@ -592,15 +593,15 @@ export async function getFormFooterData(form_id: string) {
 }
 
 // transforms Activity Income body data
-export async function getAIBodyData(form_id: string) { 
+export async function getAIBodyData(form_id: string) {
 
 
 }
 
 // transforms Expense Statement body items
-export async function getESBodyItems(form_id: string) { 
+export async function getESBodyItems(form_id: string) {
   var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
-  if(formData.data){
+  if (formData.data) {
     var items = await getItemsFromCategory(formData.data[0].category_id)
     return items
   }
@@ -608,9 +609,9 @@ export async function getESBodyItems(form_id: string) {
 }
 
 // transforms Expense Statement body data
-export async function getESBodyData(form_id: string) { 
+export async function getESBodyData(form_id: string) {
   var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
-  if(formData.data){
+  if (formData.data) {
     return [
       {
         message: "Receipt link:",
@@ -635,9 +636,9 @@ export async function getESBodyData(form_id: string) {
 
 
 // transforms Revenue Statement body items
-export async function getRSBodyItems(form_id: string) { 
+export async function getRSBodyItems(form_id: string) {
   var formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
-  if(formData.data){
+  if (formData.data) {
     var items = await getItemsFromCategory(formData.data[0].category_id)
     return items
   }
@@ -645,9 +646,9 @@ export async function getRSBodyItems(form_id: string) {
 }
 
 // transforms Revenue Statement body data
-export async function getRSBodyData(form_id: string) { 
+export async function getRSBodyData(form_id: string) {
   var formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
-  if(formData.data){
+  if (formData.data) {
     return [
       {
         message: "Receipt link:",
