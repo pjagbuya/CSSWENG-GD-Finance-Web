@@ -105,7 +105,6 @@ async function transformCreateData(category_id : string, category_name : string,
     }
   }
 
-  console.log(user_id)
   var preparedStaff = await staffQuery.selectWhereStaffValidation(user_id, 'user_id')
   // TODO: fill information
   if(preparedStaff.data){
@@ -114,7 +113,7 @@ async function transformCreateData(category_id : string, category_name : string,
       es_name: category_name,
       receipt_link: null,
       es_to: null,
-      es_from: null,
+      es_on: null,
       es_notes: null,
       prepared_staff_id: preparedStaff.data[0].staff_id,
       certified_staff_id: null,
@@ -138,7 +137,7 @@ async function transformEditData(data: any, id: string) {
       es_name: esData.data[0].es_name,
       receipt_link: data.get('receipt_link'),
       es_to: data.get('es_to'),
-      es_from: data.get('es_from'),
+      es_on: data.get('es_on'),
       es_notes: data.get('es_notes'),
       prepared_staff_id: esData.data[0].prepared_staff_id,
       certified_staff_id: data.get('certified_staff_id'),
@@ -163,6 +162,7 @@ export async function createExpenseStatementValidation(
   user_id: string,
 ) {
   var transformedData = await transformCreateData(category_id, category_name, user_id);
+  
   const validatedFields = ExpenseStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {

@@ -96,27 +96,12 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
           id="item_price"
           name="item_price"
           placeholder="Unit Price (0 if none)"
-          defaultValue={0}
+          value={fields.item_price}
           min={0}
           step="any"
         />
 
         <ErrorDisplay errors={state?.errors?.item_price} />
-      </>
-      
-      <>
-        <Label htmlFor="item_amount">Total Amount</Label>
-        <Input
-          type="number"
-          id="item_amount"
-          name="item_amount"
-          placeholder="Total Amount (0 if none)"
-          defaultValue={0}
-          min={0}
-          step="any"
-        />
-
-        <ErrorDisplay errors={state?.errors?.item_amount} />
       </>
 
       <>
@@ -126,11 +111,26 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
           id="item_units"
           name="item_units"
           placeholder="Unit Count (0 if none)"
-          defaultValue={0}
+          value={fields.item_units}
           min={0}
         />
 
         <ErrorDisplay errors={state?.errors?.item_units} />
+      </>
+
+      <>
+        <Label htmlFor="item_amount">Total Amount</Label>
+        <Input
+          type="number"
+          id="item_amount"
+          name="item_amount"
+          placeholder="Total Amount (0 if none)"
+          value={fields.item_amount}
+          min={0}
+          step="any"
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_amount} />
       </>
 
       <>

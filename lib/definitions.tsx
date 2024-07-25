@@ -476,12 +476,12 @@ export const UpdateExpenseFormSchema = z.object({
   es_to: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  es_from: z.string({
-    required_error: 'Please enter the account transferred to.',
-  }),
+  es_on: z.string({
+    required_error: 'Please enter the account transferred on.',
+  }).date(),
   es_notes: z.string({
-    required_error: 'Please enter the account transferred to.',
-  }),
+    required_error: 'Please enter notes.',
+  }).optional(),
   certified_staff_id: z.optional(z.string()),
   noted_staff_list_ids: z.optional(z.string()),
 });
@@ -493,12 +493,12 @@ export const UpdateRevenueFormSchema = z.object({
   rs_to: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
-  rs_from: z.string({
-    required_error: 'Please enter the account transferred to.',
-  }),
+  rs_on: z.string({
+    required_error: 'Please enter the account transferred on.',
+  }).date(),
   rs_notes: z.string({
-    required_error: 'Please enter the account transferred to.',
-  }),
+    required_error: 'Please enter notes.',
+  }).optional(),
   certified_staff_id: z.optional(z.string()),
   noted_staff_list_id: z.optional(z.string()),
 });

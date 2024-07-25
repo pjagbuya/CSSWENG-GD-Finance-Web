@@ -13,6 +13,7 @@ import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
 import * as categoryQuery from './categories';
 import * as eventQuery from './events';
+import * as staffQuery from './staffs';
 import * as staffListQuery from './staff_lists';
 import * as staffInstanceQuery from './staff_instances';
 
@@ -20,7 +21,7 @@ export type RevenueStatementState = {
   errors?: {
     receipt_link?: string[];
     rs_to?: string[];
-    rs_from?: string[];
+    rs_on?: string[];
     rs_notes?: string[];
     certified_staff_id?: string[];
     noted_staff_list_id?: string[];
@@ -68,7 +69,7 @@ var revenueStatementFormat = {
 
 var schema = 'revenue_statements'; // replace with table name
 
-async function transformCreateData(category_id: string, category_name: string) {
+async function transformCreateData(category_id: string, category_name: string, user_id: string) {
   // TODO: provide logic
   var rsData = await selectAllRevenueStatementValidation();
   var id_mod = 10000;
@@ -112,20 +113,24 @@ async function transformCreateData(category_id: string, category_name: string) {
       form_list_id = eventData.data[0].rs_form_list_id;
     }
   }
+
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(user_id, 'user_id')
   // TODO: fill information
-  return {
-    rs_id: `revst_${id_mod}`,
-    rs_name: category_name,
-    receipt_link: null,
-    rs_to: null,
-    rs_from: null,
-    rs_notes: null,
-    prepared_staff_id: null,
-    certified_staff_id: null,
-    noted_staff_list_id: `stl_${id_mod_staff}`,
-    form_list_id: form_list_id,
-    category_id: category_id,
-  };
+  if(preparedStaff.data){
+    return {
+      rs_id: `revst_${id_mod}`,
+      rs_name: category_name,
+      receipt_link: null,
+      rs_to: null,
+      rs_on: null,
+      rs_notes: null,
+      prepared_staff_id: preparedStaff.data[0].staff_id,
+      certified_staff_id: null,
+      noted_staff_list_id: `stl_${id_mod_staff}`,
+      form_list_id: form_list_id,
+      category_id: category_id,
+    };
+  }
 }
 
 async function transformEditData(data: any, id: string) {
@@ -139,9 +144,9 @@ async function transformEditData(data: any, id: string) {
       rs_name: rsData.data[0].rs_name,
       receipt_link: data.get('receipt_link'),
       rs_to: data.get('rs_to'),
-      rs_from: data.get('rs_from'),
+      rs_on: data.get('rs_on'),
       rs_notes: data.get('rs_notes'),
-      prepared_staff_id: data.get('prepared_staff_id'),
+      prepared_staff_id: rsData.data[0].prepared_staff_id,
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: rsData.data[0].noted_staff_list_id,
       form_list_id: rsData.data[0].form_list_id,
@@ -161,8 +166,9 @@ async function convertData(data: any) {
 export async function createRevenueStatementValidation(
   category_id: any,
   category_name: string,
+  user_id: string,
 ) {
-  var transformedData = await transformCreateData(category_id, category_name);
+  var transformedData = await transformCreateData(category_id, category_name, user_id);
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -198,17 +204,19 @@ export async function editRevenueStatementValidation(
   prevState: RevenueStatementState,
   formData: FormData,
 ) {
-  var transformedData = await transformEditData(formData, id);
-  const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
 
   var arrData = Array.from(formData.entries());
+
   const notedList = [];
   for (let i = 0; i < arrData.length; i++) {
     if (arrData[i][0].substring(0, 20) === 'noted_staff_list_id-') {
-      notedList.push(arrData[i][0].substring(21));
+      notedList.push(arrData[i][0].substring(20));
     }
   }
 
+  var transformedData = await transformEditData(formData, id);
+  const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
+  
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -221,6 +229,8 @@ export async function editRevenueStatementValidation(
   var data = await convertData(transformedData);
 
   await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
+
+  console.log(notedList)
 
   for (let i = 0; i < notedList.length; i++) {
     await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])

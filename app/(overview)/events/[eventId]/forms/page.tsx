@@ -18,10 +18,8 @@ const FormsPage = async ({ params }: FormsPageProps) => {
     'event_id',
   );
 
-  const formId = (await getAIFormFromEvent(params.eventId))?.data[0].form_list_id
-
-  console.log(params)
-  const event = eventData.data[0];
+  const formId = (await getAIFormFromEvent(params.eventId))?.data![0].form_list_id!;
+  const event = eventData!.data![0];
 
   return (
     <>
@@ -90,7 +88,6 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             nameFilter=""
             variant="fund_transfer"
           />
-          {/* <FormsTable nameFilter="" /> */}
         </div>
       </main>
     </>

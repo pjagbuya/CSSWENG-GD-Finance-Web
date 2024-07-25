@@ -67,6 +67,20 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
       </>
       
       <>
+        <Label htmlFor="item_units">Unit Count</Label>
+        <Input
+          type="number"
+          id="item_units"
+          name="item_units"
+          placeholder="Unit Count (0 if none)"
+          defaultValue={0}
+          min={0}
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_units} />
+      </>
+      
+      <>
         <Label htmlFor="item_amount">Total Amount</Label>
         <Input
           type="number"
@@ -79,20 +93,6 @@ const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
         />
 
         <ErrorDisplay errors={state?.errors?.item_amount} />
-      </>
-
-      <>
-        <Label htmlFor="item_units">Unit Count</Label>
-        <Input
-          type="number"
-          id="item_units"
-          name="item_units"
-          placeholder="Unit Count (0 if none)"
-          defaultValue={0}
-          min={0}
-        />
-
-        <ErrorDisplay errors={state?.errors?.item_units} />
       </>
 
       <>

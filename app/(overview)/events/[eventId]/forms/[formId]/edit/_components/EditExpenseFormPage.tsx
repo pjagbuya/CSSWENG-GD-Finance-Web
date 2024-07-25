@@ -21,7 +21,7 @@ const EditExpenseFormPage = ({ eventId, formInfo }: EditExpenseFormPageProps) =>
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     es_to: formInfo.es_to,
-    es_from: formInfo.es_from,
+    es_on: formInfo.es_on,
     es_notes: formInfo.es_notes,
     certified_staff_id: formInfo.certified_staff_id,
     noted_staff_list_ids: formInfo.noted_staff_list_id,
@@ -73,16 +73,17 @@ const EditExpenseFormPage = ({ eventId, formInfo }: EditExpenseFormPageProps) =>
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="es_from">Account Transfer From</Label>
+          <Label htmlFor="es_on">Account Transfer On</Label>
           <Input
-            id="es_from"
-            name="es_from"
+            type="date"
+            id="es_on"
+            name="es_on"
             placeholder="Account Transferred To"
-            value={values.es_from}
-            onChange={e => setValues({ ...values, es_from: e.target.value })}
+            value={values.es_on}
+            onChange={e => setValues({ ...values, es_on: e.target.value })}
           />
 
-          <ErrorDisplay errors={state?.errors?.es_from} />
+          <ErrorDisplay errors={state?.errors?.es_on} />
         </div>
 
         <div className="flex flex-col gap-3">

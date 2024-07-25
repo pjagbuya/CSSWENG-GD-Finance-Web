@@ -21,10 +21,10 @@ const EditRevenueFormPage = ({ eventId, formInfo }: EditRevenueFormPageProps) =>
   const [values, setValues] = useState({
     receipt_link: formInfo.receipt_link,
     rs_to: formInfo.rs_to,
-    rs_from: formInfo.rs_from,
+    rs_on: formInfo.rs_on,
     rs_notes: formInfo.rs_notes,
     certified_staff_id: formInfo.certified_staff_id,
-    noted_staff_list_ids: formInfo.noted_staff_id,
+    noted_staff_list_ids: formInfo.noted_staff_list_id,
   });
 
   const [state, action] = useFormState(
@@ -73,16 +73,17 @@ const EditRevenueFormPage = ({ eventId, formInfo }: EditRevenueFormPageProps) =>
         </div>
 
         <div className="flex flex-col gap-3">
-          <Label htmlFor="rs_from">Account Transfer From</Label>
+          <Label htmlFor="rs_on">Account Transfer On</Label>
           <Input
-            id="rs_from"
-            name="rs_from"
+            type="date"
+            id="rs_on"
+            name="rs_on"
             placeholder="Account Transfer Date"
-            value={values.rs_from}
-            onChange={e => setValues({ ...values, rs_from: e.target.value })}
+            value={values.rs_on}
+            onChange={e => setValues({ ...values, rs_on: e.target.value })}
           />
 
-          <ErrorDisplay errors={state?.errors?.rs_from} />
+          <ErrorDisplay errors={state?.errors?.rs_on} />
         </div>
 
         <div className="flex flex-col gap-3">

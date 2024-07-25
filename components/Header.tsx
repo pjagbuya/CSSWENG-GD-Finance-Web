@@ -11,7 +11,7 @@ const Header = () => {
     setChief(t)
   }
   return (
-    <header className="flex items-center justify-between gap-4 border-b-2 bg-background p-3.5">
+    <header className="flex items-center justify-between gap-4 border-b-2 bg-background p-3.5 print:hidden">
       <Logo />
       <Navbar className="max-w-none justify-start" isChief={isChief} />
 

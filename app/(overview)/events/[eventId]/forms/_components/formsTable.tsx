@@ -150,9 +150,11 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
 
     //   setToViewId('');
     // }
+    console.log(123);
 
     if (toViewId) {
       router.push(`${pathname}/${toViewId}/`);
+      setToViewId('');
     }
   }, [toViewId]);
 
@@ -214,8 +216,8 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         data={tableData}
         deletable={false}
         idFilter={nameFilter}
-        idColumn={variant === 'expense' ? 'es_name' : 'rs_name'}
-        pkColumn={variant === 'expense' ? 'es_id' : 'rs_id'}
+        idColumn={variant === 'expense' ? 'es_name' : variant === 'fund_transfer' ? 'ft_name' : 'rs_name'}
+        pkColumn={variant === 'expense' ? 'es_id' : variant === 'fund_transfer' ? 'ft_id' : 'rs_id'}
         onRowEdit={(formId: string) => setToEditId(formId)}
         onRowDelete={(formId: string) => setToDeleteId(formId)}
         onRowSelect={(formId: string) => setToViewId(formId)}

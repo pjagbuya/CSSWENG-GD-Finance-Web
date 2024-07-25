@@ -110,6 +110,151 @@
   text-align: center;
 }
 
+/*ES*/
+
+.form-main>.form-items-ES>table{
+  width: 1920px;
+}
+
+.form-main>.form-items-ES>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>table>tbody>tr>td:nth-child(1){
+  width: 860px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>table>tbody>tr>td:nth-child(2){
+  width: 200px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>table>tbody>tr>td:nth-child(3){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>table>tbody>tr>td:nth-child(4){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>.form-total>table{
+  width: 1920px;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr>td:nth-child(1){
+  width: 1485px;
+  justify-content: center;
+  text-align: left;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr>td:nth-child(2){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(1){
+  padding-right: 5px;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(1)>td:nth-child(2){
+  border-top: 3px solid black;
+}
+
+.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(2){
+  border-bottom: 3px solid black;
+  border-style: double;
+}
+
+/* Revenue Statement */
+
+.form-main>.form-items-RS>table{
+  width: 1920px;
+}
+
+.form-main>.form-items-RS>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>table>tbody>tr>td:nth-child(1){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>table>tbody>tr>td:nth-child(2){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>table>tbody>tr>td:nth-child(3){
+  width: 640px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>table>tbody>tr>td:nth-child(4){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>.form-total>table{
+  width: 1920px;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr>td:nth-child(1){
+  width: 1485px;
+  justify-content: center;
+  text-align: left;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr>td:nth-child(2){
+  width: 425px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(1){
+  padding-right: 5px;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(1)>td:nth-child(2){
+  border-top: 3px solid black;
+}
+
+.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(2){
+  border-bottom: 3px solid black;
+  border-style: double;
+}
+
+/*Main*/
+
+
 .form-main{
   display: flex;
   flex-direction: column;
@@ -117,7 +262,7 @@
   font-size: 36px;
 }
 
-.form-main>.form-info{
+.form-info{
   display: flex;
   flex-direction: row;
   width: 1900px;
@@ -127,12 +272,12 @@
   margin-bottom: 30px;
 }
 
-.form-main>.form-info>.form-info-title{
+.form-info>.form-info-title{
   margin: 5px;
   width: 390px;
 }
 
-.form-main>.form-info>.form-info-description{
+.form-info>.form-info-description{
   display: flex;
   flex-wrap: wrap;
   margin: 5px;

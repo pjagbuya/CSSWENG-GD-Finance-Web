@@ -131,7 +131,7 @@ export async function createCategoryValidation(
   switch(type){
     case 'revenue':
       {
-        await revenueStatementQuery.createRevenueStatementValidation(data.category_id, data.category_name)
+        await revenueStatementQuery.createRevenueStatementValidation(data.category_id, data.category_name, currentUser?.id!)
       }
     break;
     case 'expense':
