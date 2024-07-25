@@ -19,6 +19,7 @@ import * as fundTransferQuery from '@/actions/fund_transfers'
 export type EventState = {
   errors?: {
     event_name?: string[];
+    event_date?: string[];
   };
 };
 
@@ -71,6 +72,7 @@ async function transformCreateData(data: FormData) {
   return {
     event_id: `event_${id_mod}`,
     event_name: data.get('event_name'),
+    event_date: data.get('event_date'),
     ft_form_list_id: `ftl_${id_mod}`,
     rs_form_list_id: `rsl_${id_mod}`,
     es_form_list_id: `esl_${id_mod}`,
@@ -86,6 +88,7 @@ async function transformEditData(id: string, identifier: string, data: FormData)
     return {
       event_id: id,
       event_name: data.get('event_name'),
+      event_date: data.get('event_date'),
       ft_form_list_id: eventData.data[0].ft_form_list_id,
       rs_form_list_id: eventData.data[0].rs_form_list_id,
       es_form_list_id: eventData.data[0].es_form_list_id,

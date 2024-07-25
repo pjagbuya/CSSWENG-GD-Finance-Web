@@ -593,8 +593,27 @@ export async function getFormFooterData(form_id: string) {
 
 // transforms Activity Income body data
 export async function getAIBodyData(form_id: string) { 
-
-
+  var formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(form_id, 'ai_id')
+  if(formData.data){
+    var eventData = await eventQuery.selectWhereEventValidation(formData.data[0].form_list_id, 'ai_form_list_id')
+    if(eventData.data){
+      return {
+        title: [
+          {
+            message: "Activity Title:",
+            description: eventData.data[0].event_name
+        },
+        {
+            message: "Activity Date:",
+            description: eventData.data[0].event_date
+        },
+        ],
+        event_id: eventData.data[0].event_id,
+        notes: formData.data[0].ai_notes
+      }
+    }
+  }
+  return null
 }
 
 // transforms Expense Statement body items

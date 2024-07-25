@@ -18,7 +18,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
     'event_id',
   );
 
-  const formId = (await getAIFormFromEvent(params.eventId))?.data![0].form_list_id!;
+  const formId = (await getAIFormFromEvent(params.eventId))?.data![0].ai_id!;
   const event = eventData!.data![0];
 
   return (

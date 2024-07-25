@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS gdsc_events
     es_form_list_id VARCHAR(25),
     ai_form_list_id VARCHAR(25),
     date_created DATE DEFAULT (now()),
+    event_date DATE,
     FOREIGN KEY (ft_form_list_id) REFERENCES form_lists(form_list_id),
     FOREIGN KEY (rs_form_list_id) REFERENCES form_lists(form_list_id),
     FOREIGN KEY (es_form_list_id) REFERENCES form_lists(form_list_id),
