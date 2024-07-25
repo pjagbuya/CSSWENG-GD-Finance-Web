@@ -142,7 +142,7 @@ const CreateFundTransferForm = ({
                 placeholder="Noted By"
                 value=""
               />
-              <ErrorDisplay errors={state.errors?.noted_staff_list_ids} />
+              <ErrorDisplay errors={state.errors?.noted_staff_list_id} />
             </div>
 
             <div className="flex flex-col gap-3">
