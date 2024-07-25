@@ -58,7 +58,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             AISF Form
           </h3>
 
-          <p>Last generated on [DATE].</p>
+          <p> {ai_date ? `Last generated on ${ai_date}` : "LOADING"}.</p>
 
           <div className="mb-8 flex gap-4">
             <Button className="min-w-24">

@@ -3,12 +3,12 @@ import { z } from 'zod';
 // Database Schemas //
 
 export const ActivityIncomeSchema = z.object({
-  ai_id: z
-    .string({
-      required_error: 'Please enter Activity Income ID.',
-    })
-    .min(1),
-  /*
+  // ai_id: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income ID.',
+  //   })
+  //   .min(1),
+  //
   ai_name: z
     .string({
       required_error: 'Please enter Activity Income name.',
@@ -30,17 +30,16 @@ export const ActivityIncomeSchema = z.object({
       required_error: 'Please enter Certified staff ID.',
     })
     .min(1),
-    */
-  noted_staff_list_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
-  form_list_id: z
-    .string({
-      required_error: 'Please enter Form list ID.',
-    })
-    .min(1),
+  // noted_staff_list_id: z
+  //   .string({
+  //     required_error: 'Please enter Noted staff ID.',
+  //   })
+  //   .min(1),
+  // form_list_id: z
+  //   .string({
+  //     required_error: 'Please enter Form list ID.',
+  //   })
+  //   .min(1),
 });
 
 export const CategorySchema = z.object({
@@ -56,9 +55,6 @@ export const CategorySchema = z.object({
 });
 
 export const StaffSchema = z.object({
-  staff_name: z.string({
-    required_error: 'Please enter Staff name.',
-  }),
   staff_position: z.string({
     required_error: 'Please enter Staff position.',
   }),

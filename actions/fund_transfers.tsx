@@ -109,7 +109,7 @@ export async function createFundTransferValidation(
 
   // TODO: provide logic
   var data = await convertData(validatedFields);
-  const { error } = await createFundTransfer(data);
+  const { error } = await createFundTransfer(data.data);
   if (error) {
     console.log(error.message)
     // throw new Error(error.message);

@@ -1,7 +1,9 @@
+'use client'
+
 import { useFormState } from 'react-dom';
-import RegisterAccountForm from './RegisterAccountForm';
-import { RegisterAccountState, getUserStaff, registerAccount } from '@/actions/account';
+import { RegisterAccountState, editSTaffForm, getUserStaff, registerAccount } from '@/actions/account';
 import { useEffect, useState } from 'react';
+import EditStaffForm from './EditStaffForm';
 
 type EditEventDialogProps = {
   open: boolean;
@@ -15,10 +17,9 @@ const EditStaffDialog = ({ open, onFinish, id }: EditEventDialogProps) => {
     errors: {
     }
   };
-  const registerAction = registerAccount.bind(null, id)
+  const registerAction = editSTaffForm.bind(null, id)
   const [state, formAction] = useFormState(registerAction, initialState);
   const [fields, setFields] = useState({
-    staff_name: '',
     position: '',
   });
 
@@ -29,22 +30,27 @@ const EditStaffDialog = ({ open, onFinish, id }: EditEventDialogProps) => {
         const user = await getUserStaff(id);
         setFields({ ...fields, ...user });
 
-        // setOpen(true);
+        console.log(id)
       }
     }
 
     getUserInfo();
   }, [id]);
 
+  function handleOpenChange(v: boolean) {
+    onFinish();
+  }
 
 
   return (
-    <RegisterAccountForm
+    <EditStaffForm
       action={formAction}
-      label={'Create'}
+      fields={fields}
+      label={'Edit'}
       state={state}
       open={open}
-      onOpenChange={onFinish}
+      onFieldsChange={setFields}
+      onOpenChange={handleOpenChange}
     />
   );
 };
