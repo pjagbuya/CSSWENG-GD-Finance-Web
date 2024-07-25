@@ -11,12 +11,13 @@ import * as query from '@/lib/supabase';
 import * as eventQuery from './events';
 import * as staffListQuery from './staff_lists';
 import * as staffInstanceQuery from './staff_instances';
+import { createClient } from '@/utils/supabase/server';
 
 export type activityIncomeState = {
   errors?: {
     // ai_id?: string[];
     // ai_name?: string[];
-    ai_date?: string[];
+    // ai_date?: string[];
     ai_notes?: string[];
     // prepared_staff_id?: string[];
     certified_staff_id?: string[];
@@ -59,6 +60,9 @@ var activityIncomeFormat = {
 var schema = 'activity_incomes'; // replace with table name
 
 async function transformCreateData(id: string) {
+
+  const supabase = createClient()
+  const currentUser = (await supabase.auth.getUser()).data.user;
   // TODO: provide logic
   var aiData = await selectAllActivityIncomeValidation()
   var id_mod = 10000
@@ -95,9 +99,10 @@ async function transformCreateData(id: string) {
     // TODO: fill information
     return {
       ai_id: `actin_${id_mod}`,
-      ai_name: eventData.data[0].name,
+      ai_name: eventData.data[0].event_name,
+      ai_date: eventData.data[0].event_date,
       ai_notes: null,
-      prepared_staff_id: null,
+      prepared_staff_id: currentUser?.id!,
       certified_staff_id: null,
       noted_staff_list_id: `stl_${id_mod_staff}`,
       form_list_id: form_list_id,
@@ -107,13 +112,13 @@ async function transformCreateData(id: string) {
 }
 
 async function transformEditData(data: any, id: string) {
-
+  
   // TODO: provide logic
   var aiData = await selectWhereActivityIncomeValidation(id, 'ai_id')
 
   // TODO: fill information
-  if (aiData.data) {
-    return {
+  if(aiData.data){
+    return{
       ai_id: id,
       ai_name: aiData.data[0].es_name,
       ai_notes: data.get('ai_notes'),
@@ -164,23 +169,26 @@ export async function createActivityIncomeValidation(
 }
 
 export async function editActivityIncomeValidation(
+  eventId: string,
   id: string,
   identifier: string,
   prevState: activityIncomeState,
   formData: FormData,
 ) {
+  console.log(formData.entries())
   var arrData = Array.from(formData.entries())
+
   const notedList = []
-  for (let i = 0; i < arrData.length; i++) {
-    if (arrData[i][0].substring(0, 20) === "noted_staff_list_id-") {
-      notedList.push(arrData[i][0].substring(21))
+  for(let i = 0; i < arrData.length; i++){
+    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
+      notedList.push(arrData[i][0].substring(20))
     }
   }
 
   var transformedData = await transformEditData(formData, id);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
-
+  
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -193,20 +201,22 @@ export async function editActivityIncomeValidation(
   var data = await convertData(transformedData);
 
   await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
-
-  for (let i = 0; i < notedList.length; i++) {
+  
+  for(let i = 0; i < notedList.length; i++){
     await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
   }
-
+  
   const { error } = await editActivityIncome(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
+  redirect(`/events/${eventId}/forms`);
+
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  // return {
+  //   message: null,
+  // };
 }
 
 export async function selectWhereActivityIncomeValidation(

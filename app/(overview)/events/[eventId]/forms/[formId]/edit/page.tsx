@@ -2,6 +2,8 @@ import { selectWhereExpenseStatementValidation } from '@/actions/expense_stateme
 import EditExpenseFormPage from './_components/EditExpenseFormPage';
 import EditRevenueFormPage from './_components/EditRevenueFormPage';
 import { selectWhereRevenueStatementValidation } from '@/actions/revenue_statements';
+import { selectWhereActivityIncomeValidation } from '@/actions/activity_incomes';
+import EditAISFormPage from './_components/EditAISFormPage';
 
 type EditFormPageParams = {
   params: {
@@ -26,7 +28,8 @@ const EditFormPage = async ({ params }: EditFormPageParams) => {
       }
 
       case 'actin':
-        return null;
+        const data = await selectWhereActivityIncomeValidation(params.formId, 'ai_id');
+        return <EditAISFormPage eventId={params.eventId} formInfo={data!.data![0]} />;
   
       case 'funtr':
         return null;

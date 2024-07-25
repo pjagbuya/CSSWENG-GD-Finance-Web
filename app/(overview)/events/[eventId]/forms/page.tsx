@@ -19,6 +19,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
   );
 
   const formId = (await getAIFormFromEvent(params.eventId))?.data![0].ai_id!;
+  const ai_date = (await getAIFormFromEvent(params.eventId))?.data![0]!.ai_date;
   const event = eventData!.data![0];
 
   return (
@@ -61,13 +62,20 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           <p> {ai_date ? `Last generated on ${ai_date}` : "LOADING"}.</p>
 
           <div className="mb-8 flex gap-4">
-            <Button className="min-w-24">
+            <Button className="min-w-24" asChild>
               <Link href={`/events/${params.eventId}/forms/${formId}`}>View</Link>
             </Button>
-            <CreateFormButton
-              eventId={params.eventId}
+
+            <Button className="min-w-24" asChild>
+              <Link href={`/events/${params.eventId}/forms/${formId}/edit`}>Edit</Link>
+            </Button>
+
+            {/* <CreateFormButton
+              // eventId={params.eventId}
+              
+              isEditing={true}
               variant="aisf"
-            />
+            /> */}
           </div>
         </div>
 

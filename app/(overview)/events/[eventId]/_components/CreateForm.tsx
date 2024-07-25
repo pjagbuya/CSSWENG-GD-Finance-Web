@@ -12,6 +12,7 @@ import { Children, useEffect } from 'react';
 type CreateFormProps = {
   action: string | ((formData: FormData) => void);
   children: React.ReactNode;
+  isEditing?: boolean;
   state: { errors?: {}; message?: string | null };
   title: string;
   open?: boolean;
@@ -22,6 +23,7 @@ type CreateFormProps = {
 const CreateForm = ({
   action,
   children,
+  isEditing,
   state,
   title,
   onFinish,
@@ -56,7 +58,7 @@ const CreateForm = ({
           </div>
 
           <DialogFooter className="mt-3">
-            <Button type="submit">Create</Button>
+            <Button type="submit">{(isEditing === undefined || !isEditing)  ? 'Create' : 'Edit'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

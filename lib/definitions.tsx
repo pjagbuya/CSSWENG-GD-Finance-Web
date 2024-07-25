@@ -9,32 +9,32 @@ export const ActivityIncomeSchema = z.object({
   //   })
   //   .min(1),
   //
-  ai_name: z
-    .string({
-      required_error: 'Please enter Activity Income name.',
-    })
-    .min(1),
-  ai_date: z
-    .string({
-      required_error: 'Please enter Activity Income date.',
-    })
-    .date(),
+  // ai_name: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income name.',
+  //   })
+  //   .min(1),
+  // ai_date: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income date.',
+  //   })
+  //   .date(),
   ai_notes: z.string().optional(),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
   certified_staff_id: z
     .string({
       required_error: 'Please enter Certified staff ID.',
     })
     .min(1),
-  // noted_staff_list_id: z
-  //   .string({
-  //     required_error: 'Please enter Noted staff ID.',
-  //   })
-  //   .min(1),
+  noted_staff_list_id: z
+    .string({
+      required_error: 'Please enter Noted staff ID.',
+    })
+    .min(1),
   // form_list_id: z
   //   .string({
   //     required_error: 'Please enter Form list ID.',

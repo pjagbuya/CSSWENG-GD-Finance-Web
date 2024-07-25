@@ -10,11 +10,12 @@ import CreateFundTransferForm from './dialogs/CreateFundTransferForm';
 import EditAISFForm from './dialogs/EditAISFForm';
 
 type CreateFormButtonProps = {
+  isEditing?: boolean;
   eventId: string;
   variant: 'expense' | 'revenue' | 'fund_transfer' | 'aisf';
 };
 
-const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
+const CreateFormButton = ({ eventId, isEditing, variant }: CreateFormButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   function getFormComponent() {
@@ -60,7 +61,16 @@ const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
   return (
     <>
       <Button onClick={() => setShowDialog(true)}>
+
+        {(isEditing === undefined || !isEditing) ? 
+        
+        <>
         <CirclePlus className="mr-2 w-4" /> Create Form
+        </>
+        
+      :
+      'Edit Form'
+      }
       </Button>
 
       {showDialog && getFormComponent()}

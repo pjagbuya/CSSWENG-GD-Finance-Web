@@ -33,7 +33,7 @@ const EditAISFForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
     errors: {},
     message: null,
   };
-  const formAction = editActivityIncomeValidation.bind(eventId, '')
+  const formAction = editActivityIncomeValidation.bind(eventId, 'ai_id')
   const [state, action] = useFormState(formAction, initialState);
 
   useEffect(() => {
@@ -59,48 +59,63 @@ const EditAISFForm = ({ eventId, onFinish }: CreateRevenueFormProps) => {
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit AISF Form"
       onFinish={onFinish}
     >
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="ai_name"
-          placeholder="Enter Name"
-        />
-
-        <ErrorDisplay errors={state?.errors?.ai_name} />
-      </div>
       <>
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
+      <Label htmlFor="receipt_link">Receipts Link</Label>
+          <Input
+            id="receipt_link"
+            name="receipt_link"
+            placeholder="Receipts Link"
+            value={values.receipt_link}
+            onChange={e =>
+              setValues({ ...values, receipt_link: e.target.value })
+            }
+          />
 
-        <ErrorDisplay errors={state.errors?.ai_notes} />
       </>
-      <div className="flex flex-col gap-3">
-        <StaffSelector
-          label="Prepared by"
-          name="prepared_staff_id"
-          placeholder="Prepared By"
-        // value={values.certified_staff_id}
-        // onChange={v => setValues({ ...values, certified_staff_id: v })}
-        />
-        <ErrorDisplay errors={state.errors?.prepared_staff_id} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <StaffMultiSelector
-          label="Certified By"
-          name="certified_staff_id"
-          placeholder="Certified By"
-          value={/*values.noted_staff_list_ids*/ ''}
-        />
-        <ErrorDisplay errors={state.errors?.certified_staff_id} />
-      </div>
     </CreateForm>
   );
 };
 
 export default EditAISFForm;
+
+  // {/* <div className="flex flex-col gap-3">
+  //       <Label htmlFor="name">Name</Label>
+  //       <Input
+  //         id="name"
+  //         name="ai_name"
+  //         placeholder="Enter Name"
+  //       />
+
+  //       <ErrorDisplay errors={state?.errors?.ai_name} />
+  //     </div> */}
+  //     <>
+  //       <Label htmlFor="notes">Notes</Label>
+  //       <Textarea id='notes' name='ai_notes' placeholder='Activity Income Notes' />
+
+  //       <ErrorDisplay errors={state.errors?.ai_notes} />
+  //     </>
+  //     <div className="flex flex-col gap-3">
+  //       <StaffSelector
+  //         label="Certified by"
+  //         name="certified_staff_id"
+  //         placeholder="Certified By"
+  //       // value={values.certified_staff_id}
+  //       // onChange={v => setValues({ ...values, certified_staff_id: v })}
+  //       />
+  //       <ErrorDisplay errors={state.errors?.prepared_staff_id} />
+  //     </div>
+
+  //     <div className="flex flex-col gap-3">
+  //       <StaffMultiSelector
+  //         label="Certified By"
+  //         name="certified_staff_id"
+  //         placeholder="Certified By"
+  //         value={/*values.noted_staff_list_ids*/ ''}
+  //       />
+  //       <ErrorDisplay errors={state.errors?.certified_staff_id} />
+  //     </div>
