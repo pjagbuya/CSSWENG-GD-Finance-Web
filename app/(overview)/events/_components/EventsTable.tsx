@@ -20,6 +20,13 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     ),
   },
   {
+    accessorKey: 'event_date',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date Held</SortableHeader>
+    ),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('event_date'))),
+  },
+  {
     accessorKey: 'date_created',
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>

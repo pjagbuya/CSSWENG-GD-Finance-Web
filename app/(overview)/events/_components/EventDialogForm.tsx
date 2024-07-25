@@ -77,6 +77,19 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
                   ))}
               </div> */}
             </div>
+
+            <div className="flex flex-col gap-2">
+            <Label htmlFor="event_date">Date</Label>
+            <Input
+              id="event_name"
+              name="event_name"
+              placeholder="Event Date"
+              value={fields?.event_date}
+              onChange={e =>
+                onFieldsChange?.({ ...fields, event_date: e.target.value })
+              }
+            />              
+            </div>
           </div>
 
           <DialogFooter>

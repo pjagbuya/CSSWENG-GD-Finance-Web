@@ -138,23 +138,153 @@ async function getRevenueFormBody(formId: string) {
 }
 
 async function getAISFFormBody(formId: string) {
-    /*
-    return (
-        <>
-          {formData.map(data =>(
-              <div className="form-info">
-                  <div className="form-info-title">
-                      {data.message}
-                  </div>
-                  <div className="form-info-description">
-                      <u>{data.description}</u>
-                      <line/>
-                  </div>
-              </div>
-          ))}
-        </>
-      );
-    */
+
+    var aiData = await utility.getAIBodyData(formId)
+    if(aiData){
+        var formTitle = aiData.title
+        var revenueItems = await utility.getRevenueItemsFromEvent(aiData.event_id)
+        var revenueTotal = await utility.getRevenueTotalFromEvent(aiData.event_id)
+        var expenseItems = await utility.getExpenseItemsFromEvent(aiData.event_id)
+        var expenseTotal = await utility.getExpenseTotalFromEvent(aiData.event_id)
+        var incomeLoss = revenueTotal - expenseTotal
+        var notes = aiData.notes
+
+        return (
+            <>
+                {formTitle.map(data =>(
+                    <div className="form-info">
+                        <div className="form-info-title">
+                            {data.message}
+                        </div>
+                        <div className="form-info-description">
+                            {data.description}
+                            <underline/>
+                        </div>
+                    </div>
+                ))}
+                <line/>
+                <br/>
+                <div className="form-items-AI">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div className="items">
+                                        <b>Revenue</b>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td><u>Items</u></td>
+                                                    <td><u>Note</u></td>
+                                                    <td><u>Amount</u></td>
+                                                </tr>
+                                                {revenueItems?.map(item =>(
+                                                    <tr>
+                                                        <td>{item.item_name}</td>
+                                                        <td>{item.item_id}</td>
+                                                        <td>{item.item_amount.toFixed(2)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="total">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="text-left">Total</td>
+                                                    <td></td>
+                                                    <td className='border-bottom'>{revenueTotal.toFixed(2)}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div className="items">
+                                        <b>Expense</b>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td><u>Items</u></td>
+                                                    <td><u>Note</u></td>
+                                                    <td><u>Amount</u></td>
+                                                </tr>
+                                                {expenseItems?.map(item =>(
+                                                    <tr>
+                                                        <td>{item.item_name}</td>
+                                                        <td>{item.item_id}</td>
+                                                        <td>{item.item_amount.toFixed(2)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        <div className="total">
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="text-left">Total</td>
+                                                        <td></td>
+                                                        <td className='border-bottom'>{expenseTotal.toFixed(2)}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div className='income'>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr className="grid grid-cols-[2fr_1fr_1fr]">
+                                                    <td className="text-left"><b>Income (Loss)</b></td>
+                                                    <td></td>
+                                                    <td className='border-bottom-2'>{incomeLoss.toFixed(2)}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br/>
+                <div className="form-info">
+                    <div className="form-info-title">
+                        Notes:
+                    </div>
+                    <div className="form-info-description">
+                        {notes}
+                        <underline/>
+                    </div>
+                </div>
+            </>
+          );
+
+    }
+    
+    return (<div></div>)
+
 }
 
 async function getFundTransferFormBody(formId: string) {
@@ -195,7 +325,7 @@ async function getFundTransferFormBody(formId: string) {
                 </div>
                 <div className="form-info-description">
                     <u>{data.description}</u>
-                    <line/>
+                    <underline/>
                 </div>
             </div>
         ))}

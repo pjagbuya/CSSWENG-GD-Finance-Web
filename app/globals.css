@@ -252,8 +252,126 @@
   border-style: double;
 }
 
-/*Main*/
+/* Activity Income */
 
+.form-main>.form-items-AI>table{
+  width: 1900px;
+}
+
+.form-main>.form-items-AI>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items{
+  text-align: left;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table{
+  width: 1920px;
+  table-layout: fixed;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(1){
+  width: 1050px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(2){
+  width: 430px;
+  justify-content: center;
+  text-align: center;
+}
+
+.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(3){
+  width: 430px;
+  justify-content: center;
+  text-align: center;
+}
+
+.total>table{
+  width: 1920px;
+}
+
+.total>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;;
+}
+
+.total>table>tbody>tr>td>:nth-child(1){
+  width: 1480px;
+  text-align: left;
+}
+
+.total>table>tbody>tr>td>:nth-child(2){
+  width: 430px;
+  justify-content: center;
+  text-align: center;
+}
+
+.total>table>tbody>tr:nth-child(2)>td>:nth-child(2){
+  border-bottom: 3px solid black;
+}
+
+.border-bottom{
+  border-bottom: 3px solid black;
+}
+
+.border-bottom-2{
+  border-bottom: 3px solid black;
+  border-style: double;
+}
+
+.income>table{
+  width: 1920px;
+}
+
+.income>table>tbody>tr{
+  height: 60px;
+  justify-content: center;
+  text-align: center;
+}
+
+.income>table>tbody>tr>td>:nth-child(1){
+  width: 1480px;
+  justify-content: center;
+  text-align: center;
+  font-size: 42px;
+}
+
+.income>table>tbody>tr>td>:nth-child(2){
+  width: 430px; 
+  justify-content: center;
+  text-align: center;
+}
+
+.income>table>tbody>tr:nth-child(2)>td>:nth-child(2){
+  border-bottom: 3px solid block;
+  border-style: double;
+}
+
+/*Main*/
 
 .form-main{
   display: flex;

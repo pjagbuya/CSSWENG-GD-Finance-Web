@@ -449,6 +449,11 @@ export const CreateEventSchema = z.object({
       required_error: 'Please enter an event name.',
     })
     .min(1),
+  event_date: z
+    .string({
+      required_error: 'Please enter the event date.',
+    })
+    .date(),
 });
 
 export const EditUserFormSchema = AddUserFormSchema.omit({
