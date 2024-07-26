@@ -12,6 +12,7 @@ import { revalidatePath } from 'next/cache';
 import { createAdminClient, createClient } from '@/utils/supabase/server';
 import { unstable_noStore as noStore } from 'next/cache';
 import { insert, remove } from '@/lib/supabase';
+import { query } from '@/utils/supabase/supabase';
 
 export type AccountState = {
   errors?: {
@@ -29,6 +30,26 @@ export type RegisterAccountState = {
   };
   message?: string | null;
 };
+
+
+async function getStaffId(
+) {
+  var staffData = await query.selectAll('staffs');
+  var id_mod = 10000;
+  if (staffData.data) {
+    if (staffData.data.length > 0) {
+      for (let i = 0; i < staffData.data!.length; i++) {
+        var num = parseInt(staffData.data[i].staff_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
+        }
+      }
+      id_mod += 1;
+    }
+  }
+
+  return `staff_${id_mod}`
+}
 
 export async function createAccount(
   prevState: AccountState,
@@ -104,7 +125,7 @@ export async function editAccount(
 export async function deleteAccount(id: string) {
   const supabase = createAdminClient();
 
-  const { error } = await supabase.auth.admin.deleteUser(id, true);
+  const { error } = await supabase.auth.admin.deleteUser(id, false);
   if (error) {
     throw new Error(error.message);
   }
@@ -166,7 +187,7 @@ export async function createStaff(data: staffType, userId: string) {
   const { error: staffError } = await insert('staffs', {
     staff_position: data.staff_position.toUpperCase(),
     user_id: userId,
-    staff_id: 'not sure what to do',
+    staff_id: await getStaffId(),
   });
 
   if (staffError) {

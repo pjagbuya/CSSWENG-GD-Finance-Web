@@ -74,7 +74,7 @@ const EditAccountDialog = ({
     <AccountDialogForm
       action={formAction}
       fields={fields}
-      label="Create"
+      label={isEditing ? 'Edit' : 'Create'}
       state={state}
       open={open}
       onFieldsChange={setFields}

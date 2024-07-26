@@ -105,13 +105,16 @@ const AccountsTable = ({
         data={userInfos}
         idFilter={nameFilter}
         idColumn="name"
-        onRowEdit={id => {
-          userInfos && setToEditId(userInfos[Number(id)].uuid);
+        pkColumn="uuid"
+        onRowEdit={uuid => {
+          // userInfos && setToEditId(userInfos[Number(id)].uuid);
+          userInfos && setToEditId(uuid);
         }}
-        onRowDelete={id => {
-          console.log(userInfos);
-          console.log(id);
-          userInfos && setToDeleteId(userInfos[Number(id)].uuid);
+        onRowDelete={uuid => {
+          // console.log(userInfos);
+          // console.log(id);
+          // userInfos && setToDeleteId(userInfos[Number(id)].uuid);
+          userInfos && setToDeleteId(uuid);
         }}
       />
 

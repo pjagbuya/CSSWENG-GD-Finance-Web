@@ -553,6 +553,23 @@ export async function getFormFooterData(form_id: string) {
             );
         }
         break;
+      case 'actin':
+        {
+          formData =
+            await activityIncomeQuery.selectWhereActivityIncomeValidation(
+              form_id,
+              'ai_id',
+            );
+        }
+        break;
+      case 'funtr':
+        {
+          formData = await fundTransferQuery.selectWhereFundTransferValidation(
+            form_id,
+            'ft_id',
+          );
+        }
+        break;
     }
     if (formData) {
       if (formData.data) {
@@ -740,4 +757,39 @@ export async function getRSBodyData(form_id: string) {
 }
 
 // transforms Fund Transfer body data
-export async function getFTBodyData(form_id: string) {}
+export async function getFTBodyData(form_id: string) {
+  var formData = await fundTransferQuery.selectWhereFundTransferValidation(
+    form_id,
+    'ft_id',
+  );
+
+  if (formData.data) {
+    return [
+      {
+        message: 'Description/Reason:',
+        description: formData.data[0].ft_reason,
+      },
+      {
+        message: 'Transferred amount:',
+        description: formData.data[0].ft_amount,
+      },
+      {
+        message: 'Transferred from:',
+        description: formData.data[0].ft_from,
+      },
+      {
+        message: 'Transferred to:',
+        description: formData.data[0].ft_to,
+      },
+      {
+        message: 'Transferred on:',
+        description: formData.data[0].ft_on,
+      },
+      {
+        message: 'Receipt link:',
+        description: formData.data[0].receipt_link,
+      },
+    ];
+  }
+  return null;
+}
