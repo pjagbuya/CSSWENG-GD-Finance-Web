@@ -8,10 +8,11 @@ import RegisterAccountDialog from './RegisterAccountDialog';
 
 type RegisterAccountButtonType = {
   id: string;
-}
+};
 
 const RegisterAccountButton = ({ id }: RegisterAccountButtonType) => {
-  const [showRegisterAccountDialog, setShowRegisterAccountDialog] = useState(false);
+  const [showRegisterAccountDialog, setShowRegisterAccountDialog] =
+    useState(false);
 
   return (
     <>

@@ -1,7 +1,10 @@
 import { selectWhereCategoryValidation } from '@/actions/categories';
 import AddItemButton from './_components/AddItemButton';
 import ItemsTable from './_components/ItemsTable';
-import { getItemsFromTransaction, getTransactionsFromCategory } from '@/actions/utils';
+import {
+  getItemsFromTransaction,
+  getTransactionsFromCategory,
+} from '@/actions/utils';
 import { selectWhereTransactionValidation } from '@/actions/transactions';
 
 type TransactionsPageProps = {
@@ -16,9 +19,7 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
     params.transactionId,
     'transaction_id',
   );
-  const itemsData = await getItemsFromTransaction(
-    params.transactionId,
-  )!;
+  const itemsData = await getItemsFromTransaction(params.transactionId)!;
 
   return (
     <main className="flex flex-col gap-4 px-6 py-4 text-left">
@@ -34,7 +35,10 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
       </div>
 
       <div className="mb-8 flex flex-col gap-3">
-        <ItemsTable transactionId={params.transactionId} items={itemsData!.data!} />
+        <ItemsTable
+          transactionId={params.transactionId}
+          items={itemsData!.data!}
+        />
       </div>
     </main>
   );

@@ -134,14 +134,23 @@ export async function selectAllTransactionListValidation() {
   };
 }
 
-export async function deleteTransactionListValidation(id: string, identifier: string) {
-  
+export async function deleteTransactionListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
-  var transactionData = await transactionQuery.selectWhereTransactionValidation(id, identifier);
+  var transactionData = await transactionQuery.selectWhereTransactionValidation(
+    id,
+    identifier,
+  );
 
-  if(transactionData.data){
-    for(let i = 0; i < transactionData.data.length; i++){
-      await transactionQuery.deleteTransactionValidation(null, transactionData.data[i].transaction_id, 'transaction_id');
+  if (transactionData.data) {
+    for (let i = 0; i < transactionData.data.length; i++) {
+      await transactionQuery.deleteTransactionValidation(
+        null,
+        transactionData.data[i].transaction_id,
+        'transaction_id',
+      );
     }
   }
 
@@ -160,7 +169,11 @@ export async function createTransactionList(data: any) {
   return await query.insert(schema, data);
 }
 
-export async function editTransactionList(data: any, id: string, identifier: string) {
+export async function editTransactionList(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
@@ -168,11 +181,13 @@ export async function deleteTransactionList(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-export async function selectWhereTransactionList(id: string, identifier: string) {
+export async function selectWhereTransactionList(
+  id: string,
+  identifier: string,
+) {
   return await query.selectWhere(schema, identifier, id);
 }
 
 export async function selectAllTransactionList() {
   return await query.selectAll(schema);
 }
-

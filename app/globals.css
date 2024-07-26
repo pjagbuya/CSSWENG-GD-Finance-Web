@@ -58,53 +58,62 @@
   }
 }
 
-.form{
+.form {
   display: flex;
   width: 1920px;
   flex-direction: column;
 }
 
-.form-header{
+.form-header {
   display: flex;
   width: 1920px;
   height: 480px;
   flex-direction: row;
 }
 
-.form-header>.form-logo{
+.form-header > .form-logo {
   height: 480px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.form-header>.form-logo>.logo{
+.form-header > .form-logo > .logo {
   width: 1050px;
   height: 400px;
 }
 
-.form-header>.form-details{
+.form-header > .form-details {
   height: 480px;
   justify-content: center;
   align-content: center;
   font-size: 36px;
 }
 
-.form-header>.form-details>table{
+.form-header > .form-details > table {
   width: 870px;
 }
 
-.form-header>.form-details>table>tbody>tr{
+.form-header > .form-details > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.form-header>.form-details>table>tbody>tr>td>table{
+.form-header > .form-details > table > tbody > tr > td > table {
   width: 870px;
 }
 
-.form-header>.form-details>table>tbody>tr>td>table>tbody>tr>td{
+.form-header
+  > .form-details
+  > table
+  > tbody
+  > tr
+  > td
+  > table
+  > tbody
+  > tr
+  > td {
   width: 50%;
   justify-content: center;
   text-align: center;
@@ -112,174 +121,242 @@
 
 /*ES*/
 
-.form-main>.form-items-ES>table{
+.form-main > .form-items-ES > table {
   width: 1920px;
 }
 
-.form-main>.form-items-ES>table>tbody>tr{
+.form-main > .form-items-ES > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>table>tbody>tr>td:nth-child(1){
+.form-main > .form-items-ES > table > tbody > tr > td:nth-child(1) {
   width: 860px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>table>tbody>tr>td:nth-child(2){
+.form-main > .form-items-ES > table > tbody > tr > td:nth-child(2) {
   width: 200px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>table>tbody>tr>td:nth-child(3){
+.form-main > .form-items-ES > table > tbody > tr > td:nth-child(3) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>table>tbody>tr>td:nth-child(4){
+.form-main > .form-items-ES > table > tbody > tr > td:nth-child(4) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>.form-total>table{
+.form-main > .form-items-ES > .form-total > table {
   width: 1920px;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr{
+.form-main > .form-items-ES > .form-total > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr>td:nth-child(1){
+.form-main
+  > .form-items-ES
+  > .form-total
+  > table
+  > tbody
+  > tr
+  > td:nth-child(1) {
   width: 1485px;
   justify-content: center;
   text-align: left;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr>td:nth-child(2){
+.form-main
+  > .form-items-ES
+  > .form-total
+  > table
+  > tbody
+  > tr
+  > td:nth-child(2) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(1){
+.form-main
+  > .form-items-ES
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(2)
+  > td:nth-child(1) {
   padding-right: 5px;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(1)>td:nth-child(2){
+.form-main
+  > .form-items-ES
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(1)
+  > td:nth-child(2) {
   border-top: 3px solid black;
 }
 
-.form-main>.form-items-ES>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(2){
+.form-main
+  > .form-items-ES
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(2)
+  > td:nth-child(2) {
   border-bottom: 3px solid black;
   border-style: double;
 }
 
 /* Revenue Statement */
 
-.form-main>.form-items-RS>table{
+.form-main > .form-items-RS > table {
   width: 1920px;
 }
 
-.form-main>.form-items-RS>table>tbody>tr{
+.form-main > .form-items-RS > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>table>tbody>tr>td:nth-child(1){
+.form-main > .form-items-RS > table > tbody > tr > td:nth-child(1) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>table>tbody>tr>td:nth-child(2){
+.form-main > .form-items-RS > table > tbody > tr > td:nth-child(2) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>table>tbody>tr>td:nth-child(3){
+.form-main > .form-items-RS > table > tbody > tr > td:nth-child(3) {
   width: 640px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>table>tbody>tr>td:nth-child(4){
+.form-main > .form-items-RS > table > tbody > tr > td:nth-child(4) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>.form-total>table{
+.form-main > .form-items-RS > .form-total > table {
   width: 1920px;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr{
+.form-main > .form-items-RS > .form-total > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr>td:nth-child(1){
+.form-main
+  > .form-items-RS
+  > .form-total
+  > table
+  > tbody
+  > tr
+  > td:nth-child(1) {
   width: 1485px;
   justify-content: center;
   text-align: left;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr>td:nth-child(2){
+.form-main
+  > .form-items-RS
+  > .form-total
+  > table
+  > tbody
+  > tr
+  > td:nth-child(2) {
   width: 425px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(1){
+.form-main
+  > .form-items-RS
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(2)
+  > td:nth-child(1) {
   padding-right: 5px;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(1)>td:nth-child(2){
+.form-main
+  > .form-items-RS
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(1)
+  > td:nth-child(2) {
   border-top: 3px solid black;
 }
 
-.form-main>.form-items-RS>.form-total>table>tbody>tr:nth-child(2)>td:nth-child(2){
+.form-main
+  > .form-items-RS
+  > .form-total
+  > table
+  > tbody
+  > tr:nth-child(2)
+  > td:nth-child(2) {
   border-bottom: 3px solid black;
   border-style: double;
 }
 
 /* Activity Income */
 
-.form-main>.form-items-AI>table{
+.form-main > .form-items-AI > table {
   width: 1900px;
 }
 
-.form-main>.form-items-AI>table>tbody>tr{
+.form-main > .form-items-AI > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-
-.form-main>.form-items-AI>table>tbody>tr>td>.items{
+.form-main > .form-items-AI > table > tbody > tr > td > .items {
   text-align: left;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table{
+.form-main > .form-items-AI > table > tbody > tr > td > .items > table {
   width: 1920px;
   table-layout: fixed;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody{
+.form-main > .form-items-AI > table > tbody > tr > td > .items > table > tbody {
   display: flex;
   flex-direction: column;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr{
+.form-main
+  > .form-items-AI
+  > table
+  > tbody
+  > tr
+  > td
+  > .items
+  > table
+  > tbody
+  > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
@@ -288,99 +365,132 @@
   grid-template-columns: 2fr 1fr 1fr;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(1){
+.form-main
+  > .form-items-AI
+  > table
+  > tbody
+  > tr
+  > td
+  > .items
+  > table
+  > tbody
+  > tr
+  > td
+  > :nth-child(1) {
   width: 1050px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(2){
+.form-main
+  > .form-items-AI
+  > table
+  > tbody
+  > tr
+  > td
+  > .items
+  > table
+  > tbody
+  > tr
+  > td
+  > :nth-child(2) {
   width: 430px;
   justify-content: center;
   text-align: center;
 }
 
-.form-main>.form-items-AI>table>tbody>tr>td>.items>table>tbody>tr>td>:nth-child(3){
+.form-main
+  > .form-items-AI
+  > table
+  > tbody
+  > tr
+  > td
+  > .items
+  > table
+  > tbody
+  > tr
+  > td
+  > :nth-child(3) {
   width: 430px;
   justify-content: center;
   text-align: center;
 }
 
-.total>table{
+.total > table {
   width: 1920px;
 }
 
-.total>table>tbody>tr{
+.total > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;;
+  grid-template-columns: 2fr 1fr 1fr;
 }
 
-.total>table>tbody>tr>td>:nth-child(1){
+.total > table > tbody > tr > td > :nth-child(1) {
   width: 1480px;
   text-align: left;
 }
 
-.total>table>tbody>tr>td>:nth-child(2){
+.total > table > tbody > tr > td > :nth-child(2) {
   width: 430px;
   justify-content: center;
   text-align: center;
 }
 
-.total>table>tbody>tr:nth-child(2)>td>:nth-child(2){
+.total > table > tbody > tr:nth-child(2) > td > :nth-child(2) {
   border-bottom: 3px solid black;
 }
 
-.border-bottom{
+.border-bottom {
   border-bottom: 3px solid black;
 }
 
-.border-bottom-2{
+.border-bottom-2 {
   border-bottom: 3px solid black;
   border-style: double;
 }
 
-.income>table{
+.income > table {
   width: 1920px;
 }
 
-.income>table>tbody>tr{
+.income > table > tbody > tr {
   height: 60px;
   justify-content: center;
   text-align: center;
 }
 
-.income>table>tbody>tr>td>:nth-child(1){
+.income > table > tbody > tr > td > :nth-child(1) {
   width: 1480px;
   justify-content: center;
   text-align: center;
   font-size: 42px;
 }
 
-.income>table>tbody>tr>td>:nth-child(2){
-  width: 430px; 
+.income > table > tbody > tr > td > :nth-child(2) {
+  width: 430px;
   justify-content: center;
   text-align: center;
 }
 
-.income>table>tbody>tr:nth-child(2)>td>:nth-child(2){
+.income > table > tbody > tr:nth-child(2) > td > :nth-child(2) {
   border-bottom: 3px solid block;
   border-style: double;
 }
 
 /*Main*/
 
-.form-main{
+.form-main {
   display: flex;
   flex-direction: column;
   width: 1920px;
   font-size: 36px;
 }
 
-.form-info{
+.form-info {
   display: flex;
   flex-direction: row;
   width: 1900px;
@@ -390,20 +500,19 @@
   margin-bottom: 30px;
 }
 
-.form-info>.form-info-title{
+.form-info > .form-info-title {
   margin: 5px;
   width: 390px;
 }
 
-.form-info>.form-info-description{
+.form-info > .form-info-description {
   display: flex;
   flex-wrap: wrap;
   margin: 5px;
   width: 1490px;
 }
 
-
-.form-footer{
+.form-footer {
   display: flex;
   flex-direction: row;
   width: 1920px;
@@ -411,7 +520,7 @@
   flex-wrap: wrap;
 }
 
-.form-footer>.staff-signature{
+.form-footer > .staff-signature {
   display: flex;
   flex-direction: column;
   width: 860px;
@@ -419,18 +528,18 @@
   margin-top: 30px;
   margin-bottom: 30px;
 }
-.form-footer>.staff-signature>.staff-details{
+.form-footer > .staff-signature > .staff-details {
   text-align: center;
 }
 
-.signature-line{
+.signature-line {
   display: block;
   height: 200px;
   border: 0;
   border-bottom: 1px solid black;
 }
 
-line{
+line {
   display: block;
   height: 5px;
   border: 0;
@@ -439,7 +548,7 @@ line{
   padding: 0;
 }
 
-underline{
+underline {
   border-bottom: 3px solid black;
   width: 100%;
   top: -10px;

@@ -16,6 +16,15 @@ import {
 } from '@/actions/utils';
 import { deleteExpenseStatement } from '@/actions/expense_statements';
 import FormViewPDF, { pdfGenerate } from '../[formId]/_components/FormViewPDF';
+import {
+  deleteActivityIncomeValidation,
+  selectAllActivityIncomeValidation,
+  selectWhereActivityIncomeValidation,
+} from '@/actions/activity_incomes';
+import {
+  deleteFundTransferValidation,
+  selectAllFundTransferValidation,
+} from '@/actions/fund_transfers';
 
 const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
   {
@@ -35,8 +44,7 @@ const EXPENSE_COL_DEF: ColumnDef<unknown, any>[] = [
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
-    cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('es_date'))),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('es_date'))),
   },
 ];
 
@@ -58,18 +66,11 @@ const REVENUE_COL_DEF: ColumnDef<unknown, any>[] = [
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
-    cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('rs_date'))),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('rs_date'))),
   },
 ];
 
 const FUND_TRANSFER_COL_DEF: ColumnDef<unknown, any>[] = [
-  {
-    accessorKey: 'ft_id',
-    header: ({ column }) => (
-      <SortableHeader column={column}>ID</SortableHeader>
-    ),
-  },
   {
     accessorKey: 'ft_name',
     header: ({ column }) => (
@@ -77,11 +78,17 @@ const FUND_TRANSFER_COL_DEF: ColumnDef<unknown, any>[] = [
     ),
   },
   {
+    accessorKey: 'ft_id',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Code</SortableHeader>
+    ),
+  },
+  {
     accessorKey: 'ft_date',
     header: ({ column }) => (
       <SortableHeader column={column}>Date</SortableHeader>
     ),
-    cell: ({ row }) => getFormattedDate(new Date(row.getValue('date'))),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('ft_date'))),
   },
   {
     accessorKey: 'ft_from',
@@ -98,23 +105,33 @@ const FUND_TRANSFER_COL_DEF: ColumnDef<unknown, any>[] = [
 ];
 
 type FormsTableProps = {
+  deleteable?: boolean;
   eventId: string;
   nameFilter: string;
+  tableData?: any;
   variant: 'expense' | 'revenue' | 'fund_transfer';
 };
 
-const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
+const FormsTable = ({
+  deleteable,
+  eventId,
+  nameFilter,
+  tableData: td,
+  variant,
+}: FormsTableProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [tableData, setTableData] = useState<any[]>([]);
+  const [tableData, setTableData] = useState<any[]>(td ?? []);
 
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
   const [toViewId, setToViewId] = useState('');
 
   useEffect(() => {
-    fetchTableData();
+    if (!td) {
+      fetchTableData();
+    }
 
     async function fetchTableData() {
       let formData;
@@ -136,7 +153,7 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
       const data = formData!.data!;
       setTableData(data);
     }
-  }, [eventId, variant]);
+  }, [eventId, variant, td]);
 
   useEffect(() => {
     if (toEditId) {
@@ -174,38 +191,21 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
     }
   }
 
-  // async function handleFormDelete() {
-  //   if (!toDeleteId) {
-  //     return;
-  //   }
+  async function handleFormDelete() {
+    if (!toDeleteId) {
+      return;
+    }
 
-  //   let formData;
+    // TODO: lol
+    await deleteFundTransferValidation(toDeleteId, 'ft_id', eventId);
+    setToDeleteId('');
 
-  //   switch (variant) {
-  //     case 'expense':
-  //       formData = await deleteExpenseStatement(eventId, '');
-  //       break;
-
-  //     case 'revenue':
-  //       formData = await getRSFormFromEvent(eventId);
-  //       break;
-
-  //     case 'fund_transfer':
-  //       formData = await getFTFormFromEvent(eventId);
-  //       break;
-  //   }
-
-  //   const data = await deleteForm(eventId, variant, toDeleteId, pathname);
-  //   setToDeleteId('');
-
-  //   setTableData(data);
-
-  //   toast({
-  //     variant: 'destructive',
-  //     title: 'Form Deleted',
-  //     description: `Form successfully deleted.`,
-  //   });
-  // }
+    toast({
+      variant: 'success',
+      title: 'Form Deleted',
+      description: `Form successfully deleted.`,
+    });
+  }
 
   return (
     <>
@@ -213,22 +213,34 @@ const FormsTable = ({ eventId, nameFilter, variant }: FormsTableProps) => {
         className="border-2"
         clickableIdColumn={true}
         columns={getColumnDefinition()}
-        data={tableData}
-        deletable={false}
+        data={td ?? tableData}
+        deletable={deleteable}
         idFilter={nameFilter}
-        idColumn={variant === 'expense' ? 'es_name' : variant === 'fund_transfer' ? 'ft_name' : 'rs_name'}
-        pkColumn={variant === 'expense' ? 'es_id' : variant === 'fund_transfer' ? 'ft_id' : 'rs_id'}
+        idColumn={
+          variant === 'expense'
+            ? 'es_name'
+            : variant === 'fund_transfer'
+              ? 'ft_name'
+              : 'rs_name'
+        }
+        pkColumn={
+          variant === 'expense'
+            ? 'es_id'
+            : variant === 'fund_transfer'
+              ? 'ft_id'
+              : 'rs_id'
+        }
         onRowEdit={(formId: string) => setToEditId(formId)}
         onRowDelete={(formId: string) => setToDeleteId(formId)}
         onRowSelect={(formId: string) => setToViewId(formId)}
       />
 
-      {/* <DeletePopup
+      <DeletePopup
         type="Form"
         open={!!toDeleteId}
         onCancel={() => setToDeleteId('')}
         onConfirm={handleFormDelete}
-      /> */}
+      />
     </>
   );
 };

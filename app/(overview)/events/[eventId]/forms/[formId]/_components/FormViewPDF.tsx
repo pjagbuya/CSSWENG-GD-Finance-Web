@@ -1,6 +1,6 @@
 import * as utility from '@/actions/utils';
-import { renderToString } from 'react-dom/server'
-import { renderToStaticMarkup } from "react-dom/server"
+import { renderToString } from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import jsPDF from 'jspdf';
 
@@ -8,7 +8,7 @@ type FormViewPageProps = {
   formId: string;
 };
 
-const scale = 1
+const scale = 1;
 const styles: any = {
   form: {
     display: 'flex',
@@ -75,8 +75,10 @@ const styles: any = {
   },
 };
 
-
-export const pdfGenerate = (reactElement: React.ReactElement, filename: string) => {
+export const pdfGenerate = (
+  reactElement: React.ReactElement,
+  filename: string,
+) => {
   const htmlString = renderToString(reactElement);
   // Function to generate PDF
   const generatePDF = (html: string) => {
@@ -88,84 +90,82 @@ export const pdfGenerate = (reactElement: React.ReactElement, filename: string) 
       x: 10,
       y: 10,
       width: 190, // Adjust width according to your page
-      windowWidth: 500 // Adjust based on the actual width of your content
+      windowWidth: 500, // Adjust based on the actual width of your content
     });
-    format: "a4"
+    format: 'a4';
   };
 
   // Generate and download PDF
   generatePDF(htmlString);
 };
 
-const FormViewPDF = ({
-  formId
-}: FormViewPageProps) => {
+const FormViewPDF = ({ formId }: FormViewPageProps) => {
   // TODO: Put PDF code here.
-  var formDetail =
-  {
-    academicYear: "YEAR1102-1103",
-    formType: "Fund Transfer Form",
-    formCode: "FT-001-0001-001"
-  }
+  var formDetail = {
+    academicYear: 'YEAR1102-1103',
+    formType: 'Fund Transfer Form',
+    formCode: 'FT-001-0001-001',
+  };
 
   var formData = [
     {
-      message: "Description/Reason:",
-      description: 'Trade of RMA70-12 and Oriron Blocks'
+      message: 'Description/Reason:',
+      description: 'Trade of RMA70-12 and Oriron Blocks',
     },
     {
-      message: "Transferred amount:",
-      description: '480,000 LMD'
+      message: 'Transferred amount:',
+      description: '480,000 LMD',
     },
     {
-      message: "Transferred from:",
-      description: 'Lungmen'
+      message: 'Transferred from:',
+      description: 'Lungmen',
     },
     {
-      message: "Transferred to:",
-      description: 'Rhodes Island'
+      message: 'Transferred to:',
+      description: 'Rhodes Island',
     },
     {
-      message: "Transferred on:",
-      description: 'March 1102'
+      message: 'Transferred on:',
+      description: 'March 1102',
     },
     {
-      message: "Receipt link:",
-      description: 'https://docs.google.com/spreadsheets/d/1zYc2JU46X0XWmV7s1503bN4feRdOMa1eehrTQ2jGaiE/edit?pli=1#gid=890953453'
-    }
-  ]
+      message: 'Receipt link:',
+      description:
+        'https://docs.google.com/spreadsheets/d/1zYc2JU46X0XWmV7s1503bN4feRdOMa1eehrTQ2jGaiE/edit?pli=1#gid=890953453',
+    },
+  ];
   var staffData = [
     {
       id: 1,
       message: 'Prepared By:',
       name: "Dr. Kal'tsit",
-      position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher'
+      position: 'Rhodes Island Pharmaceuticals Oripathy Lead Researcher',
     },
     {
       id: 2,
       message: 'Certified By:',
       name: 'Dokutah',
-      position: 'Rhodes Island Pharmaceuticals Strategist In Command'
+      position: 'Rhodes Island Pharmaceuticals Strategist In Command',
     },
     {
       id: 3,
       message: 'Noted By:',
       name: 'Amiya',
-      position: 'Rhodes Island Pharmaceuticals Leader'
+      position: 'Rhodes Island Pharmaceuticals Leader',
     },
     {
       id: 4,
       message: 'Noted By:',
       name: 'Logos',
-      position: 'Rhodes Island Pharmaceuticals Elite Operator'
+      position: 'Rhodes Island Pharmaceuticals Elite Operator',
     },
     {
       id: 5,
       message: 'Noted By:',
       name: 'Rosmontis',
-      position: 'Rhodes Island Pharmaceuticals Elite Operator'
-    }
-  ]
+      position: 'Rhodes Island Pharmaceuticals Elite Operator',
+    },
+  ];
 
   return (
     <div id="form-proper" className="form" style={styles.form}>
@@ -187,31 +187,21 @@ const FormViewPDF = ({
                 </td>
               </tr>
               <tr>
-                <td>
-                  {formDetail.academicYear}
-                </td>
+                <td>{formDetail.academicYear}</td>
               </tr>
               <tr>
-                <td>
-                  {/* Additional form details */}
-                </td>
+                <td>{/* Additional form details */}</td>
               </tr>
               <tr>
-                <td>
-                  {formDetail.formType}
-                </td>
+                <td>{formDetail.formType}</td>
               </tr>
               <tr>
                 <td>
                   <table>
                     <tbody>
                       <tr>
-                        <td>
-                          Report Code:
-                        </td>
-                        <td>
-                          {formDetail.formCode}
-                        </td>
+                        <td>Report Code:</td>
+                        <td>{formDetail.formCode}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -241,7 +231,6 @@ const FormViewPDF = ({
       </div>
     </div>
   );
-
 };
 
 export default FormViewPDF;

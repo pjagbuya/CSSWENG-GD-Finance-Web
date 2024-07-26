@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 // INSTRUCTIONS:
 // activityIncome -> small case
@@ -63,46 +63,48 @@ var activityIncomeFormat = {
 var schema = 'activity_incomes'; // replace with table name
 
 async function transformCreateData(id: string) {
-
-  const supabase = createClient()
+  const supabase = createClient();
   const currentUser = (await supabase.auth.getUser()).data.user;
   // TODO: provide logic
-  var aiData = await selectAllActivityIncomeValidation()
-  var id_mod = 10000
+  var aiData = await selectAllActivityIncomeValidation();
+  var id_mod = 10000;
   if (aiData.data) {
     if (aiData.data.length > 0) {
       for (let i = 0; i < aiData.data.length; i++) {
         var num = parseInt(aiData.data[i].ai_id.slice(6));
         if (num > id_mod) {
-          id_mod = num
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
-  var staffListData = await staffListQuery.selectAllStaffListValidation()
-  var id_mod_staff = 10000
+  var staffListData = await staffListQuery.selectAllStaffListValidation();
+  var id_mod_staff = 10000;
   if (staffListData.data) {
     if (staffListData.data.length > 0) {
       for (let i = 0; i < staffListData.data.length; i++) {
         var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
         if (num > id_mod_staff) {
-          id_mod_staff = num
+          id_mod_staff = num;
         }
       }
-      id_mod_staff += 1
+      id_mod_staff += 1;
     }
   }
 
-  var preparedStaff = await staffQuery.selectWhereStaffValidation(currentUser?.id!, 'user_id')
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(
+    currentUser?.id!,
+    'user_id',
+  );
 
-  var form_list_id
-  var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id')
+  var form_list_id;
+  var eventData = await eventQuery.selectWhereEventValidation(id, 'event_id');
   if (eventData.data) {
-    form_list_id = eventData.data[0].ai_form_list_id
+    form_list_id = eventData.data[0].ai_form_list_id;
     // TODO: fill information
-    if(preparedStaff.data){
+    if (preparedStaff.data) {
       return {
         ai_id: `actin_${id_mod}`,
         ai_name: eventData.data[0].event_name,
@@ -112,20 +114,19 @@ async function transformCreateData(id: string) {
         certified_staff_id: null,
         noted_staff_list_id: `stl_${id_mod_staff}`,
         form_list_id: form_list_id,
-      }
+      };
     }
   }
-  return null
+  return null;
 }
 
 async function transformEditData(data: any, id: string) {
-  
   // TODO: provide logic
-  var aiData = await selectWhereActivityIncomeValidation(id, 'ai_id')
+  var aiData = await selectWhereActivityIncomeValidation(id, 'ai_id');
 
   // TODO: fill information
-  if(aiData.data){
-    return{
+  if (aiData.data) {
+    return {
       ai_id: id,
       ai_name: aiData.data[0].es_name,
       ai_notes: data.get('ai_notes'),
@@ -133,9 +134,9 @@ async function transformEditData(data: any, id: string) {
       certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: aiData.data[0].noted_staff_list_id,
       form_list_id: aiData.data[0].form_list_id,
-    }
+    };
   }
-  return null
+  return null;
 }
 
 async function convertData(data: any) {
@@ -145,9 +146,7 @@ async function convertData(data: any) {
   return data;
 }
 
-export async function createActivityIncomeValidation(
-  event_id: string
-) {
+export async function createActivityIncomeValidation(event_id: string) {
   var transformedData = await transformCreateData(event_id);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
@@ -162,7 +161,9 @@ export async function createActivityIncomeValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffListQuery.createStaffList({ staff_list_id: data.noted_staff_list_id })
+  await staffListQuery.createStaffList({
+    staff_list_id: data.noted_staff_list_id,
+  });
 
   const { error } = await createActivityIncome(data);
   if (error) {
@@ -182,20 +183,19 @@ export async function editActivityIncomeValidation(
   prevState: activityIncomeState,
   formData: FormData,
 ) {
-  console.log(formData.entries())
-  var arrData = Array.from(formData.entries())
+  console.log(formData.entries());
+  var arrData = Array.from(formData.entries());
 
-  const notedList = []
-  for(let i = 0; i < arrData.length; i++){
-    if(arrData[i][0].substring(0,20) === "noted_staff_list_id-"){
-      notedList.push(arrData[i][0].substring(20))
+  const notedList = [];
+  for (let i = 0; i < arrData.length; i++) {
+    if (arrData[i][0].substring(0, 20) === 'noted_staff_list_id-') {
+      notedList.push(arrData[i][0].substring(20));
     }
   }
 
   var transformedData = await transformEditData(formData, id);
   const validatedFields = ActivityIncomeSchema.safeParse(transformedData);
 
-  
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -207,12 +207,18 @@ export async function editActivityIncomeValidation(
   // TODO: provide logic
   var data = await convertData(transformedData);
 
-  await staffInstanceQuery.deleteStaffInstanceValidation(data.noted_staff_list_id, 'staff_list_id')
-  
-  for(let i = 0; i < notedList.length; i++){
-    await staffInstanceQuery.createStaffInstanceValidation(data.noted_staff_list_id, notedList[i])
+  await staffInstanceQuery.deleteStaffInstanceValidation(
+    data.noted_staff_list_id,
+    'staff_list_id',
+  );
+
+  for (let i = 0; i < notedList.length; i++) {
+    await staffInstanceQuery.createStaffInstanceValidation(
+      data.noted_staff_list_id,
+      notedList[i],
+    );
   }
-  
+
   const { error } = await editActivityIncome(data, id, identifier);
   if (error) {
     throw new Error(error.message);
@@ -255,10 +261,13 @@ export async function selectAllActivityIncomeValidation() {
   };
 }
 
-export async function deleteActivityIncomeValidation(id: string, identifier: string) {
+export async function deleteActivityIncomeValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
 
-  var data = await selectWhereActivityIncome(id, identifier)
+  var data = await selectWhereActivityIncome(id, identifier);
 
   const { error } = await deleteActivityIncome(id, identifier);
   if (error) {
@@ -266,7 +275,10 @@ export async function deleteActivityIncomeValidation(id: string, identifier: str
   }
 
   if (data.data) {
-    await staffListQuery.deleteStaffListValidation(data.data[0].noted_staff_list_id, 'staff_list_id')
+    await staffListQuery.deleteStaffListValidation(
+      data.data[0].noted_staff_list_id,
+      'staff_list_id',
+    );
   }
 
   //revalidatePath("/")
@@ -279,7 +291,11 @@ export async function createActivityIncome(data: any) {
   return await query.insert(schema, data);
 }
 
-export async function editActivityIncome(data: any, id: string, identifier: string) {
+export async function editActivityIncome(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
@@ -287,7 +303,10 @@ export async function deleteActivityIncome(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-export async function selectWhereActivityIncome(id: string, identifier: string) {
+export async function selectWhereActivityIncome(
+  id: string,
+  identifier: string,
+) {
   return await query.selectWhere(schema, identifier, id);
 }
 

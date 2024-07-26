@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 // INSTRUCTIONS:
 // itemList -> small case
@@ -71,7 +71,7 @@ export async function createItemListValidation(
     throw new Error(error.message);
   }
 
-  revalidatePath("/category")
+  revalidatePath('/category');
   return {
     message: null,
   };
@@ -107,7 +107,10 @@ export async function editItemListValidation(
   };
 }
 
-export async function selectWhereItemListValidation(id: string, identifier: string) {
+export async function selectWhereItemListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereItemList(id, identifier);
   if (error) {
@@ -137,9 +140,13 @@ export async function deleteItemListValidation(id: string, identifier: string) {
   // TODO: provide logic
   var itemData = await itemQuery.selectWhereItemValidation(id, identifier);
 
-  if(itemData.data){
-    for(let i = 0; i < itemData.data.length; i++){
-      await itemQuery.deleteItemValidation(null, itemData.data[i].item_id, 'item_id');
+  if (itemData.data) {
+    for (let i = 0; i < itemData.data.length; i++) {
+      await itemQuery.deleteItemValidation(
+        null,
+        itemData.data[i].item_id,
+        'item_id',
+      );
     }
   }
 

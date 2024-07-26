@@ -48,19 +48,22 @@ var categoryFormat = {
 
 var schema = 'categories'; // replace with table export name
 
-async function transformCreateData(data: any, event_id: string, type: 'revenue' | 'expense') {
-
-  var categoryData = await selectAllCategoryValidation()
+async function transformCreateData(
+  data: any,
+  event_id: string,
+  type: 'revenue' | 'expense',
+) {
+  var categoryData = await selectAllCategoryValidation();
   var id_mod = 10000;
-  if(categoryData.data){
-    if(categoryData.data.length > 0){
-      for(let i = 0; i < categoryData.data!.length; i++){
-        var num = parseInt(categoryData.data[i].category_id.slice(6))
-        if(num > id_mod){
-          id_mod = num
+  if (categoryData.data) {
+    if (categoryData.data.length > 0) {
+      for (let i = 0; i < categoryData.data!.length; i++) {
+        var num = parseInt(categoryData.data[i].category_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
@@ -74,9 +77,9 @@ async function transformCreateData(data: any, event_id: string, type: 'revenue' 
 }
 
 async function transformEditData(data: any, id: string, identifier: string) {
-  const categoryData = await selectWhereCategoryValidation(id, identifier)
+  const categoryData = await selectWhereCategoryValidation(id, identifier);
 
-  if(categoryData.data){
+  if (categoryData.data) {
     return {
       category_id: id,
       category_name: data.get('category_name'),
@@ -98,7 +101,7 @@ export async function createCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  const supabase = createClient()
+  const supabase = createClient();
   const currentUser = (await supabase.auth.getUser()).data.user;
 
   console.log(12345, currentUser);
@@ -106,7 +109,7 @@ export async function createCategoryValidation(
   var transformedData = await transformCreateData(formData, eventId, type);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
-  console.log(validatedFields)
+  console.log(validatedFields);
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -117,33 +120,40 @@ export async function createCategoryValidation(
 
   // TODO: provide logic
   var data = await convertData(transformedData);
-  
+
   const transaction_list = {
-    transaction_list_id: data.transaction_list_id
-  }
+    transaction_list_id: data.transaction_list_id,
+  };
   await transactionListQuery.createTransactionList(transaction_list);
-  
+
   const { error } = await createCategory(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  switch(type){
+  switch (type) {
     case 'revenue':
       {
-        await revenueStatementQuery.createRevenueStatementValidation(data.category_id, data.category_name, currentUser?.id!)
+        await revenueStatementQuery.createRevenueStatementValidation(
+          data.category_id,
+          data.category_name,
+          currentUser?.id!,
+        );
       }
-    break;
+      break;
     case 'expense':
       {
-        await expenseStatementQuery.createExpenseStatementValidation(data.category_id, data.category_name, currentUser?.id!)
+        await expenseStatementQuery.createExpenseStatementValidation(
+          data.category_id,
+          data.category_name,
+          currentUser?.id!,
+        );
       }
-    break;
+      break;
   }
 
-  revalidatePath(`/groups`)
+  revalidatePath(`/groups`);
   return {
-  
     hasDuplicateCategory: false,
   } as CategoryState;
 }
@@ -206,12 +216,22 @@ export async function selectAllCategoryValidation() {
 }
 
 export async function deleteCategoryValidation(id: string, identifier: string) {
-  const data = await selectWhereCategoryValidation(id, identifier)
+  const data = await selectWhereCategoryValidation(id, identifier);
 
-  if(data.data){
-    switch(data.data[0].category_type){
-      case 'expense': await expenseStatementQuery.deleteExpenseStatementValidation(id, identifier); break;
-      case 'revenue': await revenueStatementQuery.deleteRevenueStatementValidation(id, identifier); break;
+  if (data.data) {
+    switch (data.data[0].category_type) {
+      case 'expense':
+        await expenseStatementQuery.deleteExpenseStatementValidation(
+          id,
+          identifier,
+        );
+        break;
+      case 'revenue':
+        await revenueStatementQuery.deleteRevenueStatementValidation(
+          id,
+          identifier,
+        );
+        break;
     }
   }
 
@@ -219,13 +239,16 @@ export async function deleteCategoryValidation(id: string, identifier: string) {
   if (error) {
     throw new Error(error.message);
   }
-  
+
   // TODO: provide logic
-  if(data.data){
-    await transactionListQuery.deleteTransactionListValidation(data.data[0].transaction_list_id, 'transaction_list_id')
+  if (data.data) {
+    await transactionListQuery.deleteTransactionListValidation(
+      data.data[0].transaction_list_id,
+      'transaction_list_id',
+    );
   }
 
-  revalidatePath(`/groups`)
+  revalidatePath(`/groups`);
 
   return {
     message: null,

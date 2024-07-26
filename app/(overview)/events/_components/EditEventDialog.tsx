@@ -18,7 +18,7 @@ const EditEventDialog = ({ eventId, onFinish }: EditEventDialogProps) => {
   const initialState: EventState = {
     errors: {
       event_name: [],
-      event_date: []
+      event_date: [],
     },
   };
   const [state, formAction] = useFormState(

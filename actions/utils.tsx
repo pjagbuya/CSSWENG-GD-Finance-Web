@@ -17,6 +17,7 @@ import * as itemQuery from '@/actions/items';
 import * as accountQuery from '@/actions/account';
 import * as query from '@/lib/supabase';
 import { createClient } from '@/utils/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 //-------------------------------------------------------------------
 //          Dashboard Functions
@@ -74,11 +75,12 @@ export async function getRSFormFromEvent(event_id: any) {
 
 // gets FT forms of Event ID
 export async function getFTFormFromEvent(event_id: any) {
+  noStore();
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',
   );
-  console.log(eventData)
+  console.log(eventData);
   if (eventData.data) {
     let form_list_id = eventData.data[0].ft_form_list_id;
     return await fundTransferQuery.selectWhereFundTransferValidation(
@@ -189,39 +191,42 @@ export async function getItemsFromCategory(category_id: any) {
 // get staff info
 
 export async function getStaffInfos(staffData: any) {
-  const staffInfo = []
+  const staffInfo = [];
   if (staffData.data) {
     for (let i = 0; i < staffData.data.length; i++) {
-      var userData = await accountQuery.selectOneAccountDb(staffData.data[i].user_id)
+      var userData = await accountQuery.selectOneAccountDb(
+        staffData.data[i].user_id,
+      );
       if (userData.data) {
         staffInfo.push({
           staff_id: staffData.data[i].staff_id,
           user_id: staffData.data[i].user_id,
           user_first_name: userData.data[0].user_first_name,
           user_last_name: userData.data[0].user_last_name,
-          staff_position: staffData.data[i].staff_position
-        })
+          staff_position: staffData.data[i].staff_position,
+        });
       }
     }
   }
-  return staffInfo
+  return staffInfo;
 }
 
 export async function getStaffInfo(staffData: any) {
-
   if (staffData.data) {
-    var userData = await accountQuery.selectOneAccountDb(staffData.data[0].user_id)
+    var userData = await accountQuery.selectOneAccountDb(
+      staffData.data[0].user_id,
+    );
     if (userData.data) {
       return {
         staff_id: staffData.data[0].staff_id,
         user_id: staffData.data[0].user_id,
         user_first_name: userData.data[0].user_first_name,
         user_last_name: userData.data[0].user_last_name,
-        staff_position: staffData.data[0].staff_position
-      }
+        staff_position: staffData.data[0].staff_position,
+      };
     }
   }
-  return null
+  return null;
 }
 
 // get specific staff from form
@@ -494,201 +499,297 @@ export async function getRevenueTotalFromEvent(event_id: any) {
 
 // transforms header data
 export async function getFormHeaderData(form_id: string) {
-
-  var formType
+  var formType;
   switch (form_id.substring(0, 5)) {
     case 'actin':
-      formType = "Activity Income"
-      break
+      formType = 'Activity Income';
+      break;
     case 'expst':
-      formType = "Expense Statement"
-      break
+      formType = 'Expense Statement';
+      break;
     case 'revst':
-      formType = "Revenue Statement"
-      break
+      formType = 'Revenue Statement';
+      break;
     case 'funtr':
-      formType = "Fund Transfer"
-      break
+      formType = 'Fund Transfer';
+      break;
   }
 
-  var academicYear
+  var academicYear;
   if (new Date().getMonth() < 8) {
-    academicYear = `YEAR${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
-  }
-  else {
-    academicYear = `YEAR${new Date().getFullYear() - 1}-${new Date().getFullYear()}`
+    academicYear = `YEAR${new Date().getFullYear()}-${new Date().getFullYear() + 1}`;
+  } else {
+    academicYear = `YEAR${new Date().getFullYear() - 1}-${new Date().getFullYear()}`;
   }
 
   return {
     academicYear: academicYear,
     formType: formType,
     formCode: form_id,
-  }
-
+  };
 }
 
 // transforms footer data
 export async function getFormFooterData(form_id: string) {
-  var formFooter = []
-  var formData
+  var formFooter = [];
+  var formData;
   if (form_id) {
     switch (form_id.substring(0, 5)) {
       case 'expst':
         {
-          formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+          formData =
+            await expenseStatementQuery.selectWhereExpenseStatementValidation(
+              form_id,
+              'es_id',
+            );
         }
-        break
+        break;
       case 'revst':
         {
-          formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+          formData =
+            await revenueStatementQuery.selectWhereRevenueStatementValidation(
+              form_id,
+              'rs_id',
+            );
         }
-        break
+        break;
+      case 'actin':
+        {
+          formData =
+            await activityIncomeQuery.selectWhereActivityIncomeValidation(
+              form_id,
+              'ai_id',
+            );
+        }
+        break;
+      case 'funtr':
+        {
+          formData = await fundTransferQuery.selectWhereFundTransferValidation(
+            form_id,
+            'ft_id',
+          );
+        }
+        break;
     }
     if (formData) {
       if (formData.data) {
-        var preparedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].prepared_staff_id, 'staff_id')
-        console.log(preparedStaff)
-        var preparedData = await getStaffInfo(preparedStaff)
+        var preparedStaff = await staffQuery.selectWhereStaffValidation(
+          formData.data[0].prepared_staff_id,
+          'staff_id',
+        );
+        console.log(preparedStaff);
+        var preparedData = await getStaffInfo(preparedStaff);
 
         if (preparedData) {
           formFooter.push({
             id: formData.data[0].prepared_staff_id,
             message: 'Prepared By:',
-            name: preparedData.user_first_name + " " + preparedData.user_last_name,
-            position: preparedData.staff_position
-          })
+            name:
+              preparedData.user_first_name + ' ' + preparedData.user_last_name,
+            position: preparedData.staff_position,
+          });
         }
 
-        var certifiedStaff = await staffQuery.selectWhereStaffValidation(formData.data[0].certified_staff_id, 'staff_id')
-        var certifiedData = await getStaffInfo(certifiedStaff)
+        var certifiedStaff = await staffQuery.selectWhereStaffValidation(
+          formData.data[0].certified_staff_id,
+          'staff_id',
+        );
+        var certifiedData = await getStaffInfo(certifiedStaff);
 
         if (certifiedData) {
           formFooter.push({
             id: formData.data[0].certified_staff_id,
             message: 'Certified By:',
-            name: certifiedData.user_first_name + " " + certifiedData.user_last_name,
-            position: certifiedData.staff_position
-          })
+            name:
+              certifiedData.user_first_name +
+              ' ' +
+              certifiedData.user_last_name,
+            position: certifiedData.staff_position,
+          });
         }
 
-        var notedStaffList = await staffInstanceQuery.selectWhereStaffInstanceValidation(formData.data[0].noted_staff_list_id, 'staff_list_id')
+        var notedStaffList =
+          await staffInstanceQuery.selectWhereStaffInstanceValidation(
+            formData.data[0].noted_staff_list_id,
+            'staff_list_id',
+          );
         if (notedStaffList.data) {
           for (let i = 0; i < notedStaffList.data.length; i++) {
-            var notedStaff = await staffQuery.selectWhereStaffValidation(notedStaffList.data[i].staff_id, 'staff_id')
-            var notedData = await getStaffInfo(notedStaff)
+            var notedStaff = await staffQuery.selectWhereStaffValidation(
+              notedStaffList.data[i].staff_id,
+              'staff_id',
+            );
+            var notedData = await getStaffInfo(notedStaff);
             if (notedData) {
               formFooter.push({
                 id: notedStaffList.data[i].staff_id,
                 message: 'Noted By:',
-                name: notedData.user_first_name + " " + notedData.user_last_name,
-                position: notedData.staff_position
-              })
+                name:
+                  notedData.user_first_name + ' ' + notedData.user_last_name,
+                position: notedData.staff_position,
+              });
             }
           }
         }
       }
     }
   }
-  return formFooter
+  return formFooter;
 }
 
 // transforms Activity Income body data
-export async function getAIBodyData(form_id: string) { 
-  var formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(form_id, 'ai_id')
-  if(formData.data){
-    var eventData = await eventQuery.selectWhereEventValidation(formData.data[0].form_list_id, 'ai_form_list_id')
-    if(eventData.data){
+export async function getAIBodyData(form_id: string) {
+  var formData = await activityIncomeQuery.selectWhereActivityIncomeValidation(
+    form_id,
+    'ai_id',
+  );
+  if (formData.data) {
+    var eventData = await eventQuery.selectWhereEventValidation(
+      formData.data[0].form_list_id,
+      'ai_form_list_id',
+    );
+    if (eventData.data) {
       return {
         title: [
           {
-            message: "Activity Title:",
-            description: eventData.data[0].event_name
-        },
-        {
-            message: "Activity Date:",
-            description: eventData.data[0].event_date
-        },
+            message: 'Activity Title:',
+            description: eventData.data[0].event_name,
+          },
+          {
+            message: 'Activity Date:',
+            description: eventData.data[0].event_date,
+          },
         ],
         event_id: eventData.data[0].event_id,
-        notes: formData.data[0].ai_notes
-      }
+        notes: formData.data[0].ai_notes,
+      };
     }
   }
-  return null
+  return null;
 }
 
 // transforms Expense Statement body items
 export async function getESBodyItems(form_id: string) {
-  var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+  var formData =
+    await expenseStatementQuery.selectWhereExpenseStatementValidation(
+      form_id,
+      'es_id',
+    );
   if (formData.data) {
-    var items = await getItemsFromCategory(formData.data[0].category_id)
-    return items
+    var items = await getItemsFromCategory(formData.data[0].category_id);
+    return items;
   }
-  return null
+  return null;
 }
 
 // transforms Expense Statement body data
 export async function getESBodyData(form_id: string) {
-  var formData = await expenseStatementQuery.selectWhereExpenseStatementValidation(form_id, 'es_id')
+  var formData =
+    await expenseStatementQuery.selectWhereExpenseStatementValidation(
+      form_id,
+      'es_id',
+    );
   if (formData.data) {
     return [
       {
-        message: "Receipt link:",
-        description: formData.data[0].receipt_link
+        message: 'Receipt link:',
+        description: formData.data[0].receipt_link,
       },
       {
-        message: "Transferred to:",
-        description: formData.data[0].es_to
+        message: 'Transferred to:',
+        description: formData.data[0].es_to,
       },
       {
-        message: "Transferred on:",
-        description: formData.data[0].es_on
+        message: 'Transferred on:',
+        description: formData.data[0].es_on,
       },
       {
-        message: "Notes:",
-        description: formData.data[0].es_notes
+        message: 'Notes:',
+        description: formData.data[0].es_notes,
       },
-    ]
+    ];
   }
-  return null
+  return null;
 }
-
 
 // transforms Revenue Statement body items
 export async function getRSBodyItems(form_id: string) {
-  var formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+  var formData =
+    await revenueStatementQuery.selectWhereRevenueStatementValidation(
+      form_id,
+      'rs_id',
+    );
   if (formData.data) {
-    var items = await getItemsFromCategory(formData.data[0].category_id)
-    return items
+    var items = await getItemsFromCategory(formData.data[0].category_id);
+    return items;
   }
-  return null
+  return null;
 }
 
 // transforms Revenue Statement body data
 export async function getRSBodyData(form_id: string) {
-  var formData = await revenueStatementQuery.selectWhereRevenueStatementValidation(form_id, 'rs_id')
+  var formData =
+    await revenueStatementQuery.selectWhereRevenueStatementValidation(
+      form_id,
+      'rs_id',
+    );
   if (formData.data) {
     return [
       {
-        message: "Receipt link:",
-        description: formData.data[0].receipt_link
+        message: 'Receipt link:',
+        description: formData.data[0].receipt_link,
       },
       {
-        message: "Transferred to:",
-        description: formData.data[0].rs_to
+        message: 'Transferred to:',
+        description: formData.data[0].rs_to,
       },
       {
-        message: "Transferred on:",
-        description: formData.data[0].rs_on
+        message: 'Transferred on:',
+        description: formData.data[0].rs_on,
       },
       {
-        message: "Notes:",
-        description: formData.data[0].rs_notes
+        message: 'Notes:',
+        description: formData.data[0].rs_notes,
       },
-    ]
+    ];
   }
-  return null
+  return null;
 }
 
 // transforms Fund Transfer body data
-export async function getFTBodyData(form_id: string) { }
+export async function getFTBodyData(form_id: string) {
+  var formData = await fundTransferQuery.selectWhereFundTransferValidation(
+    form_id,
+    'ft_id',
+  );
+
+  if (formData.data) {
+    return [
+      {
+        message: 'Description/Reason:',
+        description: formData.data[0].ft_reason,
+      },
+      {
+        message: 'Transferred amount:',
+        description: formData.data[0].ft_amount,
+      },
+      {
+        message: 'Transferred from:',
+        description: formData.data[0].ft_from,
+      },
+      {
+        message: 'Transferred to:',
+        description: formData.data[0].ft_to,
+      },
+      {
+        message: 'Transferred on:',
+        description: formData.data[0].ft_on,
+      },
+      {
+        message: 'Receipt link:',
+        description: formData.data[0].receipt_link,
+      },
+    ];
+  }
+  return null;
+}

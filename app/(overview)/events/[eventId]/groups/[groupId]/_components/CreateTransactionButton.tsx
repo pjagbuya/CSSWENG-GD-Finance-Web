@@ -10,7 +10,7 @@ type CreateTransactionButtonProps = {
   groupId: string;
 };
 
-const CreateTransactionButton = ({groupId}: CreateTransactionButtonProps) => {
+const CreateTransactionButton = ({ groupId }: CreateTransactionButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   return (
@@ -20,7 +20,10 @@ const CreateTransactionButton = ({groupId}: CreateTransactionButtonProps) => {
       </Button>
 
       {showDialog && (
-        <AddTransactionDialog groupId={groupId} onFinish={() => setShowDialog(false)} />
+        <AddTransactionDialog
+          groupId={groupId}
+          onFinish={() => setShowDialog(false)}
+        />
       )}
     </>
   );

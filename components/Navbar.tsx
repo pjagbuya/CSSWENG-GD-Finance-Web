@@ -43,9 +43,10 @@ const Navbar = ({ className, isChief }: NavbarProps) => {
                 Accounts
               </NavigationMenuLink>
             </Link>
-          </NavigationMenuItem>) :
+          </NavigationMenuItem>
+        ) : (
           ''
-        }
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );

@@ -8,10 +8,11 @@ import EditStaffDialog from './EditStaffDialog';
 
 type RegisterAccountButtonType = {
   id: string;
-}
+};
 
 const EditStaffButton = ({ id }: RegisterAccountButtonType) => {
-  const [showRegisterAccountDialog, setShowRegisterAccountDialog] = useState(false);
+  const [showRegisterAccountDialog, setShowRegisterAccountDialog] =
+    useState(false);
 
   return (
     <>

@@ -15,9 +15,7 @@ import { deleteEventValidation } from '@/actions/events';
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => (
-      <SortableHeader column={column}>ID</SortableHeader>
-    ),
+    header: ({ column }) => <SortableHeader column={column}>ID</SortableHeader>,
   },
   {
     accessorKey: 'name',
@@ -52,7 +50,11 @@ type EventsTableProps = {
   onDelete?: () => void;
 };
 
-const FundsTransferTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
+const FundsTransferTable = ({
+  events,
+  nameFilter,
+  onDelete,
+}: EventsTableProps) => {
   const [toDeleteId, setToDeleteId] = useState('');
   const [toEditId, setToEditId] = useState('');
   const [toJumpId, setToJumpId] = useState('');

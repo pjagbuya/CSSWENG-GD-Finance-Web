@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button"
-import Logo from '@/components/Logo'
-import Link from 'next/link'
-import LoginForm from "./loginForm"
-
+import { Button } from '@/components/ui/button';
+import Logo from '@/components/Logo';
+import Link from 'next/link';
+import LoginForm from './loginForm';
 
 const LoginPage = () => {
   return (

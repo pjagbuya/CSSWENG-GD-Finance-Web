@@ -20,7 +20,12 @@ type EditItemFormProps = {
   onFinish?: () => void;
 };
 
-const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormProps) => {
+const EditItemDialog = ({
+  transactionId,
+  itemId,
+  onFinish,
+  open,
+}: EditItemFormProps) => {
   const [fields, setFields] = useState({
     item_date: '',
     item_name: '',
@@ -53,6 +58,7 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Item"
       open={open}
@@ -66,9 +72,7 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
           name="item_date"
           placeholder="Item Date"
           value={fields.item_date}
-          onChange={e =>
-            setFields({ ...fields, item_date: e.target.value })
-          }
+          onChange={e => setFields({ ...fields, item_date: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_date} />
@@ -81,9 +85,7 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
           name="item_name"
           placeholder="Item Name"
           value={fields.item_name}
-          onChange={e =>
-            setFields({ ...fields, item_name: e.target.value })
-          }
+          onChange={e => setFields({ ...fields, item_name: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_name} />
@@ -141,7 +143,7 @@ const EditItemDialog = ({ transactionId, itemId, onFinish, open }: EditItemFormP
           placeholder="Payment Details"
           className="resize-none"
           value={fields.item_payment_details}
-          onChange={e => 
+          onChange={e =>
             setFields({ ...fields, item_payment_details: e.target.value })
           }
         />

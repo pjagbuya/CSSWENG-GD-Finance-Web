@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 // INSTRUCTIONS:
 // item -> small case
@@ -52,24 +52,27 @@ CREATE TABLE IF NOT EXISTS items(
 var schema = 'items'; // replace with table name
 
 async function transformCreateData(data: any, transactionId: string) {
-  var transactionData = await transactionQuery.selectWhereTransactionValidation(transactionId, 'transaction_id')
+  var transactionData = await transactionQuery.selectWhereTransactionValidation(
+    transactionId,
+    'transaction_id',
+  );
 
   // TODO: fill information
-  var itemData = await selectAllItemValidation()
+  var itemData = await selectAllItemValidation();
   var id_mod = 10000;
-  if(itemData.data){
-    if(itemData.data.length > 0){
-      for(let i = 0; i < itemData.data!.length; i++){
-        var num = parseInt(itemData.data[i].item_id.slice(6))
-        if(num > id_mod){
-          id_mod = num
+  if (itemData.data) {
+    if (itemData.data.length > 0) {
+      for (let i = 0; i < itemData.data!.length; i++) {
+        var num = parseInt(itemData.data[i].item_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
         }
       }
-      id_mod += 1
+      id_mod += 1;
     }
   }
 
-  if(transactionData.data){
+  if (transactionData.data) {
     return {
       item_id: `items_${id_mod}`,
       item_name: data.get('item_name'),
@@ -81,15 +84,14 @@ async function transformCreateData(data: any, transactionId: string) {
       item_list_id: transactionData.data[0].item_list_id,
     };
   }
-  return null
+  return null;
 }
 
 async function transformEditData(data: any, itemId: string) {
-
   // TODO: provide logic
-  var itemData = await selectWhereItemValidation(itemId, 'item_id')
+  var itemData = await selectWhereItemValidation(itemId, 'item_id');
 
-  if(itemData.data){
+  if (itemData.data) {
     return {
       item_id: itemId,
       item_name: data.get('item_name'),
@@ -101,9 +103,8 @@ async function transformEditData(data: any, itemId: string) {
       item_list_id: itemData.data[0].item_list_id,
     };
   }
-  return null
+  return null;
 }
-
 
 async function convertData(data: any) {
   return data;
@@ -127,14 +128,14 @@ export async function createItemValidation(
 
   // TODO: provide logic
   var data = await convertData(transformedData);
-  
+
   const { error } = await createItem(data);
   if (error) {
     throw new Error(error.message);
   }
 
   revalidatePath(`/${transactionId}`);
-  
+
   return {} as ItemState;
 }
 
@@ -196,7 +197,11 @@ export async function selectAllItemValidation() {
   };
 }
 
-export async function deleteItemValidation(transactionId: string | null, id: string, identifier: string) {
+export async function deleteItemValidation(
+  transactionId: string | null,
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { error } = await deleteItem(id, identifier);
   if (error) {
@@ -204,7 +209,7 @@ export async function deleteItemValidation(transactionId: string | null, id: str
   }
 
   if (transactionId) {
-    revalidatePath(`/${transactionId}`)
+    revalidatePath(`/${transactionId}`);
   }
 
   return {

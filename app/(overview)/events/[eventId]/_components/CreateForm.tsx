@@ -42,7 +42,7 @@ const CreateForm = ({
     }
   }, [state]);
 
-  let size: string = `${width ? width : 425}`
+  let size: string = `${width ? width : 425}`;
   return (
     <Dialog open={open === undefined ? true : open} onOpenChange={onFinish}>
       <DialogContent className={`sm:max-w-[${size}px]`}>
@@ -58,7 +58,9 @@ const CreateForm = ({
           </div>
 
           <DialogFooter className="mt-3">
-            <Button type="submit">{(isEditing === undefined || !isEditing)  ? 'Create' : 'Edit'}</Button>
+            <Button type="submit">
+              {isEditing === undefined || !isEditing ? 'Create' : 'Edit'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
