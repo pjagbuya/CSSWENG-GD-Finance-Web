@@ -109,7 +109,7 @@ async function transformCreateData(id: string) {
         ai_id: `actin_${id_mod}`,
         ai_name: eventData.data[0].event_name,
         ai_date: eventData.data[0].event_date,
-        ai_notes: null,
+        ai_notes: '',
         prepared_staff_id: preparedStaff.data[0].staff_id,
         certified_staff_id: null,
         noted_staff_list_id: `stl_${id_mod_staff}`,

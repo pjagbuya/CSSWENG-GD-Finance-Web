@@ -25,16 +25,8 @@ export const ActivityIncomeSchema = z.object({
   //     required_error: 'Please enter Prepared staff ID.',
   //   })
   //   .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_list_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
+  certified_staff_id: z.string().optional().nullable(),
+  noted_staff_list_id: z.string().optional().nullable(),
   // form_list_id: z
   //   .string({
   //     required_error: 'Please enter Form list ID.',

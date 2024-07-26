@@ -31,6 +31,7 @@ export async function getAIFormFromEvent(event_id: any) {
     event_id,
     'event_id',
   );
+
   if (eventData.data) {
     let form_list_id = eventData.data[0].ai_form_list_id;
     return await activityIncomeQuery.selectWhereActivityIncomeValidation(
@@ -194,16 +195,17 @@ export async function getStaffInfos(staffData: any) {
   const staffInfo = [];
   if (staffData.data) {
     for (let i = 0; i < staffData.data.length; i++) {
-      var userData = await accountQuery.selectOneAccountDb(
+      var userData = await accountQuery.selectOneUser(
         staffData.data[i].user_id,
       );
-      if (userData.data) {
-        if(userData.data[i].staff_status){
+      console.log(userData);
+      if (userData) {
+        if (staffData.data[i].staff_status) {
           staffInfo.push({
             staff_id: staffData.data[i].staff_id,
             user_id: staffData.data[i].user_id,
-            user_first_name: userData.data[0].user_first_name,
-            user_last_name: userData.data[0].user_last_name,
+            user_first_name: userData[0].user_first_name,
+            user_last_name: userData[0].user_last_name,
             staff_position: staffData.data[i].staff_position,
           });
         }
@@ -215,15 +217,14 @@ export async function getStaffInfos(staffData: any) {
 
 export async function getStaffInfo(staffData: any) {
   if (staffData.data) {
-    var userData = await accountQuery.selectOneAccountDb(
-      staffData.data[0].user_id,
-    );
-    if (userData.data) {
+    var userData = await accountQuery.selectOneUser(staffData.data[0].user_id);
+    console.log(userData);
+    if (userData) {
       return {
         staff_id: staffData.data[0].staff_id,
         user_id: staffData.data[0].user_id,
-        user_first_name: userData.data[0].user_first_name,
-        user_last_name: userData.data[0].user_last_name,
+        user_first_name: userData[0].user_first_name,
+        user_last_name: userData[0].user_last_name,
         staff_position: staffData.data[0].staff_position,
       };
     }
@@ -575,39 +576,43 @@ export async function getFormFooterData(form_id: string) {
     }
     if (formData) {
       if (formData.data) {
-        var preparedStaff = await staffQuery.selectWhereStaffValidation(
-          formData.data[0].prepared_staff_id,
-          'staff_id',
-        );
-        console.log(preparedStaff);
-        var preparedData = await getStaffInfo(preparedStaff);
-
-        if (preparedData) {
-          formFooter.push({
-            id: formData.data[0].prepared_staff_id,
-            message: 'Prepared By:',
-            name:
-              preparedData.user_first_name + ' ' + preparedData.user_last_name,
-            position: preparedData.staff_position,
-          });
+        if (formData.data[0].prepared_staff_id) {
+          var preparedStaff = await staffQuery.selectWhereStaffValidation(
+            formData.data[0].prepared_staff_id,
+            'staff_id',
+          );
+          var preparedData = await getStaffInfo(preparedStaff);
+          if (preparedData) {
+            formFooter.push({
+              id: formData.data[0].prepared_staff_id,
+              message: 'Prepared By:',
+              name:
+                preparedData.user_first_name +
+                ' ' +
+                preparedData.user_last_name,
+              position: preparedData.staff_position,
+            });
+          }
         }
 
-        var certifiedStaff = await staffQuery.selectWhereStaffValidation(
-          formData.data[0].certified_staff_id,
-          'staff_id',
-        );
-        var certifiedData = await getStaffInfo(certifiedStaff);
+        if (formData.data[0].certified_staff_id) {
+          var certifiedStaff = await staffQuery.selectWhereStaffValidation(
+            formData.data[0].certified_staff_id,
+            'staff_id',
+          );
+          var certifiedData = await getStaffInfo(certifiedStaff);
 
-        if (certifiedData) {
-          formFooter.push({
-            id: formData.data[0].certified_staff_id,
-            message: 'Certified By:',
-            name:
-              certifiedData.user_first_name +
-              ' ' +
-              certifiedData.user_last_name,
-            position: certifiedData.staff_position,
-          });
+          if (certifiedData) {
+            formFooter.push({
+              id: formData.data[0].certified_staff_id,
+              message: 'Certified By:',
+              name:
+                certifiedData.user_first_name +
+                ' ' +
+                certifiedData.user_last_name,
+              position: certifiedData.staff_position,
+            });
+          }
         }
 
         var notedStaffList =

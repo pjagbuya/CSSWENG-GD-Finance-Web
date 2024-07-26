@@ -31,9 +31,7 @@ export type RegisterAccountState = {
   message?: string | null;
 };
 
-
-async function getStaffId(
-) {
+async function getStaffId() {
   var staffData = await query.selectAll('staffs');
   var id_mod = 10000;
   if (staffData.data) {
@@ -48,7 +46,7 @@ async function getStaffId(
     }
   }
 
-  return `staff_${id_mod}`
+  return `staff_${id_mod}`;
 }
 
 export async function createAccount(
@@ -122,11 +120,21 @@ export async function editAccount(
   };
 }
 
+export async function selectOneUser(id: string) {
+  const supabase = createClient();
+
+  const { data } = await supabase.from('users').select().eq('user_id', id);
+  return data;
+}
+
 export async function deleteAccount(id: string) {
   const supabase = createAdminClient();
   const supabase2 = createClient();
 
-  const { error : error1 } = await supabase2.from('staffs').update({staff_status: false}).eq('user_id', id);
+  const { error: error1 } = await supabase2
+    .from('staffs')
+    .update({ staff_status: false })
+    .eq('user_id', id);
   if (error1) {
     throw new Error(error1.message);
   }
@@ -194,7 +202,7 @@ export async function createStaff(data: staffType, userId: string) {
     staff_position: data.staff_position.toUpperCase(),
     user_id: userId,
     staff_id: await getStaffId(),
-    staff_status: true
+    staff_status: true,
   });
 
   if (staffError) {

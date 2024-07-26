@@ -212,7 +212,7 @@ const DataTable = ({
         </TableBody>
       </Table>
 
-      <div className="mt-2 flex items-center gap-2 self-end">
+      {/* <div className="mt-2 flex items-center gap-2 self-end">
         <p className="-mb-0.5 mr-4 text-sm text-muted-foreground">
           Page {currentPageNum} of {table.getPageCount()}
         </p>
@@ -235,7 +235,7 @@ const DataTable = ({
           <ChevronRight className="h-4 w-4" />
           Next
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
