@@ -10,15 +10,17 @@ import ErrorDisplay from '../../../_components/ErrorDisplay';
 import {
   editTransactionValidation,
   selectWhereTransactionValidation,
-} from '@/actions/transaction';
+} from '@/actions/transactions';
 
 type EditTransactionFormProps = {
+  groupId: string;
   transactionId: string;
   open: boolean;
   onFinish?: () => void;
 };
 
 const EditTransactionDialog = ({
+  groupId,
   transactionId,
   onFinish,
   open,
@@ -30,7 +32,12 @@ const EditTransactionDialog = ({
   });
 
   const [state, action] = useFormState(
-    editTransactionValidation.bind(null, transactionId, 'transaction_id'),
+    editTransactionValidation.bind(
+      null,
+      groupId,
+      transactionId,
+      'transaction_id',
+    ),
     {
       errors: {},
     },
@@ -55,21 +62,22 @@ const EditTransactionDialog = ({
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Transaction"
       open={open}
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="date">Date</Label>
+        <Label htmlFor="transaction_date">Date</Label>
         <Input
           type="date"
-          id="date"
-          name="date"
+          id="transaction_date"
+          name="transaction_date"
           placeholder="Transaction Date"
           defaultValue={Date.now()}
           value={fields.transaction_date}
-          onChange={e => () =>
+          onChange={e =>
             setFields({ ...fields, transaction_date: e.target.value })
           }
         />
@@ -84,7 +92,7 @@ const EditTransactionDialog = ({
           name="transaction_name"
           placeholder="Transaction Name"
           value={fields.transaction_name}
-          onChange={e => () =>
+          onChange={e =>
             setFields({ ...fields, transaction_name: e.target.value })
           }
         />
@@ -93,14 +101,14 @@ const EditTransactionDialog = ({
       </>
 
       <>
-        <Label htmlFor="notes">Notes</Label>
+        <Label htmlFor="transaction_note">Notes</Label>
         <Textarea
-          id="notes"
-          name="notes"
-          placeholder="notes"
+          id="transaction_note"
+          name="transaction_note"
+          placeholder="Notes"
           className="resize-none"
           value={fields.transaction_note}
-          onChange={e => () =>
+          onChange={e =>
             setFields({ ...fields, transaction_note: e.target.value })
           }
         />

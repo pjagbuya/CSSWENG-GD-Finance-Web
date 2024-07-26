@@ -3,42 +3,35 @@ import { z } from 'zod';
 // Database Schemas //
 
 export const ActivityIncomeSchema = z.object({
-  ai_id: z
-    .string({
-      required_error: 'Please enter Activity Income ID.',
-    })
-    .min(1),
-  ai_name: z
-    .string({
-      required_error: 'Please enter Activity Income name.',
-    })
-    .min(1),
-  ai_date: z
-    .string({
-      required_error: 'Please enter Activity Income date.',
-    })
-    .date(),
+  // ai_id: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income ID.',
+  //   })
+  //   .min(1),
+  //
+  // ai_name: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income name.',
+  //   })
+  //   .min(1),
+  // ai_date: z
+  //   .string({
+  //     required_error: 'Please enter Activity Income date.',
+  //   })
+  //   .date(),
   ai_notes: z.string().optional(),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
-  form_list_id: z
-    .string({
-      required_error: 'Please enter Form list ID.',
-    })
-    .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
+  certified_staff_id: z.string().optional().nullable(),
+  noted_staff_list_id: z.string().optional().nullable(),
+  // form_list_id: z
+  //   .string({
+  //     required_error: 'Please enter Form list ID.',
+  //   })
+  //   .min(1),
 });
 
 export const CategorySchema = z.object({
@@ -46,13 +39,12 @@ export const CategorySchema = z.object({
   category_name: z
     .string({ required_error: 'Please enter Category name.' })
     .min(1),
-  category_type: z.enum(['Expense', 'Revenue']),
+  category_type: z.enum(['expense', 'revenue']),
   event_id: z.string({ required_error: 'Please enter Event ID.' }).min(1),
   transaction_list_id: z
     .string({ required_error: 'Please enter Transaction list ID.' })
     .min(1),
 });
-
 
 export const StaffSchema = z.object({
   staff_position: z.string({
@@ -69,50 +61,50 @@ export const ExpenseStatementSchema = z.object({
       required_error: 'Please enter Expense statement ID.',
     })
     .min(1),
-  es_name: z
-    .string({
-      required_error: 'Please enter Expense statement name.',
-    })
-    .min(1),
-  es_date: z
-    .string({
-      required_error: 'Please enter Expense statement date.',
-    })
-    .date(),
-  receipt_link: z
-    .string({
-      required_error: 'Please enter Receipt link.',
-    })
-    .min(1),
-  es_to: z
-    .string({
-      required_error: 'Please enter Expense statement to.',
-    })
-    .min(1),
-  es_from: z
-    .string({ required_error: 'Please enter Expense statement from.' })
-    .min(1),
-  es_notes: z.string().optional(),
-  category_id: z
-    .string({
-      required_error: 'Please enter Category ID.',
-    })
-    .min(1),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
+  // es_name: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement name.',
+  //   })
+  //   .min(1),
+  // es_date: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement date.',
+  //   })
+  //   .date(),
+  // receipt_link: z
+  //   .string({
+  //     required_error: 'Please enter Receipt link.',
+  //   })
+  //   .min(1),
+  // es_to: z
+  //   .string({
+  //     required_error: 'Please enter Expense statement to.',
+  //   })
+  //   .min(1),
+  // es_from: z
+  //   .string({ required_error: 'Please enter Expense statement from.' })
+  //   .min(1),
+  // es_notes: z.string().optional(),
+  // category_id: z
+  //   .string({
+  //     required_error: 'Please enter Category ID.',
+  //   })
+  //   .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
+  // certified_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Certified staff ID.',
+  //   })
+  //   .min(1),
+  // noted_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Noted staff ID.',
+  //   })
+  //   .min(1),
   form_list_id: z
     .string({
       required_error: 'Please enter Form list ID.',
@@ -164,32 +156,32 @@ export const FundTransferSchema = z.object({
   ft_from: z
     .string({ required_error: 'Please enter Fund transfer from.' })
     .min(1),
-  ft_on: z.string({ required_error: 'Please enter Fund transfer on.' }).min(1),
+  ft_on: z.string({ required_error: 'Please enter Fund transfer on.' }).date(),
   receipt_link: z
     .string({
       required_error: 'Please enter Receipt link.',
     })
     .min(1),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
   certified_staff_id: z
     .string({
       required_error: 'Please enter Certified staff ID.',
     })
     .min(1),
-  noted_staff_id: z
+  noted_staff_list_id: z
     .string({
       required_error: 'Please enter Noted staff ID.',
     })
     .min(1),
-  form_list_id: z
-    .string({
-      required_error: 'Please enter Form list ID.',
-    })
-    .min(1),
+  // form_list_id: z
+  //   .string({
+  //     required_error: 'Please enter Form list ID.',
+  //   })
+  //   .min(1),
 });
 
 export const GdscEventSchema = z.object({
@@ -255,7 +247,7 @@ export const ItemSchema = z.object({
       message: 'Item units must be a valid integer.',
     })
     .optional(),
-  item_price: z.string().optional(),
+  item_price: z.coerce.number().optional(),
   item_amount: z.coerce.number().optional(),
   item_date: z
     .string({ required_error: 'Please enter Item date.' })
@@ -274,51 +266,59 @@ export const RevenueStatementSchema = z.object({
       required_error: 'Please enter Revenue statement ID.',
     })
     .min(1),
-  rs_name: z
-    .string({
-      required_error: 'Please enter Revenue statement name.',
-    })
-    .min(1),
-  rs_date: z
-    .string({
-      required_error: 'Please enter Revenue statement date.',
-    })
-    .date(),
-  receipt_link: z
-    .string({
-      required_error: 'Please enter Receipt link.',
-    })
-    .min(1),
-  rs_to: z
-    .string({ required_error: 'Please enter Revenue statement to.' })
-    .min(1),
-  rs_from: z
-    .string({ required_error: 'Please enter Revenue statement from.' })
-    .min(1),
-  rs_notes: z.string().optional(),
-  category_id: z
-    .string({
-      required_error: 'Please enter Category ID.',
-    })
-    .min(1),
-  prepared_staff_id: z
-    .string({
-      required_error: 'Please enter Prepared staff ID.',
-    })
-    .min(1),
-  certified_staff_id: z
-    .string({
-      required_error: 'Please enter Certified staff ID.',
-    })
-    .min(1),
-  noted_staff_id: z
-    .string({
-      required_error: 'Please enter Noted staff ID.',
-    })
-    .min(1),
+  // rs_name: z
+  //   .string({
+  //     required_error: 'Please enter Revenue statement name.',
+  //   })
+  //   .min(1),
+  // rs_date: z
+  //   .string({
+  //     required_error: 'Please enter Revenue statement date.',
+  //   })
+  //   .date(),
+  // receipt_link: z
+  //   .string({
+  //     required_error: 'Please enter Receipt link.',
+  //   })
+  //   .min(1),
+  // rs_to: z
+  //   .string({ required_error: 'Please enter Revenue statement to.' })
+  //   .min(1),
+  // rs_from: z
+  //   .string({ required_error: 'Please enter Revenue statement from.' })
+  //   .min(1),
+  // rs_notes: z.string().optional(),
+  // category_id: z
+  //   .string({
+  //     required_error: 'Please enter Category ID.',
+  //   })
+  //   .min(1),
+  // prepared_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Prepared staff ID.',
+  //   })
+  //   .min(1),
+  // certified_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Certified staff ID.',
+  //   })
+  //   .min(1),
+  // noted_staff_id: z
+  //   .string({
+  //     required_error: 'Please enter Noted staff ID.',
+  //   })
+  //   .min(1),
   form_list_id: z
     .string({
       required_error: 'Please enter Form list ID.',
+    })
+    .min(1),
+});
+
+export const StaffInstanceSchema = z.object({
+  staff_instance_id: z
+    .string({
+      required_error: 'Please enter Staff list ID.',
     })
     .min(1),
 });
@@ -352,7 +352,7 @@ export const TransactionSchema = z.object({
     .min(1),
 });
 
-export const TransactionLists = z.object({
+export const TransactionListSchema = z.object({
   transaction_list_id: z
     .string({
       required_error: 'Please enter Transaction list ID.',
@@ -430,10 +430,10 @@ export const UserFormSchema = z.object({
 });
 
 export const AddUserFormSchema = UserFormSchema.omit({
-  role: true
-})
+  role: true,
+});
 
-export type addUserType = z.infer<typeof AddUserFormSchema>
+export type addUserType = z.infer<typeof AddUserFormSchema>;
 
 export const CreateEventSchema = z.object({
   event_name: z
@@ -441,6 +441,11 @@ export const CreateEventSchema = z.object({
       required_error: 'Please enter an event name.',
     })
     .min(1),
+  event_date: z
+    .string({
+      required_error: 'Please enter the event date.',
+    })
+    .date(),
 });
 
 export const EditUserFormSchema = AddUserFormSchema.omit({
@@ -458,28 +463,43 @@ export const LoginForm = UserFormSchema.pick({
 });
 
 export const UpdateExpenseFormSchema = z.object({
-  receipts_link: z
+  receipt_link: z
     .string({ required_error: 'Receipts Link is required.' })
     .url({ message: 'Please enter a valid URL.' }),
-  notes: z.string(),
-  acc_to: z.string({
+  es_to: z.string({
     required_error: 'Please enter the account transferred to.',
   }),
+  es_on: z
+    .string({
+      required_error: 'Please enter the account transferred on.',
+    })
+    .date(),
+  es_notes: z
+    .string({
+      required_error: 'Please enter notes.',
+    })
+    .optional(),
+  certified_staff_id: z.optional(z.string()),
+  noted_staff_list_ids: z.optional(z.string()),
 });
 
 export const UpdateRevenueFormSchema = z.object({
-  receipts_link: z
+  receipt_link: z
     .string({ required_error: 'Receipts Link is required.' })
     .url({ message: 'Please enter a valid URL.' }),
-  notes: z.string(),
-  acc_from: z
+  rs_to: z.string({
+    required_error: 'Please enter the account transferred to.',
+  }),
+  rs_on: z
     .string({
-      required_error: 'Please enter the account received from.',
+      required_error: 'Please enter the account transferred on.',
     })
-    .min(1),
-  acc_to: z
+    .date(),
+  rs_notes: z
     .string({
-      required_error: 'Please enter the account transferred to.',
+      required_error: 'Please enter notes.',
     })
-    .min(1),
+    .optional(),
+  certified_staff_id: z.optional(z.string()),
+  noted_staff_list_id: z.optional(z.string()),
 });

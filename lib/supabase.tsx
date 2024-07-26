@@ -3,6 +3,8 @@
 import { createClient } from '@/utils/supabase/server';
 
 export async function insert(schema: any, data: any) {
+  'use server';
+
   const supabase = createClient();
 
   const { data: result, error } = await supabase
@@ -16,15 +18,14 @@ export async function edit(schema: any, data: any, column: any, value: any) {
   const supabase = createClient();
 
   const { error } = await supabase.from(schema).update(data).eq(column, value);
-  console.log(error);
-  return error;
+  return { error };
 }
 
 export async function remove(schema: any, column: any, value: any) {
   const supabase = createClient();
 
   const { error } = await supabase.from(schema).delete().eq(column, value);
-  return error;
+  return { error };
 }
 
 export async function selectAll(schema: any) {

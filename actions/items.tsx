@@ -1,3 +1,5 @@
+'use server';
+
 // INSTRUCTIONS:
 // item -> small case
 // Item -> big case
@@ -8,6 +10,7 @@ import { ItemSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as transactionQuery from '@/actions/transactions';
 
 export type ItemState = {
   errors?: {
@@ -46,29 +49,73 @@ CREATE TABLE IF NOT EXISTS items(
   */
 };
 
-var schema = 'ItemSchema'; // replace with table name
+var schema = 'items'; // replace with table name
 
-export async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+async function transformCreateData(data: any, transactionId: string) {
+  var transactionData = await transactionQuery.selectWhereTransactionValidation(
+    transactionId,
+    'transaction_id',
+  );
 
   // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  var itemData = await selectAllItemValidation();
+  var id_mod = 10000;
+  if (itemData.data) {
+    if (itemData.data.length > 0) {
+      for (let i = 0; i < itemData.data!.length; i++) {
+        var num = parseInt(itemData.data[i].item_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
+        }
+      }
+      id_mod += 1;
+    }
+  }
+
+  if (transactionData.data) {
+    return {
+      item_id: `items_${id_mod}`,
+      item_name: data.get('item_name'),
+      item_units: data.get('item_units'),
+      item_price: data.get('item_price'),
+      item_amount: data.get('item_amount'),
+      item_date: data.get('item_date'),
+      item_payment_details: data.get('item_payment_details'),
+      item_list_id: transactionData.data[0].item_list_id,
+    };
+  }
+  return null;
 }
 
-export async function convertData(data: any) {
+async function transformEditData(data: any, itemId: string) {
   // TODO: provide logic
+  var itemData = await selectWhereItemValidation(itemId, 'item_id');
 
-  // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  if (itemData.data) {
+    return {
+      item_id: itemId,
+      item_name: data.get('item_name'),
+      item_units: data.get('item_units'),
+      item_price: data.get('item_price'),
+      item_amount: data.get('item_amount'),
+      item_date: data.get('item_date'),
+      item_payment_details: data.get('item_payment_details'),
+      item_list_id: itemData.data[0].item_list_id,
+    };
+  }
+  return null;
+}
+
+async function convertData(data: any) {
+  return data;
 }
 
 export async function createItemValidation(
+  transactionId: string,
   prevState: ItemState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(formData, transactionId);
   const validatedFields = ItemSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -80,23 +127,26 @@ export async function createItemValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
   const { error } = await createItem(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath(`/${transactionId}`);
+
   return {} as ItemState;
 }
 
 export async function editItemValidation(
+  transactionId: string,
   id: string,
   identifier: string,
   prevState: ItemState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformEditData(formData, id);
   const validatedFields = ItemSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -108,13 +158,13 @@ export async function editItemValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editItem(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  revalidatePath(`/${transactionId}`);
   return {} as ItemState;
 }
 
@@ -147,14 +197,21 @@ export async function selectAllItemValidation() {
   };
 }
 
-export async function deleteItemValidation(id: string, identifier: string) {
+export async function deleteItemValidation(
+  transactionId: string | null,
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { error } = await deleteItem(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  if (transactionId) {
+    revalidatePath(`/${transactionId}`);
+  }
+
   return {
     message: null,
   };

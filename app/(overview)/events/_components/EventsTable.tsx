@@ -10,6 +10,7 @@ import DataTable, {
 } from '../../../../components/DataTable';
 import EditEventDialog from './EditEventDialog';
 import EventJumpPointDialog from './EventJumpPointDialog';
+import { deleteEventValidation } from '@/actions/events';
 
 const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
   {
@@ -19,19 +20,18 @@ const TEMP_COLUMNS: ColumnDef<unknown, any>[] = [
     ),
   },
   {
+    accessorKey: 'event_date',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Date Held</SortableHeader>
+    ),
+    cell: ({ row }) => getFormattedDate(new Date(row.getValue('event_date'))),
+  },
+  {
     accessorKey: 'date_created',
     header: ({ column }) => (
       <SortableHeader column={column}>Date Created</SortableHeader>
     ),
     cell: ({ row }) => getFormattedDate(new Date(row.getValue('date_created'))),
-  },
-  {
-    accessorKey: 'date_modified',
-    header: ({ column }) => (
-      <SortableHeader column={column}>Date Modified</SortableHeader>
-    ),
-    cell: ({ row }) =>
-      getFormattedDate(new Date(row.getValue('date_modified'))),
   },
 ];
 
@@ -46,12 +46,12 @@ const EventsTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
   const [toEditId, setToEditId] = useState('');
   const [toJumpId, setToJumpId] = useState('');
 
-  function handleEventDelete() {
+  async function handleEventDelete() {
     if (!toDeleteId) {
       return;
     }
 
-    deleteEventValidation(toDeleteId);
+    await deleteEventValidation(toDeleteId, 'event_id');
     setToDeleteId('');
   }
 
@@ -85,6 +85,3 @@ const EventsTable = ({ events, nameFilter, onDelete }: EventsTableProps) => {
 };
 
 export default EventsTable;
-function deleteEventValidation(toDeleteId: string) {
-  throw new Error('Function not implemented.');
-}

@@ -2,7 +2,7 @@ import * as utilFunc from '@/actions/utils';
 
 import AddGroupButton from './_components/AddGroupButton';
 import GroupList from './_components/GroupList';
-import { eventQuery } from '@/actions/events';
+import { selectWhereEventValidation } from '@/actions/events';
 
 type TransactionsPageProps = {
   params: {
@@ -12,7 +12,7 @@ type TransactionsPageProps = {
 
 // groups (categories) - 1 for expense, 1 for revenue
 const GroupsPage = async ({ params }: TransactionsPageProps) => {
-  const { data: event } = await eventQuery.selectWhereEventValidation(
+  const { data: event } = await selectWhereEventValidation(
     params.eventId,
     'event_id',
   );

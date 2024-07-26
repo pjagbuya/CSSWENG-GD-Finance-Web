@@ -7,7 +7,8 @@
 import { StaffListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
+import * as staffInstanceQuery from '@/actions/staff_instances';
 
 export type staffListState = {
   errors?: {
@@ -28,7 +29,7 @@ var staffListFormat = {
   */
 };
 
-var schema = 'StaffListSchema'; // replace with table name
+var schema = 'staff_lists'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
@@ -46,7 +47,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createStaffListValidation(
+export async function createStaffListValidation(
   prevState: staffListState,
   formData: FormData,
 ) {
@@ -74,7 +75,7 @@ async function createStaffListValidation(
   };
 }
 
-async function editStaffListValidation(
+export async function editStaffListValidation(
   id: string,
   identifier: string,
   prevState: staffListState,
@@ -104,7 +105,10 @@ async function editStaffListValidation(
   };
 }
 
-async function selectWhereStaffListValidation(id: string, identifier: string) {
+export async function selectWhereStaffListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
   const { data, error } = await selectWhereStaffList(id, identifier);
   if (error) {
@@ -117,7 +121,7 @@ async function selectWhereStaffListValidation(id: string, identifier: string) {
   };
 }
 
-async function selectAllStaffListValidation() {
+export async function selectAllStaffListValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllStaffList();
   if (error) {
@@ -130,8 +134,13 @@ async function selectAllStaffListValidation() {
   };
 }
 
-async function deleteStaffListValidation(id: string, identifier: string) {
+export async function deleteStaffListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
+
+  await staffInstanceQuery.deleteStaffInstanceValidation(id, identifier);
   const { error } = await deleteStaffList(id, identifier);
   if (error) {
     throw new Error(error.message);
@@ -143,35 +152,22 @@ async function deleteStaffListValidation(id: string, identifier: string) {
   };
 }
 
-async function createStaffList(data: any) {
+export async function createStaffList(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editStaffList(data: any, id: string, identifier: string) {
+export async function editStaffList(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteStaffList(id: string, identifier: string) {
+export async function deleteStaffList(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereStaffList(id: string, identifier: string) {
+export async function selectWhereStaffList(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllStaffList() {
+export async function selectAllStaffList() {
   return await query.selectAll(schema);
 }
-
-export const staffListQuery = {
-  createStaffListValidation,
-  createStaffList,
-  editStaffListValidation,
-  editStaffList,
-  deleteStaffListValidation,
-  deleteStaffList,
-  selectWhereStaffListValidation,
-  selectWhereStaffList,
-  selectAllStaffListValidation,
-  selectAllStaffList,
-};

@@ -6,36 +6,55 @@ import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
 import CreateExpenseForm from './dialogs/CreateExpenseForm';
 import CreateRevenueForm from './dialogs/CreateRevenueForm';
+import CreateFundTransferForm from './dialogs/CreateFundTransferForm';
+import EditAISFForm from './dialogs/EditAISFForm';
 
 type CreateFormButtonProps = {
+  isEditing?: boolean;
   eventId: string;
-  variant: 'expense' | 'revenue' | 'fund_transfer';
+  variant: 'expense' | 'revenue' | 'fund_transfer' | 'aisf';
 };
 
-const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
+const CreateFormButton = ({
+  eventId,
+  isEditing,
+  variant,
+}: CreateFormButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   function getFormComponent() {
     switch (variant) {
-      case 'expense':
-        return (
-          <CreateExpenseForm
-            eventId={eventId}
-            onFinish={() => setShowDialog(false)}
-          />
-        );
+      // case 'expense':
+      //   return (
+      //     <CreateExpenseForm
+      //       eventId={eventId}
+      //       onFinish={() => setShowDialog(false)}
+      //     />
+      //   );
 
-      case 'revenue':
-        return (
-          <CreateRevenueForm
-            eventId={eventId}
-            onFinish={() => setShowDialog(false)}
-          />
-        );
+      // case 'revenue':
+      //   return (
+      //     <CreateRevenueForm
+      //       eventId={eventId}
+      //       onFinish={() => setShowDialog(false)}
+      //     />
+      //   );
 
       case 'fund_transfer':
-        // TODO
-        return null;
+        return (
+          <CreateFundTransferForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
+
+      case 'aisf':
+        return (
+          <EditAISFForm
+            eventId={eventId}
+            onFinish={() => setShowDialog(false)}
+          />
+        );
 
       default:
         throw new Error('Invalid form variant given.');
@@ -45,7 +64,13 @@ const CreateFormButton = ({ eventId, variant }: CreateFormButtonProps) => {
   return (
     <>
       <Button onClick={() => setShowDialog(true)}>
-        <CirclePlus className="mr-2 w-4" /> Create Form
+        {isEditing === undefined || !isEditing ? (
+          <>
+            <CirclePlus className="mr-2 w-4" /> Create Form
+          </>
+        ) : (
+          'Edit Form'
+        )}
       </Button>
 
       {showDialog && getFormComponent()}

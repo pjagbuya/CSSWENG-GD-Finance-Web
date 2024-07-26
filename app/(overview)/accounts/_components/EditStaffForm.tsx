@@ -10,11 +10,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { ToastAction } from '@/components/ui/toast';
 import { toast } from '@/components/ui/use-toast';
-import { SelectValue } from '@radix-ui/react-select';
+import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
+import ErrorDisplay from '../../events/[eventId]/_components/ErrorDisplay';
 
 interface EventDialogFormProps {
   action: any; // TODO
@@ -59,24 +59,12 @@ const EditStaffForm: React.FC<EventDialogFormProps> = ({
           <div className="flex flex-col gap-6 py-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="position">Position</Label>
-              <Select name='staff_position' value={fields?.position} onValueChange={(e) => onFieldsChange?.({ ...fields, position: e })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Position" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="chief">Chief</SelectItem>
-                  <SelectItem value="member">Member</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div id="position-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.staff_position &&
-                  state.errors.staff_position.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                  ))}
-              </div>
+              <Input
+                id="position"
+                name="staff_position"
+                placeholder="Receipts Link"
+              />
+              <ErrorDisplay errors={state.errors?.staff_position} />
             </div>
           </div>
 

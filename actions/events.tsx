@@ -1,3 +1,5 @@
+'use server';
+
 // INSTRUCTIONS:
 // event -> small case
 // Event -> big case
@@ -6,10 +8,18 @@
 
 import { CreateEventSchema } from '@/lib/definitions';
 import * as query from '@/lib/supabase';
+import * as formListQuery from '@/actions/form_lists';
+import { revalidatePath } from 'next/cache';
+import * as categoryQuery from '@/actions/categories';
+import * as activityIncomeQuery from '@/actions/activity_incomes';
+import * as revenueStatementQuery from '@/actions/revenue_statements';
+import * as expenseStatementQuery from '@/actions/expense_statements';
+import * as fundTransferQuery from '@/actions/fund_transfers';
 
 export type EventState = {
   errors?: {
     event_name?: string[];
+    event_date?: string[];
   };
 };
 
@@ -42,27 +52,64 @@ var eventFormat = {
 var schema = 'gdsc_events'; // replace with table name
 var identifier = 'event_id';
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+async function transformCreateData(data: FormData) {
+  var eventData = await selectAllEventValidation();
+  var id_mod = 10000;
+  if (eventData.data) {
+    if (eventData.data.length > 0) {
+      for (let i = 0; i < eventData.data!.length; i++) {
+        var num = parseInt(eventData.data[i].event_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
+        }
+      }
+      id_mod += 1;
+    }
+  }
 
   // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  return {
+    event_id: `event_${id_mod}`,
+    event_name: data.get('event_name'),
+    event_date: data.get('event_date'),
+    ft_form_list_id: `ftl_${id_mod}`,
+    rs_form_list_id: `rsl_${id_mod}`,
+    es_form_list_id: `esl_${id_mod}`,
+    ai_form_list_id: `ail_${id_mod}`,
+  };
+}
+
+async function transformEditData(
+  id: string,
+  identifier: string,
+  data: FormData,
+) {
+  const eventData = await selectWhereEventValidation(id, identifier);
+
+  // TODO: fill information
+  if (eventData.data) {
+    return {
+      event_id: id,
+      event_name: data.get('event_name'),
+      event_date: data.get('event_date'),
+      ft_form_list_id: eventData.data[0].ft_form_list_id,
+      rs_form_list_id: eventData.data[0].rs_form_list_id,
+      es_form_list_id: eventData.data[0].es_form_list_id,
+      ai_form_list_id: eventData.data[0].ai_form_list_id,
+    };
+  }
+  return null;
 }
 
 async function convertData(data: any) {
-  // TODO: provide logic
-
-  // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
-async function createEventValidation(
+export async function createEventValidation(
   prevState: EventState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(formData);
   const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -74,23 +121,46 @@ async function createEventValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
+  const ai_form_list = {
+    form_list_id: data.ai_form_list_id,
+  };
+  await formListQuery.createFormList(ai_form_list);
+
+  const rs_form_list = {
+    form_list_id: data.rs_form_list_id,
+  };
+  await formListQuery.createFormList(rs_form_list);
+
+  const es_form_list = {
+    form_list_id: data.es_form_list_id,
+  };
+  await formListQuery.createFormList(es_form_list);
+
+  const ft_form_list = {
+    form_list_id: data.ft_form_list_id,
+  };
+  await formListQuery.createFormList(ft_form_list);
+
   const { error } = await createEvent(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  await activityIncomeQuery.createActivityIncomeValidation(data.event_id);
+
+  revalidatePath('/events');
   return {};
 }
 
-async function editEventValidation(
+export async function editEventValidation(
   id: string,
   identifier: string,
   prevState: EventState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  const transformedData = await transformEditData(id, identifier, formData);
   const validatedFields = CreateEventSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -102,86 +172,148 @@ async function editEventValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
   const { error } = await editEvent(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  revalidatePath('/events');
+  return {};
 }
 
-async function selectWhereEventValidation(id: string, identifier: string) {
-  // TODO: provide logic
+export async function selectWhereEventValidation(
+  id: string,
+  identifier: string,
+) {
   const { data, error } = await selectWhereEvent(id, identifier);
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
   return {
     data: data,
   };
 }
 
-async function selectAllEventValidation() {
-  // TODO: provide logic
+export async function selectAllEventValidation() {
   const { data, error } = await selectAllEvent();
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
   return {
     data: data,
   };
 }
 
-async function deleteEventValidation(id: string, identifier: string) {
+export async function deleteEventValidation(id: string, identifier: string) {
   // TODO: provide logic
+  const data = await selectWhereEventValidation(id, 'event_id');
+
+  if (data.data) {
+    var aiData = await activityIncomeQuery.selectWhereActivityIncomeValidation(
+      data.data[0].ai_form_list_id,
+      'form_list_id',
+    );
+    if (aiData.data) {
+      for (let i = 0; i < aiData.data.length; i++) {
+        await activityIncomeQuery.deleteActivityIncomeValidation(
+          aiData.data[i].ai_id,
+          'ai_id',
+        );
+      }
+    }
+    /*
+    var rsData = await revenueStatementQuery.selectWhereRevenueStatementValidation(data.data[0].rs_form_list_id, 'form_list_id')
+    if(rsData.data){
+      for(let i = 0; i < rsData.data.length; i++){
+        await revenueStatementQuery.deleteRevenueStatementValidation(rsData.data[i].rs_id, 'rs_id')
+      }
+    }
+    var esData = await expenseStatementQuery.selectWhereExpenseStatementValidation(data.data[0].es_form_list_id, 'form_list_id')
+    if(esData.data){
+      for(let i = 0; i < esData.data.length; i++){
+        await expenseStatementQuery.deleteExpenseStatementValidation(esData.data[i].es_id, 'es_id')
+      }
+    }
+    */
+    var ftData = await fundTransferQuery.selectWhereFundTransferValidation(
+      data.data[0].ft_form_list_id,
+      'form_list_id',
+    );
+    if (ftData.data) {
+      for (let i = 0; i < ftData.data.length; i++) {
+        await fundTransferQuery.deleteFundTransferValidation(
+          ftData.data[i].rs_id,
+          'ft_id',
+          id
+        );
+      }
+    }
+  }
+
+  const categoryData = await categoryQuery.selectWhereCategoryValidation(
+    id,
+    'event_id',
+  );
+
+  if (categoryData.data) {
+    for (let i = 0; i < categoryData.data.length; i++) {
+      await categoryQuery.deleteCategoryValidation(
+        categoryData.data[i].category_id,
+        'category_id',
+      );
+    }
+  }
+
   const { error } = await deleteEvent(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  if (data.data) {
+    await formListQuery.deleteFormListValidation(
+      data.data[0].ai_form_list_id,
+      'form_list_id',
+    );
+    await formListQuery.deleteFormListValidation(
+      data.data[0].rs_form_list_id,
+      'form_list_id',
+    );
+    await formListQuery.deleteFormListValidation(
+      data.data[0].es_form_list_id,
+      'form_list_id',
+    );
+    await formListQuery.deleteFormListValidation(
+      data.data[0].ft_form_list_id,
+      'form_list_id',
+    );
+  }
+
+  revalidatePath('/');
+
+  return {};
 }
 
-async function createEvent(data: any) {
+export async function createEvent(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editEvent(data: any, id: string, identifier: string) {
+export async function editEvent(data: any, id: string, identifier: string) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteEvent(id: string, identifier: string) {
+export async function deleteEvent(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereEvent(id: string, identifier: string) {
+export async function selectWhereEvent(id: string, identifier: string) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllEvent() {
+export async function selectAllEvent() {
   return await query.selectAll(schema);
 }
-
-export const eventQuery = {
-  createEventValidation,
-  createEvent,
-  editEventValidation,
-  editEvent,
-  deleteEventValidation,
-  deleteEvent,
-  selectWhereEventValidation,
-  selectWhereEvent,
-  selectAllEventValidation,
-  selectAllEvent,
-};

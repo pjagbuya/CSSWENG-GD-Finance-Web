@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   AccountState,
@@ -38,7 +38,6 @@ const EditAccountDialog = ({
     position: '',
   });
 
-
   useEffect(() => {
     async function getUserInfo() {
       if (accountId) {
@@ -75,7 +74,7 @@ const EditAccountDialog = ({
     <AccountDialogForm
       action={formAction}
       fields={fields}
-      label="Create"
+      label={isEditing ? 'Edit' : 'Create'}
       state={state}
       open={open}
       onFieldsChange={setFields}
@@ -83,6 +82,5 @@ const EditAccountDialog = ({
     />
   );
 };
-
 
 export default EditAccountDialog;

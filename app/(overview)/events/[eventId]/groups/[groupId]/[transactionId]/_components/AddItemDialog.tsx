@@ -8,15 +8,19 @@ import { useFormState } from 'react-dom';
 import { createItemValidation } from '@/actions/items';
 
 type AddItemFormProps = {
+  transactionId: string;
   onFinish?: () => void;
 };
 
-const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
+const AddItemDialog = ({ transactionId, onFinish }: AddItemFormProps) => {
   const dateElemRef = useRef<HTMLInputElement>(null);
 
-  const [state, action] = useFormState(createItemValidation, {
-    errors: {},
-  });
+  const [state, action] = useFormState(
+    createItemValidation.bind(null, transactionId),
+    {
+      errors: {},
+    },
+  );
 
   useEffect(() => {
     dateElemRef.current!.value = new Date().toISOString().substring(0, 10);
@@ -30,12 +34,12 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="date">Date</Label>
+        <Label htmlFor="item_date">Date</Label>
         <Input
           ref={dateElemRef}
           type="date"
-          id="date"
-          name="date"
+          id="item_date"
+          name="item_date"
           placeholder="Item Date"
           defaultValue={Date.now()}
         />
@@ -51,14 +55,14 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
       </>
 
       <>
-        <Label htmlFor="item_price">Unit Price/Total Amount</Label>
+        <Label htmlFor="item_price">Unit Price</Label>
         <Input
           type="number"
           id="item_price"
           name="item_price"
-          placeholder="Unit Price/Total Amount"
-          defaultValue={1}
-          min={1}
+          placeholder="Unit Price (0 if none)"
+          defaultValue={0}
+          min={0}
           step="any"
         />
 
@@ -66,17 +70,32 @@ const AddItemDialog = ({ onFinish }: AddItemFormProps) => {
       </>
 
       <>
-        <Label htmlFor="item_units">Unit Count (Optional)</Label>
+        <Label htmlFor="item_units">Unit Count</Label>
         <Input
           type="number"
           id="item_units"
           name="item_units"
-          placeholder="Unit Count (Optional)"
-          defaultValue={1}
-          min={1}
+          placeholder="Unit Count (0 if none)"
+          defaultValue={0}
+          min={0}
         />
 
         <ErrorDisplay errors={state?.errors?.item_units} />
+      </>
+
+      <>
+        <Label htmlFor="item_amount">Total Amount</Label>
+        <Input
+          type="number"
+          id="item_amount"
+          name="item_amount"
+          placeholder="Total Amount (0 if none)"
+          defaultValue={0}
+          min={0}
+          step="any"
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_amount} />
       </>
 
       <>

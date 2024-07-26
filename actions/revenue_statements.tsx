@@ -4,27 +4,28 @@
 // replace vals with column names
 // remove comments after
 
-import { RevenueStatementSchema } from '@/lib/definitions';
+import {
+  RevenueStatementSchema,
+  UpdateRevenueFormSchema,
+} from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
+import * as categoryQuery from './categories';
+import * as eventQuery from './events';
+import * as staffQuery from './staffs';
+import * as staffListQuery from './staff_lists';
+import * as staffInstanceQuery from './staff_instances';
 
-export type revenueStatementState = {
+export type RevenueStatementState = {
   errors?: {
-    rs_id?: string[];
-    rs_name?: string[];
-    rs_date?: string[];
     receipt_link?: string[];
     rs_to?: string[];
-    rs_from?: string[];
+    rs_on?: string[];
     rs_notes?: string[];
-    category_id?: string[];
-    prepared_staff_id?: string[];
     certified_staff_id?: string[];
     noted_staff_list_id?: string[];
-    form_list_id?: string[];
   };
-  message?: string | null;
 };
 
 var revenueStatementFormat = {
@@ -35,11 +36,11 @@ var revenueStatementFormat = {
   rs_to: null,
   rs_from: null,
   rs_notes: null,
-  category_id: null,
   prepared_staff_id: null,
   certified_staff_id: null,
   noted_staff_list_id: null,
   form_list_id: null,
+  category_id: null,
   /*
   CREATE TABLE IF NOT EXISTS revenue_statements
   (
@@ -66,29 +67,119 @@ var revenueStatementFormat = {
   */
 };
 
-var schema = 'RevenueStatementSchema'; // replace with table name
+var schema = 'revenue_statements'; // replace with table name
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
+async function transformCreateData(
+  category_id: string,
+  category_name: string,
+  user_id: string,
+) {
   // TODO: provide logic
+  var rsData = await selectAllRevenueStatementValidation();
+  var id_mod = 10000;
+  if (rsData.data) {
+    if (rsData.data.length > 0) {
+      for (let i = 0; i < rsData.data.length; i++) {
+        var num = parseInt(rsData.data[i].rs_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
+        }
+      }
+      id_mod += 1;
+    }
+  }
+
+  var staffListData = await staffListQuery.selectAllStaffListValidation();
+  var id_mod_staff = 10000;
+  if (staffListData.data) {
+    if (staffListData.data.length > 0) {
+      for (let i = 0; i < staffListData.data.length; i++) {
+        var num = parseInt(staffListData.data[i].staff_list_id.slice(4));
+        if (num > id_mod_staff) {
+          id_mod_staff = num;
+        }
+      }
+      id_mod_staff += 1;
+    }
+  }
+
+  var form_list_id;
+  var categoryData = await categoryQuery.selectWhereCategoryValidation(
+    category_id,
+    'category_id',
+  );
+  if (categoryData.data) {
+    var eventData = await eventQuery.selectWhereEventValidation(
+      categoryData.data[0].event_id,
+      'event_id',
+    );
+    if (eventData.data) {
+      form_list_id = eventData.data[0].rs_form_list_id;
+    }
+  }
+
+  var preparedStaff = await staffQuery.selectWhereStaffValidation(
+    user_id,
+    'user_id',
+  );
+  // TODO: fill information
+  if (preparedStaff.data) {
+    return {
+      rs_id: `revst_${id_mod}`,
+      rs_name: category_name,
+      receipt_link: null,
+      rs_to: null,
+      rs_on: null,
+      rs_notes: null,
+      prepared_staff_id: preparedStaff.data[0].staff_id,
+      certified_staff_id: null,
+      noted_staff_list_id: `stl_${id_mod_staff}`,
+      form_list_id: form_list_id,
+      category_id: category_id,
+    };
+  }
+}
+
+async function transformEditData(data: any, id: string) {
+  // TODO: provide logic
+  var rsData = await selectWhereRevenueStatementValidation(id, 'rs_id');
 
   // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  if (rsData.data) {
+    return {
+      rs_id: id,
+      rs_name: rsData.data[0].rs_name,
+      receipt_link: data.get('receipt_link'),
+      rs_to: data.get('rs_to'),
+      rs_on: data.get('rs_on'),
+      rs_notes: data.get('rs_notes'),
+      prepared_staff_id: rsData.data[0].prepared_staff_id,
+      certified_staff_id: data.get('certified_staff_id'),
+      noted_staff_list_id: rsData.data[0].noted_staff_list_id,
+      form_list_id: rsData.data[0].form_list_id,
+      category_id: rsData.data[0].category_id,
+    };
+  }
+  return null;
 }
 
 async function convertData(data: any) {
   // TODO: provide logic
 
   // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  return data;
 }
 
-async function createRevenueStatementValidation(
-  prevState: revenueStatementState,
-  formData: FormData,
+export async function createRevenueStatementValidation(
+  category_id: any,
+  category_name: string,
+  user_id: string,
 ) {
-  var transformedData = transformData(formData);
+  var transformedData = await transformCreateData(
+    category_id,
+    category_name,
+    user_id,
+  );
   const validatedFields = RevenueStatementSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -100,7 +191,12 @@ async function createRevenueStatementValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
+  await staffListQuery.createStaffList({
+    staff_list_id: data.noted_staff_list_id,
+  });
+
   const { error } = await createRevenueStatement(data);
   if (error) {
     throw new Error(error.message);
@@ -112,14 +208,24 @@ async function createRevenueStatementValidation(
   };
 }
 
-async function editRevenueStatementValidation(
+export async function editRevenueStatementValidation(
+  eventId: string,
   id: string,
   identifier: string,
-  prevState: revenueStatementState,
+  prevState: RevenueStatementState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
-  const validatedFields = RevenueStatementSchema.safeParse(transformedData);
+  var arrData = Array.from(formData.entries());
+
+  const notedList = [];
+  for (let i = 0; i < arrData.length; i++) {
+    if (arrData[i][0].substring(0, 20) === 'noted_staff_list_id-') {
+      notedList.push(arrData[i][0].substring(20));
+    }
+  }
+
+  var transformedData = await transformEditData(formData, id);
+  const validatedFields = UpdateRevenueFormSchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
     console.log(validatedFields.error);
@@ -130,19 +236,33 @@ async function editRevenueStatementValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  var data = await convertData(transformedData);
+
+  await staffInstanceQuery.deleteStaffInstanceValidation(
+    data.noted_staff_list_id,
+    'staff_list_id',
+  );
+
+  console.log(notedList);
+
+  for (let i = 0; i < notedList.length; i++) {
+    await staffInstanceQuery.createStaffInstanceValidation(
+      data.noted_staff_list_id,
+      notedList[i],
+    );
+  }
+
   const { error } = await editRevenueStatement(data, id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
+  redirect(`/events/${eventId}/forms`);
   //revalidatePath("/")
-  return {
-    message: null,
-  };
+  // return {} as RevenueStatementState;
 }
 
-async function selectWhereRevenueStatementValidation(
+export async function selectWhereRevenueStatementValidation(
   id: string,
   identifier: string,
 ) {
@@ -158,7 +278,7 @@ async function selectWhereRevenueStatementValidation(
   };
 }
 
-async function selectAllRevenueStatementValidation() {
+export async function selectAllRevenueStatementValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllRevenueStatement();
   if (error) {
@@ -171,14 +291,23 @@ async function selectAllRevenueStatementValidation() {
   };
 }
 
-async function deleteRevenueStatementValidation(
+export async function deleteRevenueStatementValidation(
   id: string,
   identifier: string,
 ) {
   // TODO: provide logic
+  var data = await selectWhereRevenueStatement(id, identifier);
+
   const { error } = await deleteRevenueStatement(id, identifier);
   if (error) {
     throw new Error(error.message);
+  }
+
+  if (data.data) {
+    await staffListQuery.deleteStaffListValidation(
+      data.data[0].noted_staff_list_id,
+      'staff_list_id',
+    );
   }
 
   //revalidatePath("/")
@@ -187,35 +316,29 @@ async function deleteRevenueStatementValidation(
   };
 }
 
-async function createRevenueStatement(data: any) {
+export async function createRevenueStatement(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editRevenueStatement(data: any, id: string, identifier: string) {
+export async function editRevenueStatement(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteRevenueStatement(id: string, identifier: string) {
+export async function deleteRevenueStatement(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereRevenueStatement(id: string, identifier: string) {
+export async function selectWhereRevenueStatement(
+  id: string,
+  identifier: string,
+) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllRevenueStatement() {
+export async function selectAllRevenueStatement() {
   return await query.selectAll(schema);
 }
-
-export const revenueStatementQuery = {
-  createRevenueStatementValidation,
-  createRevenueStatement,
-  editRevenueStatementValidation,
-  editRevenueStatement,
-  deleteRevenueStatementValidation,
-  deleteRevenueStatement,
-  selectWhereRevenueStatementValidation,
-  selectWhereRevenueStatement,
-  selectAllRevenueStatementValidation,
-  selectAllRevenueStatement,
-};

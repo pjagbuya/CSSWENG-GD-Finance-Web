@@ -1,7 +1,9 @@
 import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
-import { getEvent } from '@/actions/events';
+import { selectWhereEventValidation } from '@/actions/events';
+import { getAIFormFromEvent, getFTFormFromEvent } from '@/actions/utils';
+import Link from 'next/link';
 
 type FormsPageProps = {
   params: {
@@ -10,7 +12,16 @@ type FormsPageProps = {
 };
 
 const FormsPage = async ({ params }: FormsPageProps) => {
-  const event = await getEvent(params.eventId);
+  const eventData = await selectWhereEventValidation(
+    params.eventId,
+    'event_id',
+  );
+
+  const formId = (await getAIFormFromEvent(params.eventId))?.data![0].ai_id!;
+  const ai_date = (await getAIFormFromEvent(params.eventId))?.data![0]!.ai_date;
+  const event = eventData!.data![0];
+  const fundTransferTableData = (await getFTFormFromEvent(params.eventId))!
+    .data!;
 
   return (
     <>
@@ -27,7 +38,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
 
           <FormsTable
             eventId={params.eventId}
-            nameFilter="" 
+            nameFilter=""
             variant="expense"
           />
         </div>
@@ -49,11 +60,27 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             AISF Form
           </h3>
 
-          <p>Last generated on [DATE].</p>
+          <p> {ai_date ? `Last generated on ${ai_date}` : 'LOADING'}.</p>
 
           <div className="mb-8 flex gap-4">
-            <Button className="min-w-24">View</Button>
-            <Button className="min-w-24">Edit</Button>
+            <Button className="min-w-24" asChild>
+              <Link href={`/events/${params.eventId}/forms/${formId}`}>
+                View
+              </Link>
+            </Button>
+
+            <Button className="min-w-24" asChild>
+              <Link href={`/events/${params.eventId}/forms/${formId}/edit`}>
+                Edit
+              </Link>
+            </Button>
+
+            {/* <CreateFormButton
+              // eventId={params.eventId}
+
+              isEditing={true}
+              variant="aisf"
+            /> */}
           </div>
         </div>
 
@@ -69,7 +96,13 @@ const FormsPage = async ({ params }: FormsPageProps) => {
             />
           </div>
 
-          {/* <FormsTable nameFilter="" /> */}
+          <FormsTable
+            deleteable={true}
+            eventId={params.eventId}
+            tableData={fundTransferTableData}
+            nameFilter=""
+            variant="fund_transfer"
+          />
         </div>
       </main>
     </>

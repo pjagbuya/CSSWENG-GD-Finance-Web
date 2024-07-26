@@ -6,16 +6,25 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import AddItemDialog from './AddItemDialog';
 
-const AddItemButton = () => {
+type AddItemButtonProps = {
+  transactionId: string;
+};
+
+const AddItemButton = ({ transactionId }: AddItemButtonProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   return (
     <>
       <Button onClick={() => setShowDialog(true)}>
-        <CirclePlus className="mr-2 w-4" /> Add Transaction
+        <CirclePlus className="mr-2 w-4" /> Add Item
       </Button>
 
-      {showDialog && <AddItemDialog onFinish={() => setShowDialog(false)} />}
+      {showDialog && (
+        <AddItemDialog
+          transactionId={transactionId}
+          onFinish={() => setShowDialog(false)}
+        />
+      )}
     </>
   );
 };

@@ -50,6 +50,7 @@ type DataTableProps = {
   clickableIdColumn?: boolean;
   columns: ColumnDef<unknown, any>[];
   data: any;
+  deletable?: boolean;
   idFilter: string;
   idColumn: string;
   pkColumn: string;
@@ -84,6 +85,7 @@ const DataTable = ({
   clickableIdColumn,
   columns,
   data,
+  deletable,
   idColumn,
   idFilter,
   pkColumn,
@@ -181,13 +183,16 @@ const DataTable = ({
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (onRowDelete) onRowDelete(data[row.id][pkColumn]);
-                        }}
-                      >
-                        Delete
-                      </DropdownMenuItem>
+                      {(deletable === undefined || deletable) && (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            if (onRowDelete)
+                              onRowDelete(data[row.id][pkColumn]);
+                          }}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -207,7 +212,7 @@ const DataTable = ({
         </TableBody>
       </Table>
 
-      <div className="mt-2 flex items-center gap-2 self-end">
+      {/* <div className="mt-2 flex items-center gap-2 self-end">
         <p className="-mb-0.5 mr-4 text-sm text-muted-foreground">
           Page {currentPageNum} of {table.getPageCount()}
         </p>
@@ -230,7 +235,7 @@ const DataTable = ({
           <ChevronRight className="h-4 w-4" />
           Next
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

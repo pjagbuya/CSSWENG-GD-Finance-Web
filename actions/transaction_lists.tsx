@@ -7,7 +7,8 @@
 import { TransactionListSchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { query } from '@/lib/supabase';
+import * as query from '@/lib/supabase';
+import * as transactionQuery from '@/actions/transactions';
 
 export type transactionListState = {
   errors?: {
@@ -28,7 +29,7 @@ var transactionListFormat = {
   */
 };
 
-var schema = 'TransactionListSchema'; // replace with table name
+var schema = 'transaction_lists'; // replace with table name
 
 async function transformData(data: any) {
   var arrayData = Array.from(data.entries());
@@ -46,7 +47,7 @@ async function convertData(data: any) {
   return data.data;
 }
 
-async function createTransactionListValidation(
+export async function createTransactionListValidation(
   prevState: transactionListState,
   formData: FormData,
 ) {
@@ -74,7 +75,7 @@ async function createTransactionListValidation(
   };
 }
 
-async function editTransactionListValidation(
+export async function editTransactionListValidation(
   id: string,
   identifier: string,
   prevState: transactionListState,
@@ -104,7 +105,7 @@ async function editTransactionListValidation(
   };
 }
 
-async function selectWhereTransactionListValidation(
+export async function selectWhereTransactionListValidation(
   id: string,
   identifier: string,
 ) {
@@ -120,7 +121,7 @@ async function selectWhereTransactionListValidation(
   };
 }
 
-async function selectAllTransactionListValidation() {
+export async function selectAllTransactionListValidation() {
   // TODO: provide logic
   const { data, error } = await selectAllTransactionList();
   if (error) {
@@ -133,8 +134,26 @@ async function selectAllTransactionListValidation() {
   };
 }
 
-async function deleteTransactionListValidation(id: string, identifier: string) {
+export async function deleteTransactionListValidation(
+  id: string,
+  identifier: string,
+) {
   // TODO: provide logic
+  var transactionData = await transactionQuery.selectWhereTransactionValidation(
+    id,
+    identifier,
+  );
+
+  if (transactionData.data) {
+    for (let i = 0; i < transactionData.data.length; i++) {
+      await transactionQuery.deleteTransactionValidation(
+        null,
+        transactionData.data[i].transaction_id,
+        'transaction_id',
+      );
+    }
+  }
+
   const { error } = await deleteTransactionList(id, identifier);
   if (error) {
     throw new Error(error.message);
@@ -146,35 +165,29 @@ async function deleteTransactionListValidation(id: string, identifier: string) {
   };
 }
 
-async function createTransactionList(data: any) {
+export async function createTransactionList(data: any) {
   return await query.insert(schema, data);
 }
 
-async function editTransactionList(data: any, id: string, identifier: string) {
+export async function editTransactionList(
+  data: any,
+  id: string,
+  identifier: string,
+) {
   return await query.edit(schema, data, identifier, id);
 }
 
-async function deleteTransactionList(id: string, identifier: string) {
+export async function deleteTransactionList(id: string, identifier: string) {
   return await query.remove(schema, identifier, id);
 }
 
-async function selectWhereTransactionList(id: string, identifier: string) {
+export async function selectWhereTransactionList(
+  id: string,
+  identifier: string,
+) {
   return await query.selectWhere(schema, identifier, id);
 }
 
-async function selectAllTransactionList() {
+export async function selectAllTransactionList() {
   return await query.selectAll(schema);
 }
-
-export const transactionListQuery = {
-  createTransactionListValidation,
-  createTransactionList,
-  editTransactionListValidation,
-  editTransactionList,
-  deleteTransactionListValidation,
-  deleteTransactionList,
-  selectWhereTransactionListValidation,
-  selectWhereTransactionList,
-  selectAllTransactionListValidation,
-  selectAllTransactionList,
-};

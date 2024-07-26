@@ -68,14 +68,28 @@ const EventDialogForm: React.FC<EventDialogFormProps> = ({
                 }
               />
 
-              <div id="name-error" aria-live="polite" aria-atomic="true">
+              {/* <div id="name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.staff_name &&
                   state.errors.staff_name.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
                     </p>
                   ))}
-              </div>
+              </div> */}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="event_date">Date</Label>
+              <Input
+                type="date"
+                id="event_date"
+                name="event_date"
+                placeholder="Event Date"
+                value={fields?.event_date}
+                onChange={e =>
+                  onFieldsChange?.({ ...fields, event_date: e.target.value })
+                }
+              />
             </div>
           </div>
 

@@ -4,8 +4,12 @@ import SearchInput from '@/components/SearchInput';
 import CreateAccountButton from './CreateAccountButton';
 import { getUsers } from '@/actions/account';
 
-const AccountForm = async ({ searchParams }: { searchParams?: { query?: string } }) => {
-  const users = (await getUsers())
+const AccountForm = async ({
+  searchParams,
+}: {
+  searchParams?: { query?: string };
+}) => {
+  const users = await getUsers();
   return (
     <>
       <div className="flex justify-between">
@@ -18,7 +22,7 @@ const AccountForm = async ({ searchParams }: { searchParams?: { query?: string }
 
       <AccountsTable nameFilter={searchParams?.query || ''} userInfos={users} />
     </>
-  )
-}
+  );
+};
 
-export default AccountForm
+export default AccountForm;

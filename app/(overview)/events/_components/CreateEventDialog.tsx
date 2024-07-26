@@ -1,4 +1,4 @@
-import { EventState, eventQuery } from '@/actions/events';
+import { EventState, createEventValidation } from '@/actions/events';
 import { useFormState } from 'react-dom';
 import EventDialogForm from './EventDialogForm';
 
@@ -11,12 +11,10 @@ const EditEventDialog = ({ open, onFinish }: EditEventDialogProps) => {
   const initialState: EventState = {
     errors: {
       event_name: [],
+      event_date: [],
     },
   };
-  const [state, formAction] = useFormState(
-    eventQuery.createEventValidation,
-    initialState,
-  );
+  const [state, formAction] = useFormState(createEventValidation, initialState);
 
   return (
     <EventDialogForm

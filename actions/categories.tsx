@@ -1,3 +1,5 @@
+'use server';
+
 // INSTRUCTIONS:
 // category -> small case
 // Category -> big case
@@ -8,6 +10,11 @@ import { CategorySchema } from '@/lib/definitions';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import * as query from '@/lib/supabase';
+import * as transactionListQuery from './transaction_lists';
+import * as expenseStatementQuery from './expense_statements';
+import * as revenueStatementQuery from './revenue_statements';
+import { StringOrTemplateHeader } from '@tanstack/react-table';
+import { createClient } from '@/utils/supabase/server';
 
 export type CategoryState = {
   errors?: {
@@ -39,22 +46,53 @@ var categoryFormat = {
   */
 };
 
-var schema = 'Categories'; // replace with table export name
+var schema = 'categories'; // replace with table export name
 
-async function transformData(data: any) {
-  var arrayData = Array.from(data.entries());
-  // TODO: provide logic
+async function transformCreateData(
+  data: any,
+  event_id: string,
+  type: 'revenue' | 'expense',
+) {
+  var categoryData = await selectAllCategoryValidation();
+  var id_mod = 10000;
+  if (categoryData.data) {
+    if (categoryData.data.length > 0) {
+      for (let i = 0; i < categoryData.data!.length; i++) {
+        var num = parseInt(categoryData.data[i].category_id.slice(6));
+        if (num > id_mod) {
+          id_mod = num;
+        }
+      }
+      id_mod += 1;
+    }
+  }
 
-  // TODO: fill information
-  var transformedData = {};
-  return transformedData;
+  return {
+    category_id: `categ_${id_mod}`,
+    category_name: data.get('category_name'),
+    category_type: type,
+    event_id: event_id,
+    transaction_list_id: `trl_${id_mod}`,
+  };
 }
 
-export async function convertData(data: any) {
-  // TODO: provide logic
+async function transformEditData(data: any, id: string, identifier: string) {
+  const categoryData = await selectWhereCategoryValidation(id, identifier);
 
-  // JUST IN CASE: needs to do something with other data of validated fields
-  return data.data;
+  if (categoryData.data) {
+    return {
+      category_id: id,
+      category_name: data.get('category_name'),
+      category_type: categoryData.data[0].category_type,
+      event_id: categoryData.data[0].event_id,
+      transaction_list_id: categoryData.data[0].transaction_list_id,
+    };
+  }
+  return null;
+}
+
+async function convertData(data: any) {
+  return data;
 }
 
 export async function createCategoryValidation(
@@ -63,9 +101,15 @@ export async function createCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  const supabase = createClient();
+  const currentUser = (await supabase.auth.getUser()).data.user;
+
+  console.log(12345, currentUser);
+
+  var transformedData = await transformCreateData(formData, eventId, type);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
+  console.log(validatedFields);
   if (!validatedFields.success) {
     console.log(validatedFields.error);
     return {
@@ -75,13 +119,40 @@ export async function createCategoryValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = await convertData(transformedData);
+
+  const transaction_list = {
+    transaction_list_id: data.transaction_list_id,
+  };
+  await transactionListQuery.createTransactionList(transaction_list);
+
   const { error } = await createCategory(data);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  switch (type) {
+    case 'revenue':
+      {
+        await revenueStatementQuery.createRevenueStatementValidation(
+          data.category_id,
+          data.category_name,
+          currentUser?.id!,
+        );
+      }
+      break;
+    case 'expense':
+      {
+        await expenseStatementQuery.createExpenseStatementValidation(
+          data.category_id,
+          data.category_name,
+          currentUser?.id!,
+        );
+      }
+      break;
+  }
+
+  revalidatePath(`/groups`);
   return {
     hasDuplicateCategory: false,
   } as CategoryState;
@@ -93,7 +164,7 @@ export async function editCategoryValidation(
   prevState: CategoryState,
   formData: FormData,
 ) {
-  var transformedData = transformData(formData);
+  const transformedData = await transformEditData(formData, id, identifier);
   const validatedFields = CategorySchema.safeParse(transformedData);
 
   if (!validatedFields.success) {
@@ -104,17 +175,15 @@ export async function editCategoryValidation(
     };
   }
 
-  // TODO: provide logic
-  var data = convertData(validatedFields.data);
+  const data = await convertData(transformedData);
   const { error } = await editCategory(data, id, identifier);
+
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
-  return {
-    message: null,
-  };
+  revalidatePath('/groups');
+  return {} as CategoryState;
 }
 
 export async function selectWhereCategoryValidation(
@@ -147,13 +216,40 @@ export async function selectAllCategoryValidation() {
 }
 
 export async function deleteCategoryValidation(id: string, identifier: string) {
-  // TODO: provide logic
+  const data = await selectWhereCategoryValidation(id, identifier);
+
+  if (data.data) {
+    switch (data.data[0].category_type) {
+      case 'expense':
+        await expenseStatementQuery.deleteExpenseStatementValidation(
+          id,
+          identifier,
+        );
+        break;
+      case 'revenue':
+        await revenueStatementQuery.deleteRevenueStatementValidation(
+          id,
+          identifier,
+        );
+        break;
+    }
+  }
+
   const { error } = await deleteCategory(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  // TODO: provide logic
+  if (data.data) {
+    await transactionListQuery.deleteTransactionListValidation(
+      data.data[0].transaction_list_id,
+      'transaction_list_id',
+    );
+  }
+
+  revalidatePath(`/groups`);
+
   return {
     message: null,
   };

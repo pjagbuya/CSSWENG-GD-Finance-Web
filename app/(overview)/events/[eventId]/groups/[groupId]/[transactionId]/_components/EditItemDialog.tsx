@@ -14,22 +14,29 @@ import {
 } from '@/actions/items';
 
 type EditItemFormProps = {
+  transactionId: string;
   itemId: string;
   open: boolean;
   onFinish?: () => void;
 };
 
-const EditItemDialog = ({ itemId, onFinish, open }: EditItemFormProps) => {
+const EditItemDialog = ({
+  transactionId,
+  itemId,
+  onFinish,
+  open,
+}: EditItemFormProps) => {
   const [fields, setFields] = useState({
     item_date: '',
     item_name: '',
     item_price: '',
     item_units: '',
+    item_amount: '',
     item_payment_details: '',
   });
 
   const [state, action] = useFormState(
-    editItemValidation.bind(null, itemId, 'item_id'),
+    editItemValidation.bind(null, transactionId, itemId, 'item_id'),
     {
       errors: {},
     },
@@ -51,22 +58,21 @@ const EditItemDialog = ({ itemId, onFinish, open }: EditItemFormProps) => {
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Item"
       open={open}
       onFinish={onFinish}
     >
       <>
-        <Label htmlFor="date">Date</Label>
+        <Label htmlFor="item_date">Date</Label>
         <Input
           type="date"
-          id="date"
-          name="date"
+          id="item_date"
+          name="item_date"
           placeholder="Item Date"
           value={fields.item_date}
-          onChange={e => () =>
-            setFields({ ...fields, item_date: e.target.value })
-          }
+          onChange={e => setFields({ ...fields, item_date: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_date} />
@@ -79,49 +85,54 @@ const EditItemDialog = ({ itemId, onFinish, open }: EditItemFormProps) => {
           name="item_name"
           placeholder="Item Name"
           value={fields.item_name}
-          onChange={e => () =>
-            setFields({ ...fields, item_name: e.target.value })
-          }
+          onChange={e => setFields({ ...fields, item_name: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_name} />
       </>
 
       <>
-        <Label htmlFor="item_price">Unit Price/Total Amount</Label>
+        <Label htmlFor="item_price">Unit Price</Label>
         <Input
           type="number"
           id="item_price"
           name="item_price"
-          placeholder="Unit Price/Total Amount"
-          defaultValue={1}
-          min={1}
-          step="any"
+          placeholder="Unit Price (0 if none)"
           value={fields.item_price}
-          onChange={e => () =>
-            setFields({ ...fields, item_price: e.target.value })
-          }
+          min={0}
+          step="any"
         />
 
         <ErrorDisplay errors={state?.errors?.item_price} />
       </>
 
       <>
-        <Label htmlFor="item_units">Unit Count (Optional)</Label>
+        <Label htmlFor="item_units">Unit Count</Label>
         <Input
           type="number"
           id="item_units"
           name="item_units"
-          placeholder="Unit Count (Optional)"
-          defaultValue={1}
-          min={1}
+          placeholder="Unit Count (0 if none)"
           value={fields.item_units}
-          onChange={e => () =>
-            setFields({ ...fields, item_units: e.target.value })
-          }
+          min={0}
         />
 
         <ErrorDisplay errors={state?.errors?.item_units} />
+      </>
+
+      <>
+        <Label htmlFor="item_amount">Total Amount</Label>
+        <Input
+          type="number"
+          id="item_amount"
+          name="item_amount"
+          placeholder="Total Amount (0 if none)"
+          value={fields.item_amount}
+          min={0}
+          step="any"
+        />
+
+        <ErrorDisplay errors={state?.errors?.item_amount} />
       </>
 
       <>
@@ -132,7 +143,7 @@ const EditItemDialog = ({ itemId, onFinish, open }: EditItemFormProps) => {
           placeholder="Payment Details"
           className="resize-none"
           value={fields.item_payment_details}
-          onChange={e => () =>
+          onChange={e =>
             setFields({ ...fields, item_payment_details: e.target.value })
           }
         />

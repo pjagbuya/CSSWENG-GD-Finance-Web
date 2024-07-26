@@ -13,7 +13,6 @@ type AddGroupFormProps = {
 };
 
 const AddGroupForm = ({ eventId, type, onFinish }: AddGroupFormProps) => {
-  // TODO: @Enzo link functions
   const [state, action] = useFormState(
     createCategoryValidation.bind(null, eventId, type),
     {
@@ -33,8 +32,8 @@ const AddGroupForm = ({ eventId, type, onFinish }: AddGroupFormProps) => {
         onFinish={onFinish}
       >
         <>
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="Name" />
+          <Label htmlFor="category_name">Name</Label>
+          <Input id="category_name" name="category_name" placeholder="Name" />
 
           <ErrorDisplay errors={state?.errors?.category_name} />
         </>

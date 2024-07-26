@@ -18,7 +18,7 @@ export default function Error({
 
   return (
     <main className="mb-4 flex flex-1 flex-col items-center justify-center">
-      <h2 className="mb-4 text-4xl font-bold">An Error Occured 😭</h2>
+      <h2 className="mb-4 text-4xl font-bold">Never Gonna Give You Up 😭</h2>
       <p className="mb-6">"{error.message}"</p>
 
       <div className="grid grid-cols-2 gap-2">
