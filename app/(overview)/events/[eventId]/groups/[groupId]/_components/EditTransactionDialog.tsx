@@ -62,6 +62,7 @@ const EditTransactionDialog = ({
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Transaction"
       open={open}

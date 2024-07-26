@@ -58,6 +58,7 @@ const EditItemDialog = ({
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Item"
       open={open}
