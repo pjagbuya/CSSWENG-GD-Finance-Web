@@ -19,7 +19,7 @@ import { createClient } from '@/utils/supabase/server';
 
 export type fundTransferState = {
   errors?: {
-    ft_id?: string[];
+    // ft_id?: string[];
     ft_name?: string[];
     ft_date?: string[];
     ft_reason?: string[];
@@ -128,6 +128,8 @@ async function transformCreateData(data: any, event_id: string) {
     'user_id',
   );
 
+  console.log(1234, currentUser, preparedStaff);
+
   // TODO: fill information
   if (preparedStaff.data) {
     return {
@@ -141,7 +143,7 @@ async function transformCreateData(data: any, event_id: string) {
       ft_on: data.get('ft_on'),
       receipt_link: data.get('receipt_link'),
       prepared_staff_id: preparedStaff.data[0].staff_id,
-      certified_staff_id: null,
+      certified_staff_id: data.get('certified_staff_id'),
       noted_staff_list_id: `stl_${id_mod_staff}`,
       form_list_id: form_list_id,
     };
@@ -182,9 +184,9 @@ async function convertData(data: any) {
 }
 
 export async function createFundTransferValidation(
+  event_id: string,
   prevState: fundTransferState,
   formData: FormData,
-  event_id: string,
 ) {
   var transformedData = await transformCreateData(formData, event_id);
   const validatedFields = FundTransferSchema.safeParse(transformedData);
@@ -301,14 +303,24 @@ export async function selectAllFundTransferValidation() {
 export async function deleteFundTransferValidation(
   id: string,
   identifier: string,
+  eventId: string,
 ) {
+  const data = await selectWhereFundTransferValidation(id, identifier);
+
   // TODO: provide logic
   const { error } = await deleteFundTransfer(id, identifier);
   if (error) {
     throw new Error(error.message);
   }
 
-  //revalidatePath("/")
+  if (data.data) {
+    await staffListQuery.deleteStaffListValidation(
+      data.data[0].noted_staff_list_id,
+      'staff_list_id',
+    );
+  }
+
+  revalidatePath(`/events/${eventId}/forms`);
   return {
     message: null,
   };

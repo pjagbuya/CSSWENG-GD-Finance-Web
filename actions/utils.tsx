@@ -17,6 +17,7 @@ import * as itemQuery from '@/actions/items';
 import * as accountQuery from '@/actions/account';
 import * as query from '@/lib/supabase';
 import { createClient } from '@/utils/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 //-------------------------------------------------------------------
 //          Dashboard Functions
@@ -74,6 +75,7 @@ export async function getRSFormFromEvent(event_id: any) {
 
 // gets FT forms of Event ID
 export async function getFTFormFromEvent(event_id: any) {
+  noStore();
   let eventData = await eventQuery.selectWhereEventValidation(
     event_id,
     'event_id',

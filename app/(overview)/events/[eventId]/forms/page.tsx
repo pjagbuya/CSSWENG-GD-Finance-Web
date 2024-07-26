@@ -2,7 +2,7 @@ import FormsTable from './_components/formsTable';
 import CreateFormButton from './_components/CreateFormButton';
 import { Button } from '@/components/ui/button';
 import { selectWhereEventValidation } from '@/actions/events';
-import { getAIFormFromEvent } from '@/actions/utils';
+import { getAIFormFromEvent, getFTFormFromEvent } from '@/actions/utils';
 import Link from 'next/link';
 
 type FormsPageProps = {
@@ -20,6 +20,8 @@ const FormsPage = async ({ params }: FormsPageProps) => {
   const formId = (await getAIFormFromEvent(params.eventId))?.data![0].ai_id!;
   const ai_date = (await getAIFormFromEvent(params.eventId))?.data![0]!.ai_date;
   const event = eventData!.data![0];
+  const fundTransferTableData = (await getFTFormFromEvent(params.eventId))!
+    .data!;
 
   return (
     <>
@@ -75,7 +77,7 @@ const FormsPage = async ({ params }: FormsPageProps) => {
 
             {/* <CreateFormButton
               // eventId={params.eventId}
-              
+
               isEditing={true}
               variant="aisf"
             /> */}
@@ -95,7 +97,9 @@ const FormsPage = async ({ params }: FormsPageProps) => {
           </div>
 
           <FormsTable
+            deleteable={true}
             eventId={params.eventId}
+            tableData={fundTransferTableData}
             nameFilter=""
             variant="fund_transfer"
           />

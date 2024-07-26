@@ -38,25 +38,10 @@ const CreateFundTransferForm = ({
     errors: {},
     message: null,
   };
-  const [state, action] = useFormState(handleCreateRevenueForm, initialState);
-
-  useEffect(() => {
-    fetchCategories();
-
-    async function fetchCategories() {
-      // const categories = await getItemCategories(eventId);
-      // setCategories(categories);
-    }
-  }, []);
-
-  async function handleCreateRevenueForm(
-    prevState: fundTransferState,
-    formData: FormData,
-  ) {
-    const res = await createFundTransferValidation(prevState, formData);
-
-    return res;
-  }
+  const [state, action] = useFormState(
+    createFundTransferValidation.bind(null, eventId),
+    initialState,
+  );
 
   return (
     <CreateForm
@@ -87,7 +72,7 @@ const CreateFundTransferForm = ({
             <div className="flex flex-col gap-3">
               <Label htmlFor="reason">Reason</Label>
               <Textarea
-                className='resize-none'
+                className="resize-none"
                 id="reason"
                 name="ft_reason"
                 placeholder="State your reason"
@@ -121,7 +106,12 @@ const CreateFundTransferForm = ({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="on">Transfer On</Label>
-              <Input id="on" name="ft_on" placeholder="Transfer On" />
+              <Input
+                type="date"
+                id="on"
+                name="ft_on"
+                placeholder="Transfer On"
+              />
 
               <ErrorDisplay errors={state.errors?.ft_on} />
             </div>

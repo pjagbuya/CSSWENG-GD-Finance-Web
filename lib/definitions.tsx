@@ -164,7 +164,7 @@ export const FundTransferSchema = z.object({
   ft_from: z
     .string({ required_error: 'Please enter Fund transfer from.' })
     .min(1),
-  ft_on: z.string({ required_error: 'Please enter Fund transfer on.' }).min(1),
+  ft_on: z.string({ required_error: 'Please enter Fund transfer on.' }).date(),
   receipt_link: z
     .string({
       required_error: 'Please enter Receipt link.',
@@ -180,7 +180,7 @@ export const FundTransferSchema = z.object({
       required_error: 'Please enter Certified staff ID.',
     })
     .min(1),
-  noted_staff_id: z
+  noted_staff_list_id: z
     .string({
       required_error: 'Please enter Noted staff ID.',
     })

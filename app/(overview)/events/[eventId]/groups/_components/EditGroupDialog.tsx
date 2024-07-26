@@ -55,6 +55,7 @@ const EditGroupDialog = ({ groupId, onFinish, open }: EditGroupDialogProps) => {
   return (
     <CreateForm
       action={action}
+      isEditing={true}
       state={state}
       title="Edit Group"
       open={open}

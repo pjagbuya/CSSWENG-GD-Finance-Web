@@ -315,33 +315,7 @@ async function getAISFFormBody(formId: string) {
 }
 
 async function getFundTransferFormBody(formId: string) {
-  var formData = [
-    {
-      message: 'Description/Reason:',
-      description: 'Trade of RMA70-12 and Oriron Blocks',
-    },
-    {
-      message: 'Transferred amount:',
-      description: '480,000 LMD',
-    },
-    {
-      message: 'Transferred from:',
-      description: 'Lungmen',
-    },
-    {
-      message: 'Transferred to:',
-      description: 'Rhodes Island',
-    },
-    {
-      message: 'Transferred on:',
-      description: 'March 1102',
-    },
-    {
-      message: 'Receipt link:',
-      description:
-        'https://docs.google.com/spreadsheets/d/1zYc2JU46X0XWmV7s1503bN4feRdOMa1eehrTQ2jGaiE/edit?pli=1#gid=890953453',
-    },
-  ];
+  let formData = await utility.getFTBodyData(formId);
 
   return (
     <>
@@ -349,7 +323,7 @@ async function getFundTransferFormBody(formId: string) {
         <div className="form-info">
           <div className="form-info-title">{data.message}</div>
           <div className="form-info-description">
-            <u>{data.description}</u>
+            {data.description}
             <underline />
           </div>
         </div>
@@ -387,7 +361,7 @@ const FormViewPage = async ({ params: { formId } }: FormViewPageProps) => {
       case 'actin':
         return getAISFFormBody(formId);
 
-      case 'fndtr':
+      case 'funtr':
         return getFundTransferFormBody(formId);
 
       default:
