@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS staffs
     staff_id VARCHAR(25) PRIMARY KEY,
     user_id uuid,
     staff_position VARCHAR(55),   
+    staff_status boolean,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

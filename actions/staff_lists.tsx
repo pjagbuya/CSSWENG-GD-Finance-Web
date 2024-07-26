@@ -63,7 +63,7 @@ export async function createStaffListValidation(
   }
 
   // TODO: provide logic
-  var data = convertData(validatedFields);
+  var data = convertData(transformedData);
   const { error } = await createStaffList(data);
   if (error) {
     throw new Error(error.message);

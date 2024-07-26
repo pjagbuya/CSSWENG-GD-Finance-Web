@@ -249,6 +249,7 @@ export async function deleteEventValidation(id: string, identifier: string) {
         await fundTransferQuery.deleteFundTransferValidation(
           ftData.data[i].rs_id,
           'ft_id',
+          id
         );
       }
     }

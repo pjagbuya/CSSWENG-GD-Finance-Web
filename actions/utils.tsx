@@ -198,13 +198,15 @@ export async function getStaffInfos(staffData: any) {
         staffData.data[i].user_id,
       );
       if (userData.data) {
-        staffInfo.push({
-          staff_id: staffData.data[i].staff_id,
-          user_id: staffData.data[i].user_id,
-          user_first_name: userData.data[0].user_first_name,
-          user_last_name: userData.data[0].user_last_name,
-          staff_position: staffData.data[i].staff_position,
-        });
+        if (userData.data[i].staff_status){
+          staffInfo.push({
+            staff_id: staffData.data[i].staff_id,
+            user_id: staffData.data[i].user_id,
+            user_first_name: userData.data[0].user_first_name,
+            user_last_name: userData.data[0].user_last_name,
+            staff_position: staffData.data[i].staff_position,
+          });
+        }
       }
     }
   }

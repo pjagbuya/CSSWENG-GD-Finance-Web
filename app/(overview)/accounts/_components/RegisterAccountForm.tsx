@@ -63,7 +63,7 @@ const RegisterAccountForm: React.FC<EventDialogFormProps> = ({
               <Input
                 id="position"
                 name="staff_position"
-                placeholder="Receipts Link"
+                placeholder="Staff Position"
               />
               <ErrorDisplay errors={state.errors?.staff_position} />
             </div>

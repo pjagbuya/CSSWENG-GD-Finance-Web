@@ -158,12 +158,17 @@ export async function createActivityIncomeValidation(event_id: string) {
     };
   }
 
+  
   // TODO: provide logic
   var data = await convertData(transformedData);
 
+  console.log(data)
+  
   await staffListQuery.createStaffList({
     staff_list_id: data.noted_staff_list_id,
   });
+
+
 
   const { error } = await createActivityIncome(data);
   if (error) {

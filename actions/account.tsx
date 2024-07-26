@@ -124,6 +124,13 @@ export async function editAccount(
 
 export async function deleteAccount(id: string) {
   const supabase = createAdminClient();
+  const supabase2 = createClient();
+
+  const { error : error1 } = await supabase2.from('staffs').update({staff_status: false}).eq('user_id', id);
+  if (error1) {
+    throw new Error(error1.message);
+  }
+
 
   const { error } = await supabase.auth.admin.deleteUser(id, false);
   if (error) {
@@ -188,6 +195,7 @@ export async function createStaff(data: staffType, userId: string) {
     staff_position: data.staff_position.toUpperCase(),
     user_id: userId,
     staff_id: await getStaffId(),
+    staff_status: true
   });
 
   if (staffError) {
