@@ -52,7 +52,7 @@ const EditStaffForm: React.FC<EventDialogFormProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{label} Event</DialogTitle>
+          <DialogTitle>{label} Staff</DialogTitle>
         </DialogHeader>
 
         <form action={action}>
@@ -62,7 +62,7 @@ const EditStaffForm: React.FC<EventDialogFormProps> = ({
               <Input
                 id="position"
                 name="staff_position"
-                placeholder="Receipts Link"
+                placeholder="Position"
               />
               <ErrorDisplay errors={state.errors?.staff_position} />
             </div>

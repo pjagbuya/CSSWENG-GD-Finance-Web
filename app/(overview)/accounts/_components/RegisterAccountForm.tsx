@@ -14,6 +14,7 @@ import { ToastAction } from '@/components/ui/toast';
 import { toast } from '@/components/ui/use-toast';
 import React, { useEffect, useState } from 'react';
 import ErrorDisplay from '../../events/[eventId]/_components/ErrorDisplay';
+import { Input } from '@/components/ui/input';
 
 interface EventDialogFormProps {
   action: any; // TODO
@@ -61,7 +62,7 @@ const RegisterAccountForm: React.FC<EventDialogFormProps> = ({
               <Input
                 id="position"
                 name="staff_position"
-                placeholder="Receipts Link"
+                placeholder="Position"
               />
               <ErrorDisplay errors={state.errors?.staff_position} />
             </div>
