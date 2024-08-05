@@ -6,6 +6,7 @@ import {
   getTransactionsFromCategory,
 } from '@/actions/utils';
 import { selectWhereTransactionValidation } from '@/actions/transactions';
+import AddItemFromReceiptButton from './_components/AddItemFromReceiptButton';
 
 type TransactionsPageProps = {
   params: {
@@ -30,8 +31,9 @@ const TransactionsPage = async ({ params }: TransactionsPageProps) => {
         <p>Add and edit items per transaction</p>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex gap-4">
         <AddItemButton transactionId={params.transactionId} />
+        <AddItemFromReceiptButton transactionId={params.transactionId} />
       </div>
 
       <div className="mb-8 flex flex-col gap-3">

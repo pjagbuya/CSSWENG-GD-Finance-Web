@@ -101,6 +101,7 @@ const EditItemDialog = ({
           value={fields.item_price}
           min={0}
           step="any"
+          onChange={e => setFields({ ...fields, item_price: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_price} />
@@ -115,6 +116,7 @@ const EditItemDialog = ({
           placeholder="Unit Count (0 if none)"
           value={fields.item_units}
           min={0}
+          onChange={e => setFields({ ...fields, item_units: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_units} />
@@ -130,6 +132,7 @@ const EditItemDialog = ({
           value={fields.item_amount}
           min={0}
           step="any"
+          onChange={e => setFields({ ...fields, item_amount: e.target.value })}
         />
 
         <ErrorDisplay errors={state?.errors?.item_amount} />
